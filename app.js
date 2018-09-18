@@ -19,5 +19,5 @@ app.get('*', (req, res) => {
 const PORT = process.env.PORT || 5000
 var server = app.listen(
   PORT,
-  () => console.log(`Server initialised on PORT: ${PORT}...`)
+  () => console.log(`${new Date().toLocaleTimeString('en-GB')}: Server initialised on PORT: ${PORT}...`)
 )
