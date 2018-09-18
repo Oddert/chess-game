@@ -1,4 +1,4 @@
-import types from '../actions/types'
+// import types from '../actions/types'
 import initialState from '../constants/initialState'
 
 const game = (state = initialState.game, action) => {

@@ -33,7 +33,10 @@ const generateBoard = () => {
 }
 
 // 0 = white
-// 1 = black
+// 1 = black --board is upside down, use:
+
+// 0 = BLACK
+// 1 = WHITE
 const initialState = {
   game: {
     board: generateBoard(),

@@ -3,22 +3,30 @@ import { connect } from 'react-redux'
 
 import Cell from './Cell'
 
+import './styles/Board.css'
+
 class Board extends React.Component {
   genBoard () {
     var output = []
-    this.props.game.board.forEach(row => {
+    this.props.game.board.forEach((row, rowIdx) => {
       var cells = []
-      row.forEach(col => cells.push(<Cell cell={col} />))
-      output.push(<tr className='row'>{cells}</tr>)
+      row.forEach((col, colIdx) => cells.push(
+        <Cell cell={col} row={rowIdx} col={colIdx} key={rowIdx + '_' + colIdx} />
+      ))
+      output.push(<tr className='row' key={rowIdx}>{cells}</tr>)
     })
     return output
   }
 
   render () {
     return (
-      <table>
-        {this.genBoard()}
-      </table>
+      <div className='board'>
+        <table>
+          <tbody>
+            {this.genBoard()}
+          </tbody>
+        </table>
+      </div>
     )
   }
 }
