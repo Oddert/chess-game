@@ -1,4 +1,5 @@
 import React from 'react'
+import { connect } from 'react-redux'
 
 import validateRook from '../move_functions/validateRook'
 
@@ -38,7 +39,9 @@ class Rook extends React.Component {
   }
 
   componentDidMount () {
-    console.log(validateRook(0, 5, 0, 2, null))
+    if (this.props.x === 0 && this.props.y === 0) {
+      console.log(validateRook(0, 5, 0, 2, this.props.game.board))
+    }
   }
 
   render () {
@@ -69,4 +72,8 @@ class Rook extends React.Component {
   }
 }
 
-export default Rook
+const mapStateToProps = state => ({
+  game: state.game
+})
+
+export default connect(mapStateToProps, null)(Rook)
