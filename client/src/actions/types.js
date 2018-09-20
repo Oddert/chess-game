@@ -1,5 +1,7 @@
 const types = {
-  TEST: 'TEST'
+  TEST: 'TEST',
+  MOVE: 'MOVE',
+  TAKE_PIECE: 'TAKE_PIECE'
 }
 
 export default types

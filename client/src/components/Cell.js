@@ -14,31 +14,31 @@ class Cell extends React.Component {
     switch (cell.type) {
       case 'rook':
         return (
-          <td className='col' style={style}><Rook x={this.props.col} y={this.props.row} /></td>
+          <td className='col' style={style}><Rook row={this.props.row} col={this.props.col} team={cell.team} /></td>
         )
       case 'knight':
         return (
-          <td className='col' style={style}>♘</td>
+          <td className='col' style={style}>♘ <p className='s'>{cell.type}</p></td>
         )
       case 'bishop':
         return (
-          <td className='col' style={style}>♗</td>
+          <td className='col' style={style}>♗ <p className='s'>{cell.type}</p></td>
         )
       case 'queen':
         return (
-          <td className='col' style={style}>♕</td>
+          <td className='col' style={style}>♕ <p className='s'>{cell.type}</p></td>
         )
       case 'king':
         return (
-          <td className='col' style={style}>♔</td>
+          <td className='col' style={style}>♔ <p className='s'>{cell.type}</p></td>
         )
       case 'pawn':
         return (
-          <td className='col' style={style}>♙</td>
+          <td className='col' style={style}>♙ <p className='s'>{cell.type}</p></td>
         )
       case 'empty':
         return (
-          <td className='col' style={style}>O</td>
+          <td className='col' style={Object.assign({}, style, {boxShadow: 'inset -1px -1px 0px 0px black, inset 1px 1px 0px 0px black'})}> <p className='s'>{cell.type}</p></td>
         )
       default:
         return <div />

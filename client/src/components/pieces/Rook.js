@@ -1,6 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
+import { takePiece, move } from '../../actions'
+
 import validateRook from '../move_functions/validateRook'
 
 import '../styles/Virtual.css'
@@ -12,8 +14,8 @@ class Rook extends React.Component {
       showVirtual: false
     }
     this.generateVirtualBoard = this.generateVirtualBoard.bind(this)
-    this.handleMouseOver = this.handleMouseOver.bind(this)
-    this.handleMouseOut = this.handleMouseOut.bind(this)
+    this.handleClick = this.handleClick.bind(this)
+    this.confirmMove = this.confirmMove.bind(this)
   }
 
   generateVirtualBoard () {
@@ -21,34 +23,76 @@ class Rook extends React.Component {
     for (var i=0; i<8; i++) {
       var col = []
       for (var j=0; j<8; j++) {
-        col.push(
-          <td className='virtual-row' key={i + '_' + j} />
-        )
+
+        if (this.props.row === i && this.props.col === j) {
+          col.push(
+            <td key={i + '_' + j} onClick={this.handleClick}>
+              <div />
+            </td>
+          )
+        } else {
+          col.push(
+            <td className='virtual-row' key={i + '_' + j}>
+              <div className='virtual-row-square s' row={i} col={j} onClick={this.confirmMove}>{i + ', ' + j}</div>
+            </td>
+          )
+        }
+
       }
       output.push(<tr className='virtual-col' key={i}>{col}</tr>)
     }
     return output
   }
 
-  handleMouseOver () {
-    // this.setState({ showVirtual: true })
-  }
-
-  handleMouseOut () {
-    // this.setState({ showVirtual: false })
-  }
-
   componentDidMount () {
-    if (this.props.x === 0 && this.props.y === 0) {
-      console.log(validateRook(0, 5, 0, 2, this.props.game.board))
+    if (this.props.row === 0 && this.props.col === 0) {
+      console.log(validateRook(5, 2, 1, 2, this.props.game.board, 1))
+    }
+  }
+
+  handleClick () {
+    this.setState({ showVirtual: !this.state.showVirtual })
+  }
+
+  confirmMove (e) {
+    const row = Number(e.target.getAttribute('row'))
+    const col = Number(e.target.getAttribute('col'))
+    const valid = validateRook(this.props.col, this.props.row, row, col, this.props.game.board, this.props.team)
+    console.log('Target row/col: ')
+    console.log(row, col)
+    console.log(valid)
+    if (valid.res && valid.takePiece) {
+      console.log('Going to dispatch a take piece move')
+      this.props.takePiece({
+        from: {
+          row: this.props.row,
+          col: this.props.col
+        },
+        to: { row, col },
+        piece: "rook",
+        team: this.props.team
+      })
+    }
+    if (valid.res && !valid.takePiece) {
+      console.log('Going to dispatch a move (no take)')
+      this.props.move({
+        from: {
+          row: this.props.row,
+          col: this.props.col
+        },
+        to: { row, col },
+        piece: "rook",
+        team: this.props.team
+      })
     }
   }
 
   render () {
     const virtualStyle = {
-      top: `${this.props.y * -50}px`,
-      left: `${this.props.x * -50}px`
+      top: `${this.props.row * -50}px`,
+      left: `${this.props.col * -50}px`
     }
+
     return (
       <div
         className='piece rook'
@@ -63,10 +107,12 @@ class Rook extends React.Component {
             </table>
           </div> : ''}
 
-        <div className='piece'
-              onMouseOver={this.handleMouseOver}
-              onMouseOut={this.handleMouseOut}
-        >♖ <h6>({this.props.x + ', ' + this.props.y})</h6></div>
+        <div className='piece' onClick={this.handleClick}>
+          ♖
+          {/* <p className='s'>rook</p> */}
+          <h6>({this.props.row + ', ' + this.props.col}) t:{this.props.team}</h6>
+
+        </div>
       </div>
     )
   }
@@ -76,4 +122,9 @@ const mapStateToProps = state => ({
   game: state.game
 })
 
-export default connect(mapStateToProps, null)(Rook)
+const mapDispatchToProps = dispatch => ({
+  takePiece: payload => dispatch(takePiece(payload)),
+  move: payload => dispatch(move(payload))
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Rook)
