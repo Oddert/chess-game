@@ -1,0 +1,74 @@
+
+
+
+.piece {
+  height: 50px;
+  width: 50px;
+  cursor: pointer;
+}
+
+.virtual-container {
+  position: absolute;
+}
+
+.virtual {
+  position: relative;
+  top: 0;
+  left: 0;
+  width: calc(50px * 8);
+  height: calc(50px * 8);
+}
+
+.virtual-col {
+
+}
+
+.virtual-row {
+  width: 50px;
+  height: 50px;
+}
+
+.virtual-row .virtual-row-square {
+  height: 100%;
+  width: 100%;
+  background-color: rgba(45, 204, 112, 0.4);
+  box-shadow: inset -1px -1px 0px 0px black, inset 1px 1px 0px 0px black;
+  cursor: pointer;
+  transition: .1s linear;
+}
+
+.virtual-row .virtual-row-square:hover {
+  background-color: rgba(45, 204, 112, 0.85);
+}
+
+
+.virtual-row .virtual-row-square.empty {
+  background-color: rgba(255,255,255,0);
+  cursor: default;
+}
+
+
+.virtual-row .virtual-row-square.enemy {
+  background-color: rgba(232,76,61,.4);
+}
+.virtual-row .virtual-row-square.enemy:hover {
+  background-color: rgba(232,76,61,.7);
+}
+
+
+.virtual-row .virtual-row-square.friend {
+  background-color: rgba(230,127,34,.4);
+  cursor: default;
+}
+.virtual-row .virtual-row-square.friend:hover {
+  background-color: rgba(230,127,34,.7);
+}
+
+
+.virtual-row .virtual-row-square.obstruct {
+  background-color: rgba(50,50,250, 0);
+  cursor: default;
+}
+.virtual-row .virtual-row-square.obstruct:hover {
+  background-color: rgba(50,50,250, 0);
+}

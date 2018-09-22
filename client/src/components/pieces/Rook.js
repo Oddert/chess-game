@@ -4,8 +4,9 @@ import { connect } from 'react-redux'
 import { takePiece, move } from '../../actions'
 
 import validateRook from '../move_functions/validateRook'
+import generateRookClass from '../move_functions/generateRookClass'
 
-import '../styles/Virtual.css'
+import '../styles/Piece.css'
 
 class Rook extends React.Component {
   constructor(props) {
@@ -19,6 +20,7 @@ class Rook extends React.Component {
   }
 
   generateVirtualBoard () {
+    console.log('Generating Virtual')
     var output = []
     for (var i=0; i<8; i++) {
       var col = []
@@ -33,7 +35,14 @@ class Rook extends React.Component {
         } else {
           col.push(
             <td className='virtual-row' key={i + '_' + j}>
-              <div className='virtual-row-square s' row={i} col={j} onClick={this.confirmMove}>{i + ', ' + j}</div>
+              <div
+                className={generateRookClass(this.props.row, this.props.col, i, j, this.props.game.board, this.props.team)}
+                row={i}
+                col={j}
+                onClick={this.confirmMove}
+              >
+                {/* {i + ', ' + j} */}
+              </div>
             </td>
           )
         }
@@ -44,11 +53,12 @@ class Rook extends React.Component {
     return output
   }
 
-  componentDidMount () {
-    if (this.props.row === 0 && this.props.col === 0) {
-      console.log(validateRook(5, 2, 1, 2, this.props.game.board, 1))
-    }
-  }
+  // componentDidMount () {
+  //   if (this.props.row === 0 && this.props.col === 0) {
+  //     console.log('### I am self running 0,0: ')
+  //     console.log(validateRook(5, 2, 1, 2, this.props.game.board, 1))
+  //   }
+  // }
 
   handleClick () {
     this.setState({ showVirtual: !this.state.showVirtual })
@@ -57,12 +67,12 @@ class Rook extends React.Component {
   confirmMove (e) {
     const row = Number(e.target.getAttribute('row'))
     const col = Number(e.target.getAttribute('col'))
-    const valid = validateRook(this.props.col, this.props.row, row, col, this.props.game.board, this.props.team)
-    console.log('Target row/col: ')
-    console.log(row, col)
-    console.log(valid)
+    const valid = validateRook(this.props.row, this.props.col, row, col, this.props.game.board, this.props.team)
+    // console.log('Target row/col: ')
+    // console.log(row, col)
+    // console.log(valid)
     if (valid.res && valid.takePiece) {
-      console.log('Going to dispatch a take piece move')
+      // console.log('Going to dispatch a take piece move')
       this.props.takePiece({
         from: {
           row: this.props.row,
@@ -74,7 +84,7 @@ class Rook extends React.Component {
       })
     }
     if (valid.res && !valid.takePiece) {
-      console.log('Going to dispatch a move (no take)')
+      // console.log('Going to dispatch a move (no take)')
       this.props.move({
         from: {
           row: this.props.row,
