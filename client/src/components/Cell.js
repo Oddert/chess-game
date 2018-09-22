@@ -2,6 +2,8 @@ import React from 'react'
 
 import Rook from './pieces/Rook'
 
+import Bishop from './pieces/Bishop'
+
 import './styles/Cell.css'
 
 class Cell extends React.Component {
@@ -14,27 +16,39 @@ class Cell extends React.Component {
     switch (cell.type) {
       case 'rook':
         return (
-          <td className='col' style={style}><Rook row={this.props.row} col={this.props.col} team={cell.team} /></td>
+          <td className='col' style={style}>
+            <Rook row={this.props.row} col={this.props.col} team={cell.team} />
+          </td>
         )
       case 'knight':
         return (
-          <td className='col' style={style}>♘ <p className='s'>{cell.type}</p></td>
+          <td className='col' style={style}>
+            ♘ <p className='s'>{cell.type}</p>
+          </td>
         )
       case 'bishop':
         return (
-          <td className='col' style={style}>♗ <p className='s'>{cell.type}</p></td>
+          <td className='col' style={style}>
+            <Bishop row={this.props.row} col={this.props.col} team={cell.team} />
+          </td>
         )
       case 'queen':
         return (
-          <td className='col' style={style}>♕ <p className='s'>{cell.type}</p></td>
+          <td className='col' style={style}>
+            ♕ <p className='s'>{cell.type}</p>
+          </td>
         )
       case 'king':
         return (
-          <td className='col' style={style}>♔ <p className='s'>{cell.type}</p></td>
+          <td className='col' style={style}>
+            ♔ <p className='s'>{cell.type}</p>
+          </td>
         )
       case 'pawn':
         return (
-          <td className='col' style={style}>♙ <p className='s'>{cell.type}</p></td>
+          <td className='col' style={style}>
+            ♙ <p className='s'>{cell.type}</p>
+          </td>
         )
       case 'empty':
         return (
