@@ -1,0 +1,69 @@
+Arguments: 
+  C:\Program Files\nodejs\node.exe C:\Users\Robert Veitch\AppData\Roaming\npm\node_modules\yarn\bin\yarn.js add 0A
+
+PATH: 
+  C:\Users\Robert Veitch\bin;C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\local\bin;C:\Program Files\Git\usr\bin;C:\Program Files\Git\usr\bin;C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\bin;C:\Users\Robert Veitch\bin;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0;C:\Program Files\nodejs;C:\Program Files\Microsoft SQL Server\Client SDK\ODBC\110\Tools\Binn;C:\Program Files (x86)\Microsoft SQL Server\120\Tools\Binn;C:\Program Files\Microsoft SQL Server\120\Tools\Binn;C:\Program Files\Microsoft SQL Server\120\DTS\Binn;C:\Program Files (x86)\Windows Kits\8.1\Windows Performance Toolkit;C:\WINDOWS\System32\OpenSSH;C:\Users\Robert Veitch\AppData\Local\Programs\Python\Python37-32;C:\Users\Robert Veitch\AppData\Local\Microsoft\WindowsApps;C:\Users\Robert Veitch\AppData\Local\atom\bin;C:\Users\Robert Veitch\AppData\Roaming\npm;%USERPROFILE%\AppData\Local\Microsoft\WindowsApps;C:\Program Files\Git\usr\bin\vendor_perl;C:\Program Files\Git\usr\bin\core_perl
+
+Yarn version: 
+  1.7.0
+
+Node version: 
+  8.11.1
+
+Platform: 
+  win32 x64
+
+Trace: 
+  Error: https://registry.yarnpkg.com/0A: Not found
+      at Request.params.callback [as _callback] (C:\Users\Robert Veitch\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:65656:18)
+      at Request.self.callback (C:\Users\Robert Veitch\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:134675:22)
+      at emitTwo (events.js:126:13)
+      at Request.emit (events.js:214:7)
+      at Request.<anonymous> (C:\Users\Robert Veitch\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:135658:10)
+      at emitOne (events.js:116:13)
+      at Request.emit (events.js:211:7)
+      at IncomingMessage.<anonymous> (C:\Users\Robert Veitch\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:135578:12)
+      at Object.onceWrapper (events.js:313:30)
+      at emitNone (events.js:111:20)
+
+npm manifest: 
+  {
+    "name": "chess-game",
+    "version": "1.0.0",
+    "description": "A two player web socket chess game.",
+    "main": "app.js",
+    "scripts": {
+      "start": "node app.js",
+      "test": "echo \"Error: no test specified\" && exit 1",
+      "server": "nodemon app.js",
+      "client": "cd client && npm start",
+      "dev": "concurrently \"npm run server\" \"npm run client\" "
+    },
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/Oddert/chess-game.git"
+    },
+    "author": "Robyn Veitch",
+    "license": "ISC",
+    "bugs": {
+      "url": "https://github.com/Oddert/chess-game/issues"
+    },
+    "homepage": "https://github.com/Oddert/chess-game#readme",
+    "dependencies": {
+      "body-parser": "^1.18.3",
+      "concurrently": "^4.0.1",
+      "cookie-parser": "^1.4.3",
+      "dotenv": "^6.0.0",
+      "ejs": "^2.6.1",
+      "express": "^4.16.3",
+      "express-session": "^1.15.6",
+      "helmet": "^3.13.0",
+      "mongoose": "^5.2.14"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile

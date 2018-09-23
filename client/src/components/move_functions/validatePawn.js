@@ -31,8 +31,9 @@ const validatePawn  = (startRow, startCol, targetRow, targetCol, board, team, sh
   const rowIncrement = targetRow > startRow
   // const colIncrement = targetCol > startCol
 
-  if ((targetRow === startRow + 2 || targetRow === startRow - 2) && targetCol === startCol) {
-    if (board[startRow + rowIncrement ? 1 : -1][startCol].type !== 'empty') {
+  if ((targetRow === startRow + 2 || targetRow === startRow - 2) && !colChanged) {
+    const selectRow = rowIncrement ? 1 : -1
+    if (board[startRow + selectRow][startCol].type !== 'empty') {
       if (showLogs) console.log(`# Piece in the way`)
       return { res: false, takePiece: false, message: `# Piece in the way`, code: 5 }
     }

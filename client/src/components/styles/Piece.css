@@ -5,6 +5,11 @@
   height: 50px;
   width: 50px;
   cursor: pointer;
+  transition: .1s linear;
+}
+
+.piece.active {
+  color: #1bbc9b;
 }
 
 .virtual-container {

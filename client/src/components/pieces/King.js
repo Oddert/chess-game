@@ -103,7 +103,7 @@ class King extends React.Component {
             </table>
           </div> : ''}
 
-        <div className='piece' onClick={this.handleClick}>
+        <div className={this.state.showVirtual ? 'piece active' : 'piece'} onClick={this.handleClick}>
           ♔
         </div>
       </div>
