@@ -13,7 +13,7 @@ const generateBoard = () => {
     {type: 'rook', team: 0}
   ]
   const pawn = []
-  for (var j=0; j<8; j++) { pawn.push({type: 'pawn', team:1}) }
+  for (var j=0; j<8; j++) { pawn.push({type: 'pawn', team:0}) }
 
   output.push(main)
   output.push(pawn)
@@ -26,7 +26,7 @@ const generateBoard = () => {
     output.push(row)
   }
 
-  output.push(pawn.map(e => ({type: e.type, team:0})))
+  output.push(pawn.map(e => ({type: e.type, team:1})))
   output.push(main.map(e => ({type: e.type, team:1})))
 
   output[5][3].secret = 'hello'

@@ -120,7 +120,7 @@ class Rook extends React.Component {
         <div className='piece' onClick={this.handleClick}>
           ♖
           {/* <p className='s'>rook</p> */}
-          <h6>({this.props.row + ', ' + this.props.col}) t:{this.props.team}</h6>
+          {/* <h6>({this.props.row + ', ' + this.props.col}) t:{this.props.team}</h6> */}
 
         </div>
       </div>

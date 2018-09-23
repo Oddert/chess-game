@@ -1,8 +1,11 @@
 import React from 'react'
 
 import Rook from './pieces/Rook'
-
+import Knight from './pieces/Knight'
 import Bishop from './pieces/Bishop'
+import Queen from './pieces/Queen'
+import King from './pieces/King'
+import Pawn from './pieces/Pawn'
 
 import './styles/Cell.css'
 
@@ -23,7 +26,7 @@ class Cell extends React.Component {
       case 'knight':
         return (
           <td className='col' style={style}>
-            ♘ <p className='s'>{cell.type}</p>
+            <Knight row={this.props.row} col={this.props.col} team={cell.team} />
           </td>
         )
       case 'bishop':
@@ -35,24 +38,24 @@ class Cell extends React.Component {
       case 'queen':
         return (
           <td className='col' style={style}>
-            ♕ <p className='s'>{cell.type}</p>
+            <Queen row={this.props.row} col={this.props.col} team={cell.team} />
           </td>
         )
       case 'king':
         return (
           <td className='col' style={style}>
-            ♔ <p className='s'>{cell.type}</p>
+            <King row={this.props.row} col={this.props.col} team={cell.team} />
           </td>
         )
       case 'pawn':
         return (
           <td className='col' style={style}>
-            ♙ <p className='s'>{cell.type}</p>
+            <Pawn row={this.props.row} col={this.props.col} team={cell.team} />
           </td>
         )
       case 'empty':
         return (
-          <td className='col' style={Object.assign({}, style, {boxShadow: 'inset -1px -1px 0px 0px black, inset 1px 1px 0px 0px black'})}> <p className='s'>{cell.type}</p></td>
+          <td className='col' style={Object.assign({}, style, {boxShadow: 'inset -1px -1px 0px 0px #95a5a5, inset 1px 1px 0px 0px #95a5a5'})} />
         )
       default:
         return <div />

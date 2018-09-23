@@ -1,7 +1,7 @@
-import validateBishop from './validateBishop'
+import validateKnight from './validateKnight'
 
-const generateBishopClass = (startX, startY, targetX, targetY, board, team) => {
-  const res = validateBishop(startX, startY, targetX, targetY, board, team, false);
+const generateKnightClass = (startX, startY, targetX, targetY, board, team) => {
+  const res = validateKnight(startX, startY, targetX, targetY, board, team, false);
   switch(res.code) {
     case 0:
       return 'virtual-row-square s'
@@ -20,4 +20,4 @@ const generateBishopClass = (startX, startY, targetX, targetY, board, team) => {
   }
 }
 
-export default generateBishopClass
+export default generateKnightClass

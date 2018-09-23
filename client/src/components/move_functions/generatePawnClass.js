@@ -1,7 +1,7 @@
-import validateBishop from './validateBishop'
+import validatePawn from './validatePawn'
 
-const generateBishopClass = (startX, startY, targetX, targetY, board, team) => {
-  const res = validateBishop(startX, startY, targetX, targetY, board, team, false);
+const generatePawnClass = (startX, startY, targetX, targetY, board, team) => {
+  const res = validatePawn(startX, startY, targetX, targetY, board, team, false);
   switch(res.code) {
     case 0:
       return 'virtual-row-square s'
@@ -20,4 +20,4 @@ const generateBishopClass = (startX, startY, targetX, targetY, board, team) => {
   }
 }
 
-export default generateBishopClass
+export default generatePawnClass

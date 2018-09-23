@@ -9,6 +9,8 @@
 
 .virtual-container {
   position: absolute;
+  width: 25px;
+  height: 25px;
 }
 
 .virtual {
@@ -32,7 +34,7 @@
   height: 100%;
   width: 100%;
   background-color: rgba(45, 204, 112, 0.4);
-  box-shadow: inset -1px -1px 0px 0px black, inset 1px 1px 0px 0px black;
+  /* box-shadow: inset -1px -1px 0px 0px black, inset 1px 1px 0px 0px black; */
   cursor: pointer;
   transition: .1s linear;
 }

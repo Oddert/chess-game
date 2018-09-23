@@ -3,8 +3,8 @@ import { connect } from 'react-redux'
 
 import { takePiece, move } from '../../actions'
 
-import validateBishop from '../move_functions/validateBishop'
-import generateBishopClass from '../move_functions/generateBishopClass'
+import validatePawn from '../move_functions/validatePawn'
+import generatePawnClass from '../move_functions/generatePawnClass'
 
 import '../styles/Piece.css'
 
@@ -36,7 +36,7 @@ class Bishop extends React.Component {
           col.push(
             <td className='virtual-row' key={i + '_' + j}>
               <div
-                className={generateBishopClass(this.props.row, this.props.col, i, j, this.props.game.board, this.props.team)}
+                className={generatePawnClass(this.props.row, this.props.col, i, j, this.props.game.board, this.props.team)}
                 row={i}
                 col={j}
                 onClick={this.confirmMove}
@@ -58,7 +58,7 @@ class Bishop extends React.Component {
   confirmMove (e) {
     const row = Number(e.target.getAttribute('row'))
     const col = Number(e.target.getAttribute('col'))
-    const valid = validateBishop(this.props.row, this.props.col, row, col, this.props.game.board, this.props.team)
+    const valid = validatePawn(this.props.row, this.props.col, row, col, this.props.game.board, this.props.team)
     if (valid.res && valid.takePiece) {
       this.props.takePiece({
         from: {
@@ -66,7 +66,7 @@ class Bishop extends React.Component {
           col: this.props.col
         },
         to: { row, col },
-        piece: "bishop",
+        piece: "pawn",
         team: this.props.team
       })
     }
@@ -77,7 +77,7 @@ class Bishop extends React.Component {
           col: this.props.col
         },
         to: { row, col },
-        piece: "bishop",
+        piece: "pawn",
         team: this.props.team
       })
     }
@@ -104,7 +104,7 @@ class Bishop extends React.Component {
           </div> : ''}
 
         <div className='piece' onClick={this.handleClick}>
-          ♗
+          ♙
         </div>
       </div>
     )
