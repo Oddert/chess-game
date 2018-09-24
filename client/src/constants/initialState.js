@@ -52,9 +52,15 @@ const initialState = {
     board: generateBoard(),
     playing: false,
     turn: 0,
-    points: {
-      black: 0,
-      white: 0
+    players: {
+      black: {
+        score: 0,
+        takenPieces: []
+      },
+      white: {
+        score: 0,
+        takenPieces: []
+      }
     }
   }
 }

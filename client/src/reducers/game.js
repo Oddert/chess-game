@@ -1,24 +1,52 @@
 import types from '../actions/types'
 import initialState from '../constants/initialState'
 
+const convertPoints = str => {
+  switch(str) {
+    case 'pawn':
+      return 1;
+    case 'knight':
+      return 3;
+    case 'bishop':
+      return 3;
+    case 'rook':
+      return 5;
+    case 'queen':
+      return 9;
+    default:
+      console.log('Check please, switch game reducer ln: 4')
+      console.log(str)
+      return 1;
+  }
+}
+
 const game = (state = initialState.game, action) => {
   switch (action.type) {
     case types.TAKE_PIECE:
       console.log(action)
       console.log(action.payload)
-      const takePieceState = [...state.board]
+      const takePieceState = Object.assign({}, state)
+      const tpPlayer = action.payload.team === 0 ? 'black' : 'white'
+      const tpFromRow = action.payload.from.row
+      const tpFromCol = action.payload.from.col
+      const tpToRow = action.payload.to.row
+      const tpToCol = action.payload.to.col
+      const tpCellTarget = takePieceState.board[tpToRow][tpToCol]
 
-      takePieceState[action.payload.from.row][action.payload.from.col] = {
+      takePieceState.players[tpPlayer].score += convertPoints(tpCellTarget.type)
+      takePieceState.players[tpPlayer].takenPieces.push(tpCellTarget.type)
+
+      takePieceState.board[tpFromRow][tpFromCol] = {
         type: "empty",
         team: null
       }
 
-      takePieceState[action.payload.to.row][action.payload.to.col] = {
+      takePieceState.board[tpToRow][tpToCol] = {
         type: action.payload.piece,
         team: action.payload.team
       }
 
-      return Object.assign({}, state, { board: takePieceState })
+      return takePieceState
     case types.MOVE:
       console.log(action)
       console.log(action.payload)
