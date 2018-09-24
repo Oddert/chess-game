@@ -33,13 +33,14 @@ class Queen extends React.Component {
             </td>
           )
         } else {
+          const classIn = generateQueenClass(this.props.row, this.props.col, i, j, this.props.game.board, this.props.team)
           col.push(
             <td className='virtual-row' key={i + '_' + j}>
               <div
-                className={generateQueenClass(this.props.row, this.props.col, i, j, this.props.game.board, this.props.team)}
+                className={classIn}
                 row={i}
                 col={j}
-                onClick={this.confirmMove}
+                onClick={classIn === 'virtual-row-square s' ? this.confirmMove : this.handleClick}
               />
             </td>
           )
