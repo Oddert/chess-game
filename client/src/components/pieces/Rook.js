@@ -40,7 +40,10 @@ class Rook extends React.Component {
                 className={classIn}
                 row={i}
                 col={j}
-                onClick={classIn === 'virtual-row-square s' ? this.confirmMove : this.handleClick}
+                onClick={
+                  classIn === 'virtual-row-square s' || classIn === 'virtual-row-square s enemy'
+                    ? this.confirmMove
+                    : this.handleClick }
               >
                 {/* {i + ', ' + j} */}
               </div>

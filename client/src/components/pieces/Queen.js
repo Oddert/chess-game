@@ -6,6 +6,9 @@ import { takePiece, move } from '../../actions'
 import validateQueen from '../move_functions/validateQueen'
 import generateQueenClass from '../move_functions/generateQueenClass'
 
+import validateRook from '../move_functions/validateRook'
+import validateBishop from '../move_functions/validateBishop'
+
 import '../styles/Piece.css'
 
 class Queen extends React.Component {
@@ -22,6 +25,8 @@ class Queen extends React.Component {
   generateVirtualBoard () {
     console.log('Generating Virtual')
     var output = []
+    const testArrOne = []
+    const testArrTwo = []
     for (var i=0; i<8; i++) {
       var col = []
       for (var j=0; j<8; j++) {
@@ -34,13 +39,18 @@ class Queen extends React.Component {
           )
         } else {
           const classIn = generateQueenClass(this.props.row, this.props.col, i, j, this.props.game.board, this.props.team)
+          testArrOne.push(validateRook(this.props.row, this.props.col, i, j, this.props.game.board, this.props.team))
+          testArrTwo.push(validateBishop(this.props.row, this.props.col, i, j, this.props.game.board, this.props.team))
           col.push(
             <td className='virtual-row' key={i + '_' + j}>
               <div
                 className={classIn}
                 row={i}
                 col={j}
-                onClick={classIn === 'virtual-row-square s' ? this.confirmMove : this.handleClick}
+                onClick={
+                  classIn === 'virtual-row-square s' || classIn === 'virtual-row-square s enemy'
+                    ? this.confirmMove
+                    : this.handleClick }
               />
             </td>
           )
@@ -49,6 +59,8 @@ class Queen extends React.Component {
       }
       output.push(<tr className='virtual-col' key={i}>{col}</tr>)
     }
+    console.log(testArrOne)
+    console.log(testArrTwo)
     return output
   }
 

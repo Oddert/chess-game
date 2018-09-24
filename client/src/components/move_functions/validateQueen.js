@@ -8,11 +8,22 @@ const validateQueen  = (startRow, startCol, targetRow, targetCol, board, team, s
   const rookRes   = validateRook  (startRow, startCol, targetRow, targetCol, board, team, showLogs)
   const bishopRes = validateBishop(startRow, startCol, targetRow, targetCol, board, team, showLogs)
 
+  // console.log('###########')
+  // console.log(rookRes)
+  // console.log(bishopRes)
+
+  // if (rookRes.code === 0) {
+  //   return rookRes
+  // } else if (bishopRes.code === 0) {
+  //   return bishopRes
+  // }
+
   if (rookRes.code === 2) {
     return bishopRes
-  } else {
+  } else /*if (bishopRes.code === 2)*/ {
     return rookRes
   }
+
 }
 
 export default validateQueen

@@ -53,26 +53,26 @@ const validateBishop  = (startRow, startCol, targetRow, targetCol, board, team, 
 
   for (var i=0; i<rowDifference; i++) {
     const item = board[rowRange[i]][colRange[i]]
-    console.log(item.team, team)
+    // console.log(item.team, team)
 
     if (i === rowDifference-1) {
-      console.log('Last item:')
+      // console.log('Last item:')
       if (item.team === team) {
         if (showLogs) console.log(`# Cannot take own piece: ${item.type}`)
         return { res: false, takePiece: false, message: `# Cannot take own piece: ${item.type}`, code: 3 }
       }
       if (item.team === (team === 0 ? 1 : 0)) {
-        console.log(`# Item to be taken: ${item.type}`)
+        // console.log(`# Item to be taken: ${item.type}`)
         return { res: true, takePiece: true, message: `# Item to be taken: ${item.type}`, code: 4 }
       }
     } else {
-      console.log('Not last item: ')
+      // console.log('Not last item: ')
       if (item.type !== 'empty') {
         if (showLogs) console.log(`# Item in the way: ${item.type}`)
         return { res: false, takePiece: false, message: `# Item in the way: ${item.type}`, code: 5 }
       }
     }
-    console.log(item)
+    // console.log(item)
   }
 
 

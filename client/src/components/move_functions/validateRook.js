@@ -77,9 +77,9 @@ const validateRook  = (startRow, startCol, targetRow, targetCol, board, team, ig
             return { res: false, takePiece: false, message: `Cannot take own piece: ${item.type}`, code: 3 }
           } else {
             if (ignoreLogs) console.log(`# Item to be taken: ${item.type}`)
-            console.log(team)
-            console.log(targetRow, targetCol)
-            console.log(board[targetRow][targetCol])
+            // console.log(team)
+            // console.log(targetRow, targetCol)
+            // console.log(board[targetRow][targetCol])
             return { res: true, takePiece: true, message: `Item to be taken: ${item.type}`, code: 4 }
           }
         }
