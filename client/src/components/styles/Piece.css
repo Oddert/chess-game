@@ -4,8 +4,17 @@
 .piece {
   height: 50px;
   width: 50px;
+  transition: .05s linear;
+}
+
+.piece span {
   cursor: pointer;
   transition: .1s linear;
+  border-radius: 50%;
+}
+
+.piece span:hover {
+  background-color: rgba(0,0,0,.2);
 }
 
 .piece.active {

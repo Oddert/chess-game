@@ -104,7 +104,7 @@ class Bishop extends React.Component {
           </div> : ''}
 
         <div className={this.state.showVirtual ? 'piece active' : 'piece'} onClick={this.handleClick}>
-          ♗
+          <span onClick={this.handleClick}>♗</span>
         </div>
       </div>
     )
