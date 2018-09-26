@@ -1,0 +1,17 @@
+
+.playerUI {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: left;
+}
+
+.playerUI .takenPieces {
+  /* border: 1px solid red; */
+  font-size: 1.2em;
+  padding: 10px;
+}
+
+.playerUI .takenPieces .scoreIndicator {
+  text-align: center;
+}
