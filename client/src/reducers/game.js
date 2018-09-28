@@ -46,6 +46,10 @@ const game = (state = initialState.game, action) => {
         team: action.payload.team
       }
 
+      console.log(action.payload.team)
+      takePieceState.turn = action.payload.team === 0 ? 1 : 0
+
+      console.log(takePieceState)
       return takePieceState
     case types.MOVE:
       console.log(action)
@@ -62,7 +66,10 @@ const game = (state = initialState.game, action) => {
         team: action.payload.team
       }
 
-      return Object.assign({}, state, { board: moveState })
+      console.log(action.payload.team)
+
+      console.log(Object.assign({}, state, { board: moveState, turn: action.payload.team === 0 ? 1 : 0 }))
+      return Object.assign({}, state, { board: moveState, turn: action.payload.team === 0 ? 1 : 0 })
     default:
       return state
   }
