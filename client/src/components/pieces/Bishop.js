@@ -56,6 +56,7 @@ class Bishop extends React.Component {
   }
 
   handleClick () {
+    console.log(`Bishop in (${this.props.row}, ${this.props.col}) toggling wirtual to: ${!this.state.showVirtual}`)
     this.setState({ showVirtual: !this.state.showVirtual })
   }
 
@@ -93,8 +94,9 @@ class Bishop extends React.Component {
       left: `${this.props.col * -50}px`
     }
 
-    const showVirtual = this.state.showVirtual && this.props.game.turn === this.props.team
-    console.log(`Bishop in (${this.props.row}, ${this.props.col}) showing virtual?: ${this.props.game.turn !== this.props.team}`)
+    const validTeam = this.props.game.turn === this.props.team
+    const showVirtual = this.state.showVirtual && validTeam
+    console.log(`Bishop in (${this.props.row}, ${this.props.col}) showing virtual?: ${showVirtual}`)
 
     return (
       <div
@@ -111,7 +113,7 @@ class Bishop extends React.Component {
           </div> : ''}
 
         <div className={showVirtual ? 'piece active' : 'piece'} onClick={this.handleClick}>
-          <span onClick={this.handleClick}>♗</span>
+          <span onClick={validTeam ? this.handleClick : ()=>{console.log('BLOCK')}}>♗</span>
         </div>
       </div>
     )

@@ -59,11 +59,11 @@ class Bishop extends React.Component {
     this.setState({ showVirtual: !this.state.showVirtual })
   }
 
-  componentDidMount () {
-    if (this.props.row === 6 && this.props.col === 3) {
-      console.log(validatePawn(this.props.row, this.props.col, 4, 3, this.props.game.board, this.props.team, true))
-    }
-  }
+  // componentDidMount () {
+  //   if (this.props.row === 6 && this.props.col === 3) {
+  //     console.log(validatePawn(this.props.row, this.props.col, 4, 3, this.props.game.board, this.props.team, true))
+  //   }
+  // }
 
   confirmMove (e) {
     const row = Number(e.target.getAttribute('row'))

@@ -23,8 +23,7 @@ const convertPoints = str => {
 const game = (state = initialState.game, action) => {
   switch (action.type) {
     case types.TAKE_PIECE:
-      console.log(action)
-      console.log(action.payload)
+
       const takePieceState = Object.assign({}, state)
       const tpPlayer = action.payload.team === 0 ? 'black' : 'white'
       const tpFromRow = action.payload.from.row
@@ -46,14 +45,10 @@ const game = (state = initialState.game, action) => {
         team: action.payload.team
       }
 
-      console.log(action.payload.team)
       takePieceState.turn = action.payload.team === 0 ? 1 : 0
 
-      console.log(takePieceState)
       return takePieceState
     case types.MOVE:
-      console.log(action)
-      console.log(action.payload)
       const moveState = [...state.board]
 
       moveState[action.payload.from.row][action.payload.from.col] = {
@@ -66,9 +61,6 @@ const game = (state = initialState.game, action) => {
         team: action.payload.team
       }
 
-      console.log(action.payload.team)
-
-      console.log(Object.assign({}, state, { board: moveState, turn: action.payload.team === 0 ? 1 : 0 }))
       return Object.assign({}, state, { board: moveState, turn: action.payload.team === 0 ? 1 : 0 })
     default:
       return state
