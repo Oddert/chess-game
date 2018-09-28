@@ -93,7 +93,7 @@ class Bishop extends React.Component {
       left: `${this.props.col * -50}px`
     }
 
-    const showVirtual = this.state.showVirtual && this.props.game.turn !== this.props.team
+    const showVirtual = this.state.showVirtual && this.props.game.turn === this.props.team
     console.log(`Bishop in (${this.props.row}, ${this.props.col}) showing virtual?: ${this.props.game.turn !== this.props.team}`)
 
     return (

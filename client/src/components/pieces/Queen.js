@@ -102,12 +102,14 @@ class Queen extends React.Component {
       left: `${this.props.col * -50}px`
     }
 
+    const showVirtual = this.state.showVirtual && this.props.game.turn === this.props.team
+
     return (
       <div
         className='piece queen'
       >
 
-        {this.state.showVirtual ?
+        {showVirtual ?
           <div className='virtual-container' >
             <table className='virtual' style={virtualStyle}>
               <tbody>
@@ -116,7 +118,7 @@ class Queen extends React.Component {
             </table>
           </div> : ''}
 
-        <div className={this.state.showVirtual ? 'piece active' : 'piece'}>
+        <div className={showVirtual ? 'piece active' : 'piece'}>
           <span onClick={this.handleClick}>♕</span>
         </div>
       </div>
