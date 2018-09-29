@@ -93,7 +93,8 @@ class King extends React.Component {
       left: `${this.props.col * -50}px`
     }
 
-    const showVirtual = this.state.showVirtual && this.props.game.turn === this.props.team
+    const validTeam = this.props.game.turn === this.props.team
+    const showVirtual = this.state.showVirtual && validTeam
 
     return (
       <div
@@ -109,9 +110,12 @@ class King extends React.Component {
             </table>
           </div> : ''}
 
-        <div className={showVirtual ? 'piece active' : 'piece'}>
-          <span onClick={this.handleClick}>♔</span>
-        </div>
+          <div className={showVirtual ? 'piece active' : 'piece'}>
+            {validTeam
+              ? <span onClick={this.handleClick}>♔</span>
+              : <span>♔</span>
+            }
+          </div>
       </div>
     )
   }

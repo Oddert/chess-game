@@ -96,7 +96,7 @@ class Bishop extends React.Component {
 
     const validTeam = this.props.game.turn === this.props.team
     const showVirtual = this.state.showVirtual && validTeam
-    console.log(`Bishop in (${this.props.row}, ${this.props.col}) showing virtual?: ${showVirtual}`)
+    // console.log(`Bishop in (${this.props.row}, ${this.props.col}) showing virtual?: ${showVirtual}`)
 
     return (
       <div
@@ -112,8 +112,11 @@ class Bishop extends React.Component {
             </table>
           </div> : ''}
 
-        <div className={showVirtual ? 'piece active' : 'piece'} onClick={this.handleClick}>
-          <span onClick={validTeam ? this.handleClick : ()=>{console.log('BLOCK')}}>♗</span>
+        <div className={showVirtual ? 'piece active' : 'piece'}>
+          {validTeam
+            ? <span onClick={this.handleClick}>♗</span>
+            : <span>♗</span>
+          }
         </div>
       </div>
     )

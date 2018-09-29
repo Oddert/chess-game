@@ -51,7 +51,7 @@ const initialState = {
   game: {
     board: generateBoard(),
     playing: false,
-    turn: 0,
+    turn: 1,
     players: {
       black: {
         score: 0,

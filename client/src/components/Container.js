@@ -8,7 +8,7 @@ class Container extends React.Component {
   render () {
     return (
       <div className='container'>
-        <div>It is {this.props.game.turn === 0 ? 'black' : 'white'}'s Turn'</div>
+        <div>It is {this.props.game.turn === 0 ? 'black' : 'white'}'s Turn</div>
         <Board />
         <PlayerUI />
       </div>

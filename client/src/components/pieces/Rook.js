@@ -107,6 +107,7 @@ class Rook extends React.Component {
       left: `${this.props.col * -50}px`
     }
 
+    const validTeam = this.props.game.turn === this.props.team
     const showVirtual = this.state.showVirtual && this.props.game.turn === this.props.team
 
     return (
@@ -124,7 +125,10 @@ class Rook extends React.Component {
           </div> : ''}
 
         <div className={showVirtual ? 'piece active' : 'piece'}>
-          <span onClick={this.handleClick}>♖</span>
+          {validTeam
+            ? <span onClick={this.handleClick}>♖</span>
+            : <span>♖</span>
+          }
           {/* <p className='s'>rook</p> */}
           {/* <h6>({this.props.row + ', ' + this.props.col}) t:{this.props.team}</h6> */}
 
