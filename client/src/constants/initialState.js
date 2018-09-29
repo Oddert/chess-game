@@ -29,9 +29,6 @@ const generateBoard = () => {
   output.push(pawn.map(e => ({type: e.type, team:1})))
   output.push(main.map(e => ({type: e.type, team:1})))
 
-  output[5][3].secret = 'hello'
-  output[3][5].secret = 'world'
-
   return output
 }
 
