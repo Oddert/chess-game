@@ -8,6 +8,7 @@ class Container extends React.Component {
   render () {
     return (
       <div className='container'>
+        {this.props.app.localGame ? <div>You are playing locally</div> : <div>Online play</div>}
         <div>It is {this.props.game.turn === 0 ? 'black' : 'white'}'s Turn</div>
         <Board />
         <PlayerUI />
@@ -17,7 +18,8 @@ class Container extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  game: state.game
+  game: state.game,
+  app: state.app
 })
 
 export default connect(mapStateToProps, null)(Container)

@@ -7,3 +7,4 @@
 - Figgure out how to have secure 2ppl socket connection
 - Decide how to arrange the boards
 - Socket io can do db work ??
+- Complete socket example suits
