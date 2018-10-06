@@ -1,14 +1,7 @@
 import { combineReducers } from 'redux'
 
 import game from './game'
-
-const app = (state = {
-  localGame: true,
-  auth: {
-    isAuth: false,
-    user: {}
-  }
-}, action) => state
+import app from './app'
 
 const rootReducer = combineReducers ({
   app,

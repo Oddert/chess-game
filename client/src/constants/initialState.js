@@ -40,6 +40,7 @@ const generateBoard = () => {
 const initialState = {
   app: {
     localGame: true,
+    playing: false,
     auth: {
       isAuth: false,
       user: {}
@@ -47,7 +48,6 @@ const initialState = {
   },
   game: {
     board: generateBoard(),
-    playing: false,
     turn: 1,
     players: {
       black: {
