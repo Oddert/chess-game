@@ -9,9 +9,11 @@ class Container extends React.Component {
     return (
       <div className='container'>
         {this.props.app.localGame ? <div>You are playing locally</div> : <div>Online play</div>}
-        <div>It is {this.props.game.turn === 0 ? 'black' : 'white'}'s Turn</div>
-        <Board />
-        <PlayerUI />
+        <div className='board-container'>
+          <div>It is {this.props.game.turn === 0 ? 'black' : 'white'}'s Turn</div>
+          <Board />
+          <PlayerUI />
+        </div>
       </div>
     )
   }
