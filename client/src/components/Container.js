@@ -2,6 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import BoardWrapper from './BoardWrapper'
+import OnlineContainer from './OnlineContainer'
 import PreGame from './PreGame'
 
 class Container extends React.Component {
@@ -9,7 +10,12 @@ class Container extends React.Component {
     return (
       <div className='container'>
         {this.props.app.localGame ? <div>You are playing locally</div> : <div>Online play</div>}
-        {this.props.app.playing ? <BoardWrapper /> : <PreGame />}
+        {this.props.app.playing
+          ? this.props.app.localGame
+            ? <BoardWrapper />
+            : <OnlineContainer />
+          : <PreGame />
+        }
       </div>
     )
   }

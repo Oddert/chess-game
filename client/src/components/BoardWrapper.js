@@ -8,7 +8,7 @@ class BoardWrapper extends React.Component {
   render () {
     return (
       <div className='board-container'>
-        <div>It is {this.props.game.turn === 0 ? 'black' : 'white'}'s Turn</div>
+        <div style={{flex: '1'}}>It is {this.props.game.turn === 0 ? 'black' : 'white'}'s Turn</div>
         <Board />
         <PlayerUI />
       </div>

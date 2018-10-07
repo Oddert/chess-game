@@ -1,0 +1,17 @@
+.GameIcon-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.GameIcon {
+  padding: 10px;
+  margin: 15px;
+  border-radius: 20px;
+  box-shadow: 10px 10px 30px rgba(0,0,0,.2);
+}
+
+.GameIcon p {
+  font-size: .8em;
+  color: #2d3e50;
+}

@@ -13,3 +13,7 @@ export const move = payload => ({
 export const playLocal = () => ({
   type: types.PLAY_LOCAL
 })
+
+export const playOnline = () => ({
+  type: types.PLAY_ONLINE
+})
