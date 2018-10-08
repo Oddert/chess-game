@@ -20,7 +20,6 @@ class King extends React.Component {
   }
 
   generateVirtualBoard () {
-    console.log('Generating Virtual')
     var output = []
     for (var i=0; i<8; i++) {
       var col = []

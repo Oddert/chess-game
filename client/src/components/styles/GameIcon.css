@@ -1,0 +1,49 @@
+.GameIcon-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.GameIcon {
+  padding: 10px;
+  margin: 15px;
+  border-radius: 20px;
+  box-shadow: 10px 10px 30px rgba(0,0,0,.2);
+  transition: .1s ease;
+}
+
+.GameIcon:hover {
+  background-color: #fafafa;
+  box-shadow: 8px 8px 25px rgba(0,0,0,.2);
+}
+
+.GameIcon p {
+  font-size: .8em;
+  color: #2d3e50;
+}
+
+.board.icon td {
+  width: 15px;
+  height: 15px;
+  /* border: 1px solid #95A5A5; */
+  background-color: #ecf0f1;
+  font-size: .6em;
+}
+
+.board.icon td.empty {
+  box-shadow: inset -.5px -.5px 0px 0px #95a5a5, inset .5px .5px 0px 0px #95a5a5
+}
+
+.board.icon td.white {
+  background-color: #bec3c7;
+}
+
+.board.icon td.black {
+  background-color: #2d3e50;
+  color: #ecf0f1;
+}
+
+.GameIcon {
+  cursor: pointer;
+}

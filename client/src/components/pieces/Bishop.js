@@ -20,7 +20,6 @@ class Bishop extends React.Component {
   }
 
   generateVirtualBoard () {
-    console.log('Generating Virtual')
     var output = []
     for (var i=0; i<8; i++) {
       var col = []
@@ -56,7 +55,6 @@ class Bishop extends React.Component {
   }
 
   handleClick () {
-    console.log(`Bishop in (${this.props.row}, ${this.props.col}) toggling wirtual to: ${!this.state.showVirtual}`)
     this.setState({ showVirtual: !this.state.showVirtual })
   }
 
@@ -95,8 +93,9 @@ class Bishop extends React.Component {
     }
 
     const validTeam = this.props.game.turn === this.props.team
+    //the above line checks that the turn (who's go it is) equals this items team
+    // add localUserTeam to state => if loaclgame === false && localUserTeam === this.props.game.turn
     const showVirtual = this.state.showVirtual && validTeam
-    // console.log(`Bishop in (${this.props.row}, ${this.props.col}) showing virtual?: ${showVirtual}`)
 
     return (
       <div

@@ -62,6 +62,15 @@ const game = (state = initialState.game, action) => {
       }
 
       return Object.assign({}, state, { board: moveState, turn: action.payload.team === 0 ? 1 : 0 })
+    case types.SELECT_GAME:
+      return Object.assign({}, state, {
+        board: action.payload.board,
+        turn: action.payload.lastMove,
+        players: {
+          black: action.payload.black,
+          white: action.payload.white
+        }
+      })
     default:
       return state
   }

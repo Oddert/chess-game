@@ -17,3 +17,8 @@ export const playLocal = () => ({
 export const playOnline = () => ({
   type: types.PLAY_ONLINE
 })
+
+export const selectGame = payload => ({
+  type: types.SELECT_GAME,
+  payload
+})

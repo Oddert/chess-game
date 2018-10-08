@@ -1,6 +1,9 @@
 import React from 'react'
+import { connect } from 'react-redux'
 
-import './styles/Board.css'
+import { selectGame } from '../actions'
+
+import './styles/GameIcon.css'
 
 class GameIcon extends React.Component {
   convertTeamClass (e) {
@@ -47,9 +50,15 @@ class GameIcon extends React.Component {
     return output
   }
 
+  selectGame () {
+    console.log(this.props.game)
+    this.props.selectGame(this.props.game)
+    this.props.callback()
+  }
+
   render () {
     return (
-      <div className='GameIcon'>
+      <div className='GameIcon' onClick={this.selectGame.bind(this)}>
         <div className='board icon'>
           <table>
             <tbody>
@@ -63,4 +72,8 @@ class GameIcon extends React.Component {
   }
 }
 
-export default GameIcon
+const mapDispatchToProps = dispatch => ({
+  selectGame: payload => dispatch(selectGame(payload))
+})
+
+export default connect(null, mapDispatchToProps)(GameIcon)

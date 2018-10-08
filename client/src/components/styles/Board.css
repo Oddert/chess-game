@@ -36,22 +36,18 @@ td {
   box-sizing: border-box;
 }
 
-.board.icon td {
-  width: 15px;
-  height: 15px;
-  /* border: 1px solid #95A5A5; */
-  background-color: #ecf0f1;
-  font-size: .6em;
-}
-
-.board.icon td.empty {
-  box-shadow: inset -.5px -.5px 0px 0px #95a5a5, inset .5px .5px 0px 0px #95a5a5
-}
-
-.board.icon td.white {
-  background-color: #bec3c7;
-}
-
-.board.icon td.black {
-  background-color: #2d3e50;
+@media only screen and (max-width: 764px) {
+  td {
+    width: 25px;
+    height: 25px;
+    font-size: 20px;
+  }
+  .container .board-container {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .board {
+    width: calc(20px * 8);
+  }
 }

@@ -1,6 +1,7 @@
 import React from 'react'
 
 import GameIcon from './GameIcon'
+import BoardWrapper from './BoardWrapper'
 
 import './styles/OnlineContainer.css'
 
@@ -9,9 +10,11 @@ class OnlineContainer extends React.Component {
     super(props)
     this.state = {
       publicGames: [],
-      userGames: []
+      userGames: [],
+      playing: false
     }
     this.getPublicGames = this.getPublicGames.bind(this)
+    this.callback = this.callback.bind(this)
   }
 
   componentDidMount () {
@@ -30,15 +33,24 @@ class OnlineContainer extends React.Component {
     })
   }
 
+  callback () {
+    this.setState({ playing: true })
+  }
+
   render () {
     return (
       <div>
         <h2>Select Game</h2>
         <button>Main Menu</button>
-        <button onClick={this.getPublicGames}>Refresh Games</button>
-        <div className='GameIcon-container'>
-          {this.state.publicGames.map((each, idx) => <GameIcon key={idx} game={each} />)}
-        </div>
+        {this.state.playing
+          ? <BoardWrapper />
+          : <div>
+              <button onClick={this.getPublicGames}>Refresh Games</button>
+              <div className='GameIcon-container'>
+                {this.state.publicGames.map((each, idx) => <GameIcon key={idx} game={each} callback={this.callback} />)}
+              </div>
+            </div>
+        }
       </div>
     )
   }

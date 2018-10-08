@@ -21,6 +21,7 @@ app.use(express.static(path.join(__dirname + '/client/build')))
 
 app.route('/api/games/public')
   .get((req, res) => {
+    console.log(req.headers['x-forwarded-for'].split(',')[0])
     Game.find({}, (err, games) => {
       if (err) console.log(err)
       else res.status(200).json({ games })

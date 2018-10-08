@@ -23,7 +23,6 @@ class Queen extends React.Component {
   }
 
   generateVirtualBoard () {
-    console.log('Generating Virtual')
     var output = []
     const testArrOne = []
     const testArrTwo = []
