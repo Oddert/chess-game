@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
+import socket from '../sockets'
 import { selectGame } from '../actions'
 
 import './styles/GameIcon.css'
@@ -52,8 +53,16 @@ class GameIcon extends React.Component {
 
   selectGame () {
     console.log(this.props.game)
-    this.props.selectGame(this.props.game)
-    this.props.callback()
+    // emit 'join game' and await 'join-game-confirmed'
+    socket.emit('join-game', this.props.game._id)
+    socket.on(`join-game-confirm`, payload => {
+      if (!payload) {
+        console.error(`ERROR JOINING ROOM`)
+      }
+      console.log(`Server confirms game joined`)
+      this.props.selectGame(this.props.game)
+      this.props.callback()
+    })
   }
 
   render () {
