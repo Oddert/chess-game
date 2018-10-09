@@ -3,6 +3,8 @@ import React from 'react'
 import GameIcon from './GameIcon'
 import BoardWrapper from './BoardWrapper'
 
+import TemporaryAuth from './TemporaryAuth'
+
 import './styles/OnlineContainer.css'
 
 class OnlineContainer extends React.Component {
@@ -40,7 +42,8 @@ class OnlineContainer extends React.Component {
   render () {
     return (
       <div>
-        <h2>Select Game</h2>
+        {!this.state.playing ? <h2>Select Game</h2> : ''}
+        <TemporaryAuth /><br />
         <button>Main Menu</button>
         {this.state.playing
           ? <BoardWrapper />

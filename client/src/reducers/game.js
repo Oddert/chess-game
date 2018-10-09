@@ -48,6 +48,7 @@ const game = (state = initialState.game, action) => {
       takePieceState.turn = action.payload.team === 0 ? 1 : 0
 
       return takePieceState
+      
     case types.MOVE:
       const moveState = [...state.board]
 

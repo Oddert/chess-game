@@ -1,6 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
+import socket from '../../sockets'
+
 import { takePiece, move } from '../../actions'
 
 import validateKing from '../move_functions/validateKing'
@@ -62,27 +64,30 @@ class King extends React.Component {
     const row = Number(e.target.getAttribute('row'))
     const col = Number(e.target.getAttribute('col'))
     const valid = validateKing(this.props.row, this.props.col, row, col, this.props.game.board, this.props.team)
+
+    const moveObject = {
+      from: {
+        row: this.props.row,
+        col: this.props.col
+      },
+      to: { row, col },
+      piece: "king",
+      team: this.props.team
+    }
+
     if (valid.res && valid.takePiece) {
-      this.props.takePiece({
-        from: {
-          row: this.props.row,
-          col: this.props.col
-        },
-        to: { row, col },
-        piece: "king",
-        team: this.props.team
-      })
+      if (this.props.app.localGame) {
+        this.props.takePiece(moveObject)
+      } else {
+        socket.emit(`move-piece`, Object.assign({}, moveObject, { takePiece: true }))
+      }
     }
     if (valid.res && !valid.takePiece) {
-      this.props.move({
-        from: {
-          row: this.props.row,
-          col: this.props.col
-        },
-        to: { row, col },
-        piece: "king",
-        team: this.props.team
-      })
+      if (this.props.app.localGame) {
+        this.props.move(moveObject)
+      } else {
+        socket.emit(`move-piece`, Object.assign({}, moveObject, { takePiece: false }))
+      }
     }
   }
 
@@ -92,7 +97,11 @@ class King extends React.Component {
       left: `${this.props.col * -50}px`
     }
 
-    const validTeam = this.props.game.turn === this.props.team
+    const validTeam = !this.props.app.localGame
+                        ? this.props.game.turn === this.props.team && this.props.game.turn === this.props.app.auth.thisClientPlayer
+                        : this.props.game.turn === this.props.team
+
+
     const showVirtual = this.state.showVirtual && validTeam
 
     return (
@@ -121,7 +130,8 @@ class King extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  game: state.game
+  game: state.game,
+  app: state.app
 })
 
 const mapDispatchToProps = dispatch => ({

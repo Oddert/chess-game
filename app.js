@@ -37,6 +37,12 @@ io.on(`connection`, socket => {
     socket.room = payload
     socket.emit(`join-game-confirm`, true)
   })
+  socket.on(`move-piece`, payload => {
+    console.log(`take piece recieved`)
+    console.log(payload)
+    socket.emit(`move-piece`, payload)
+    socket.broadcast.to(socket.room).emit(`move-piece`, payload)
+  })
   socket.on(`disconnect`, () => console.log(`User ${socket.client.id} disconnecting`))
 })
 

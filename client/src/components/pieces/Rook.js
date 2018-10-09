@@ -1,6 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
+import socket from '../../sockets'
+
 import { takePiece, move } from '../../actions'
 
 import validateRook from '../move_functions/validateRook'
@@ -74,29 +76,32 @@ class Rook extends React.Component {
     // console.log('Target row/col: ')
     // console.log(row, col)
     // console.log(valid)
+
+    const moveObject = {
+      from: {
+        row: this.props.row,
+        col: this.props.col
+      },
+      to: { row, col },
+      piece: "rook",
+      team: this.props.team
+    }
+
     if (valid.res && valid.takePiece) {
       // console.log('Going to dispatch a take piece move')
-      this.props.takePiece({
-        from: {
-          row: this.props.row,
-          col: this.props.col
-        },
-        to: { row, col },
-        piece: "rook",
-        team: this.props.team
-      })
+      if (this.props.app.localGame) {
+        this.props.takePiece(moveObject)
+      } else {
+        socket.emit(`move-piece`, Object.assign({}, moveObject, { takePiece: true }))
+      }
     }
     if (valid.res && !valid.takePiece) {
       // console.log('Going to dispatch a move (no take)')
-      this.props.move({
-        from: {
-          row: this.props.row,
-          col: this.props.col
-        },
-        to: { row, col },
-        piece: "rook",
-        team: this.props.team
-      })
+      if (this.props.app.localGame) {
+        this.props.move(moveObject)
+      } else {
+        socket.emit(`move-piece`, Object.assign({}, moveObject, { takePiece: false }))
+      }
     }
   }
 
@@ -106,7 +111,10 @@ class Rook extends React.Component {
       left: `${this.props.col * -50}px`
     }
 
-    const validTeam = this.props.game.turn === this.props.team
+    const validTeam = !this.props.app.localGame
+                        ? this.props.game.turn === this.props.team && this.props.game.turn === this.props.app.auth.thisClientPlayer
+                        : this.props.game.turn === this.props.team
+
     const showVirtual = this.state.showVirtual && this.props.game.turn === this.props.team
 
     return (
@@ -138,7 +146,8 @@ class Rook extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  game: state.game
+  game: state.game,
+  app: state.app
 })
 
 const mapDispatchToProps = dispatch => ({

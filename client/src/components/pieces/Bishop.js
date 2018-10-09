@@ -1,6 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
+import socket from '../../sockets'
+
 import { takePiece, move } from '../../actions'
 
 import validateBishop from '../move_functions/validateBishop'
@@ -62,27 +64,38 @@ class Bishop extends React.Component {
     const row = Number(e.target.getAttribute('row'))
     const col = Number(e.target.getAttribute('col'))
     const valid = validateBishop(this.props.row, this.props.col, row, col, this.props.game.board, this.props.team)
+
+    const moveObject = {
+      from: {
+        row: this.props.row,
+        col: this.props.col
+      },
+      to: { row, col },
+      piece: "bishop",
+      team: this.props.team
+    }
+
+    console.log(`### Confirm Move`)
+
     if (valid.res && valid.takePiece) {
-      this.props.takePiece({
-        from: {
-          row: this.props.row,
-          col: this.props.col
-        },
-        to: { row, col },
-        piece: "bishop",
-        team: this.props.team
-      })
+      console.log(`...with take piece`)
+      if (this.props.app.localGame) {
+        this.props.takePiece(moveObject)
+        console.log(`... DISPATCHED`)
+      } else {
+        socket.emit(`move-piece`, Object.assign({}, moveObject, { takePiece: true }))
+        console.log(`... SOCKET BROADCAST`)
+      }
     }
     if (valid.res && !valid.takePiece) {
-      this.props.move({
-        from: {
-          row: this.props.row,
-          col: this.props.col
-        },
-        to: { row, col },
-        piece: "bishop",
-        team: this.props.team
-      })
+      console.log(`...no take`)
+      if (this.props.app.localGame) {
+        this.props.move(moveObject)
+        console.log(`... DISPATCHED`)
+      } else {
+        socket.emit(`move-piece`, Object.assign({}, moveObject, { takePiece: false }))
+        console.log(`... SOCKET BROADCAST`)
+      }
     }
   }
 
@@ -92,24 +105,24 @@ class Bishop extends React.Component {
       left: `${this.props.col * -50}px`
     }
 
-    const validTeam = this.props.game.turn === this.props.team
-    //the above line checks that the turn (who's go it is) equals this items team
-    // add localUserTeam to state => if loaclgame === false && localUserTeam === this.props.game.turn
+    const validTeam = !this.props.app.localGame
+                        ? this.props.game.turn === this.props.team && this.props.game.turn === this.props.app.auth.thisClientPlayer
+                        : this.props.game.turn === this.props.team
+
     const showVirtual = this.state.showVirtual && validTeam
 
     return (
-      <div
-        className='piece bishop'
-      >
+      <div className='piece bishop'>
 
-        {showVirtual ?
-          <div className='virtual-container' >
-            <table className='virtual' style={virtualStyle}>
-              <tbody>
-                {this.generateVirtualBoard()}
-              </tbody>
-            </table>
-          </div> : ''}
+        {showVirtual
+          ? <div className='virtual-container' >
+              <table className='virtual' style={virtualStyle}>
+                <tbody>
+                  {this.generateVirtualBoard()}
+                </tbody>
+              </table>
+            </div>
+          : ''}
 
         <div className={showVirtual ? 'piece active' : 'piece'}>
           {validTeam
@@ -123,7 +136,8 @@ class Bishop extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  game: state.game
+  game: state.game,
+  app: state.app
 })
 
 const mapDispatchToProps = dispatch => ({

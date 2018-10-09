@@ -55,7 +55,7 @@ class Cell extends React.Component {
         )
       case 'empty':
         return (
-          <td className='col' style={Object.assign({}, style, {boxShadow: 'inset -1px -1px 0px 0px #95a5a5, inset 1px 1px 0px 0px #95a5a5'})} />
+          <td className='col' style={Object.assign({}, style, {boxShadow: 'inset -1px -1px 0px 0px #95a5a5, inset 1px 1px 0px 0px #95a5a5'})}>{' '}</td>
         )
       default:
         return <div />
