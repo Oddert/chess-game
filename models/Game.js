@@ -6,7 +6,14 @@ const GameSchema = new mongoose.Schema({
     default: 'Chess Game'
   },
 
-  board: [],
+  board: [
+    [
+      {
+        type: { type: String },
+        team: { type: mongoose.Schema.Types.Mixed }
+      }
+    ]
+  ],
 
   lastMove: {
     type: Number,

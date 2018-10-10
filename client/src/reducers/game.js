@@ -24,31 +24,31 @@ const game = (state = initialState.game, action) => {
   switch (action.type) {
     case types.TAKE_PIECE:
 
-      const takePieceState = Object.assign({}, state)
-      const tpPlayer = action.payload.team === 0 ? 'black' : 'white'
-      const tpFromRow = action.payload.from.row
-      const tpFromCol = action.payload.from.col
-      const tpToRow = action.payload.to.row
-      const tpToCol = action.payload.to.col
-      const tpCellTarget = takePieceState.board[tpToRow][tpToCol]
+      const takePiece_State = Object.assign({}, state)
+      const takePiece_Player = action.payload.team === 0 ? 'black' : 'white'
+      const takePiece_FromRow = action.payload.from.row
+      const takePiece_FromCol = action.payload.from.col
+      const takePiece_ToRow = action.payload.to.row
+      const takePiece_ToCol = action.payload.to.col
+      const takePiece_CellTarget = takePiece_State.board[takePiece_ToRow][takePiece_ToCol]
 
-      takePieceState.players[tpPlayer].score += convertPoints(tpCellTarget.type)
-      takePieceState.players[tpPlayer].takenPieces.push(tpCellTarget.type)
+      takePiece_State.players[takePiece_Player].score += convertPoints(takePiece_CellTarget.type)
+      takePiece_State.players[takePiece_Player].takenPieces.push(takePiece_CellTarget.type)
 
-      takePieceState.board[tpFromRow][tpFromCol] = {
+      takePiece_State.board[takePiece_FromRow][takePiece_FromCol] = {
         type: "empty",
         team: null
       }
 
-      takePieceState.board[tpToRow][tpToCol] = {
+      takePiece_State.board[takePiece_ToRow][takePiece_ToCol] = {
         type: action.payload.piece,
         team: action.payload.team
       }
 
-      takePieceState.turn = action.payload.team === 0 ? 1 : 0
+      takePiece_State.turn = action.payload.team === 0 ? 1 : 0
 
-      return takePieceState
-      
+      return takePiece_State
+
     case types.MOVE:
       const moveState = [...state.board]
 

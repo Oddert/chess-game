@@ -26,10 +26,32 @@ var server = app.listen(
   )
 )
 
+// ===============================================
+const convertPoints = str => {
+  switch(str) {
+    case 'pawn':
+      return 1;
+    case 'knight':
+      return 3;
+    case 'bishop':
+      return 3;
+    case 'rook':
+      return 5;
+    case 'queen':
+      return 9;
+    default:
+      console.log('Check please, switch game reducer ln: 4')
+      console.log(str)
+      return 1;
+  }
+}
+// ===============================================
+
 const io = socketio(server)
 
 io.on(`connection`, socket => {
   console.log(`User ${socket.client.id} has connected.`)
+
   socket.on(`join-game`, payload => {
     console.log(`User ${socket.client.id} joining room: ${payload}`)
     if (socket.room) socket.leave(socket.room)
@@ -37,13 +59,46 @@ io.on(`connection`, socket => {
     socket.room = payload
     socket.emit(`join-game-confirm`, true)
   })
+
   socket.on(`move-piece`, payload => {
     console.log(`take piece recieved`)
     console.log(payload)
-    socket.emit(`move-piece`, payload)
-    socket.broadcast.to(socket.room).emit(`move-piece`, payload)
+    console.log('================================================')
+    Game.findById(socket.room)
+    .exec((err, foundGame) => {
+      if (err) console.log(err)
+
+      const clientTeam = payload.team === 0 ? 'black' : 'white'
+      const targetCell = foundGame.board[payload.to.row][payload.to.col]
+
+      if (payload.takePiece) {
+        foundGame[clientTeam].score += convertPoints(targetCell.type)
+        foundGame[clientTeam].takenPieces.push(targetCell.type)
+      }
+
+      foundGame.board[payload.from.row][payload.from.col].type = "empty"
+      foundGame.board[payload.from.row][payload.from.col].team = null
+      foundGame.board[payload.to.row][payload.to.col].type = payload.piece
+      foundGame.board[payload.to.row][payload.to.col].team = Number(payload.team)
+      foundGame.lastMove = payload.team
+
+      console.log(`# Changes Made...`)
+      console.log(foundGame.board[3])
+      console.log(foundGame.board[4])
+
+      foundGame.save((err, game) => {
+        console.log(err)
+        console.log(game)
+        if (err) console.log(err)
+        else console.log(`Game saved ok!`)
+        socket.emit(`move-piece`, payload)
+        socket.broadcast.to(socket.room).emit(`move-piece`, payload)
+      })
+    })
   })
+
   socket.on(`disconnect`, () => console.log(`User ${socket.client.id} disconnecting`))
+
 })
 
 // const seed = require('./seed')

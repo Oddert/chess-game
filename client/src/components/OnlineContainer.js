@@ -24,6 +24,7 @@ class OnlineContainer extends React.Component {
   }
 
   getPublicGames () {
+    console.log(`### Getting Public Games`)
     fetch('/api/games/public', {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' }
