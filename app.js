@@ -62,8 +62,8 @@ io.on(`connection`, socket => {
 
   socket.on(`move-piece`, payload => {
     console.log(`take piece recieved`)
-    console.log(payload)
-    console.log('================================================')
+    // console.log(payload)
+    // console.log('================================================')
     Game.findById(socket.room)
     .exec((err, foundGame) => {
       if (err) console.log(err)
@@ -76,15 +76,10 @@ io.on(`connection`, socket => {
         foundGame[clientTeam].takenPieces.push(targetCell.type)
       }
 
-      foundGame.board[payload.from.row][payload.from.col].type = "empty"
-      foundGame.board[payload.from.row][payload.from.col].team = null
-      foundGame.board[payload.to.row][payload.to.col].type = payload.piece
-      foundGame.board[payload.to.row][payload.to.col].team = Number(payload.team)
+      foundGame.board[payload.from.row][payload.from.col] = { type: "empty", team: null }
+      foundGame.board[payload.to.row][payload.to.col] = { type: payload.piece, team: Number(payload.team) }
+      foundGame.markModified('board')
       foundGame.lastMove = payload.team
-
-      console.log(`# Changes Made...`)
-      console.log(foundGame.board[3])
-      console.log(foundGame.board[4])
 
       foundGame.save((err, game) => {
         console.log(err)

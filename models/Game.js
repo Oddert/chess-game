@@ -9,8 +9,8 @@ const GameSchema = new mongoose.Schema({
   board: [
     [
       {
-        type: { type: String },
-        team: { type: mongoose.Schema.Types.Mixed }
+        type: mongoose.Schema.Types.Mixed  //{ type: String },
+        // team: { type: mongoose.Schema.Types.Mixed }
       }
     ]
   ],
