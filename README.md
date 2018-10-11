@@ -12,6 +12,7 @@
 - Add dynamic error events to socket
   * Disconect notification
   * opponent visability indicator
+  * Leave room failsafe in 'move piece' event (server side)
 - Add ability to request match, post public request
 - Add score tracking to user profile
 - Router history?
