@@ -67,7 +67,7 @@ io.on(`connection`, socket => {
     Game.findById(socket.room)
     .exec((err, foundGame) => {
       if (err) console.log(err)
-
+      else console.log(`foundGame: `, !!foundGame)
       const clientTeam = payload.team === 0 ? 'black' : 'white'
       const targetCell = foundGame.board[payload.to.row][payload.to.col]
 
@@ -79,11 +79,11 @@ io.on(`connection`, socket => {
       foundGame.board[payload.from.row][payload.from.col] = { type: "empty", team: null }
       foundGame.board[payload.to.row][payload.to.col] = { type: payload.piece, team: Number(payload.team) }
       foundGame.markModified('board')
-      foundGame.lastMove = payload.team
+      foundGame.lastMove = payload.team === 0 ? 1 : 0
 
       foundGame.save((err, game) => {
-        console.log(err)
-        console.log(game)
+        console.log(`err: `, err)
+        console.log(`game? `, !!game)
         if (err) console.log(err)
         else console.log(`Game saved ok!`)
         socket.emit(`move-piece`, payload)
