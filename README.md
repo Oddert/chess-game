@@ -1,11 +1,10 @@
 ### Oddert Chess game
 
 # To Do's:
-- Have move history notation
+- Implement move history notation
 
 - Investigate how socket.io fits into passport auth
 
-- Add proper authentication
 - Get multiple auth options working
 - Change existing save function to deal with auth
 - Add name change and display functionality
@@ -17,8 +16,8 @@
 - Chat function
 
 - Add dynamic error events to socket
-  * Disconect notification
-  * opponent visability indicator
+  * Disconnect notification
+  * opponent visibility indicator
   * Leave room failsafe in 'move piece' event (server side)
 
 ## Done / Solved:
@@ -27,3 +26,5 @@
 - Socket io can do db work ??
 - Complete socket example suits
 - Check the save 'lastMove' functionality is working
+
+- Add ~~proper~~ authentication
