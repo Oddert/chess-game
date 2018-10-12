@@ -6,7 +6,13 @@ const express       = require('express')
     , mongoose      = require('mongoose')
     , socketio      = require('socket.io')
 
+    , passport      = require('passport')
+    , LocalStrategy = require('passport-local')
+
 const Game          = require('./models/Game')
+    , User          = require('./models/User')
+
+const convertPoints = require('./utils/convertPoints')
 
 require('dotenv').config()
 
@@ -18,6 +24,24 @@ app.use(cookieParser())
 
 app.use(express.static(path.join(__dirname + '/client/build')))
 
+app.use(require('express-session')({
+  secret: process.env.SECRET,
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: false,
+    httpOnly: false
+  }
+}))
+
+app.use(passport.initialize())
+app.use(passport.session())
+
+passport.use(new LocalStrategy(User.authenticate()))
+
+passport.serializeUser(User.serializeUser())
+passport.deserializeUser(User.deserializeUser())
+
 const PORT = process.env.PORT || 5000
 var server = app.listen(
   PORT,
@@ -26,26 +50,6 @@ var server = app.listen(
   )
 )
 
-// ===============================================
-const convertPoints = str => {
-  switch(str) {
-    case 'pawn':
-      return 1;
-    case 'knight':
-      return 3;
-    case 'bishop':
-      return 3;
-    case 'rook':
-      return 5;
-    case 'queen':
-      return 9;
-    default:
-      console.log('Check please, switch game reducer ln: 4')
-      console.log(str)
-      return 1;
-  }
-}
-// ===============================================
 
 const io = socketio(server)
 
@@ -61,19 +65,16 @@ io.on(`connection`, socket => {
   })
 
   socket.on(`move-piece`, payload => {
-    console.log(`take piece recieved`)
-    // console.log(payload)
-    // console.log('================================================')
     Game.findById(socket.room)
     .exec((err, foundGame) => {
       if (err) console.log(err)
       else console.log(`foundGame: `, !!foundGame)
       const clientTeam = payload.team === 0 ? 'black' : 'white'
-      const targetCell = foundGame.board[payload.to.row][payload.to.col]
+      const targetCellType = foundGame.board[payload.to.row][payload.to.col].type
 
       if (payload.takePiece) {
-        foundGame[clientTeam].score += convertPoints(targetCell.type)
-        foundGame[clientTeam].takenPieces.push(targetCell.type)
+        foundGame[clientTeam].score += convertPoints(targetCellType)
+        foundGame[clientTeam].takenPieces.push(targetCellType)
       }
 
       foundGame.board[payload.from.row][payload.from.col] = { type: "empty", team: null }
@@ -82,8 +83,6 @@ io.on(`connection`, socket => {
       foundGame.lastMove = payload.team === 0 ? 1 : 0
 
       foundGame.save((err, game) => {
-        console.log(`err: `, err)
-        console.log(`game? `, !!game)
         if (err) console.log(err)
         else console.log(`Game saved ok!`)
         socket.emit(`move-piece`, payload)
@@ -98,6 +97,8 @@ io.on(`connection`, socket => {
 
 // const seed = require('./seed')
 
+app.use('/api/auth/', require('./routes/auth'))
+
 app.route('/api/games/public')
   .get((req, res) => {
     console.log(req.headers['x-forwarded-for'].split(',')[0])
@@ -107,19 +108,6 @@ app.route('/api/games/public')
     })
   })
 
-// =================================
-var jsontest = {}
-
-app.get('/api/testLog', (req, res) => {
-  res.json(jsontest)
-})
-
-app.post('/api/testLog', (req, res) => {
-  console.log(req.body)
-  jsontest = req.body
-  res.json({ message: `data res ok` })
-})
-// =================================
 
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname + '/build/index.html'))
