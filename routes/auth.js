@@ -15,6 +15,14 @@ router.route('/ping')
   res.json({ isAuthenticated: req.isAuthenticated(), user: req.user })
 })
 
+router.get('/logout', (req, res) => {
+  req.logout()
+  res.json({
+    message: `Successfully logged out`,
+    isAuth: req.isAuthenticated()
+  })
+})
+
 router.route('/local/register')
 .post((req, res) => {
   console.log(`User attempting to register`)

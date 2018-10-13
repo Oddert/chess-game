@@ -3,16 +3,87 @@
   margin-bottom: 10px;
   display: flex;
   align-items: center;
-  justify-content: center;
-  min-height: 30px;
-  max-height: 70px;
+  justify-content: flex-end;
+  /* min-height: 30px;
+  max-height: 70px; */
+  height: 40px;
 }
 
 .signIn {
   position: absolute;
   top: 50px;
   background-color: #fff;
-  padding: 20px;
+  padding: 0px 0px 20px 0px;
   border-radius: 20px;
-  border: 1px dashed tomato;
+  /* border: 1px dashed tomato; */
+  box-shadow: 0px 4px 30px rgba(0,0,0,.1);
+  min-width: 30%;
+}
+
+.toggleSignInMode {
+  display: flex;
+}
+
+.toggleSignInMode button {
+  flex: 1;
+  border: none;
+  background-color: #fff;
+  font-size: .9em;
+  padding: 5px;
+  margin-bottom: 10px;
+  background-color: #ecf0f1;
+  cursor: pointer;
+}
+
+.toggleSignInMode button.left {
+  border-radius: 20px 0px 0px 0px;
+  box-shadow: inset -5px -1px 5px 0px rgba(0,0,0,.1);
+}
+
+.toggleSignInMode button.right {
+  border-radius: 0px 20px 0px 0px;
+  box-shadow: inset 5px -1px 5px 0px rgba(0,0,0,.1);
+}
+
+.toggleSignInMode button.active {
+  /* background-color: rgba(53,152,219, .3); */
+  background-color: #fff;
+  box-shadow: none;
+}
+
+.signIn-form {
+  padding: 10px;
+}
+
+.signIn-form input {
+  width: 100%;
+  transition: .1s linear;
+  border: 1px solid #bec3c7;
+  border-radius: 5px;
+  box-sizing: border-box;
+  padding: 8px 10px;
+  margin: 0px 0px 10px 0px;
+}
+
+.signIn-form input:hover {
+
+}
+
+.signIn-form input:focus {
+  border: 1px solid #3598db;
+}
+
+.submitButton {
+  transition: .1s linear;
+  border: 1px solid #27ae61;
+  background-color: #fff;
+  padding: 10px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.submitButton:hover {
+  background-color: rgba(45,204,112,.3);
+  color: #2d3e50;
 }

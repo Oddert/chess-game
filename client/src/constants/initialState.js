@@ -43,7 +43,7 @@ const initialState = {
     playing: false,
     auth: {
       isAuth: false,
-      thisClientPlayer: 0,
+      thisClientPlayer: null,
       user: {}
     }
   },

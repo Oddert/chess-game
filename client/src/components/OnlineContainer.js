@@ -1,4 +1,7 @@
 import React from 'react'
+import { connect } from 'react-redux'
+
+import { preGame } from '../actions'
 
 import GameIcon from './GameIcon'
 import BoardWrapper from './BoardWrapper'
@@ -45,7 +48,7 @@ class OnlineContainer extends React.Component {
       <div>
         {!this.state.playing ? <h2>Select Game</h2> : ''}
         <TemporaryAuth /><br />
-        <button>Main Menu</button>
+        <button onClick={() => this.props.preGame()}>Main Menu</button>
         {this.state.playing
           ? <BoardWrapper />
           : <div>
@@ -60,4 +63,8 @@ class OnlineContainer extends React.Component {
   }
 }
 
-export default OnlineContainer
+const mapDispatchToProps = dispatch => ({
+  preGame: () => dispatch(preGame())
+})
+
+export default connect(null, mapDispatchToProps)(OnlineContainer)

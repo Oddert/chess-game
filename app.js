@@ -95,7 +95,7 @@ io.on(`connection`, socket => {
 
 })
 
-// const seed = require('./seed')
+// const seed = require('./utils/seed')
 
 app.use('/api/auth/', require('./routes/auth'))
 

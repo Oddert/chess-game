@@ -18,7 +18,20 @@ export const playOnline = () => ({
   type: types.PLAY_ONLINE
 })
 
+export const preGame = () => ({
+  type: types.PRE_GAME
+})
+
 export const selectGame = payload => ({
   type: types.SELECT_GAME,
   payload
+})
+
+export const login = payload => ({
+  type: types.LOGIN,
+  payload
+})
+
+export const logout = () => ({
+  type: types.LOGOUT
 })
