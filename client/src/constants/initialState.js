@@ -43,13 +43,13 @@ const initialState = {
     playing: false,
     auth: {
       isAuth: false,
-      thisClientPlayer: null,
       user: {}
     }
   },
   game: {
     board: generateBoard(),
     turn: 1,
+    thisClientPlayer: 0,
     players: {
       black: {
         score: 0,

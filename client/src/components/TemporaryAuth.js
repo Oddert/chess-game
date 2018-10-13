@@ -7,7 +7,8 @@ class TemporaryAuth extends React.Component {
       <button onClick={() => this.props.devToggleTeam()}>
         Playing as:
         <span>
-          {this.props.app.auth.thisClientPlayer === 0 ? ' BLACK' : ' WHITE'}
+          {this.props.game.thisClientPlayer === 0 ? ' BLACK' : ' WHITE'}
+          {this.props.app.auth.user._id ? `: ${this.props.app.auth.user._id}` : ''}
         </span>
       </button>
     )
@@ -15,7 +16,8 @@ class TemporaryAuth extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  app: state.app
+  app: state.app,
+  game: state.game
 })
 
 const mapDispatchToProps = dispatch => ({

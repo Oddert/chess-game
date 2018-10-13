@@ -1,0 +1,33 @@
+.modeSelector {
+  /* border: 1px solid red; */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 50px;
+  padding: 0px 40px;
+}
+
+.modeSelector button {
+  flex: 1;
+  font-size: 1em;
+  padding: 14px 0px;
+  border: 1px solid #bec3c7;
+  background-color: #fff;
+  cursor: pointer;
+  transition: .1s linear;
+}
+
+.modeSelector button:hover {
+  background-color: rgba(45,204,112,.3);
+  border: 1px solid rgba(45,204,112,1);
+  box-shadow: inset 0px 0px 0px 2px rgba(45,204,112,1);
+  text-decoration: underline;
+}
+
+.modeSelector button:nth-child(1) {
+  border-radius: 30px 0px 0px 30px;
+}
+
+.modeSelector button:nth-child(2) {
+  border-radius: 0px 30px 30px 0px;
+}

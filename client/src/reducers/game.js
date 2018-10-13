@@ -64,8 +64,10 @@ const game = (state = initialState.game, action) => {
 
       return Object.assign({}, state, { board: moveState, turn: action.payload.team === 0 ? 1 : 0 })
     case types.SELECT_GAME:
-      console.log(state.turn)
-      console.log(action.payload.lastMove)
+      console.log(state)
+      console.log(action.payload)
+      // let playerTeam
+      // if (action.payload.black.id === )
       return Object.assign({}, state, {
         board: action.payload.board,
         turn: action.payload.lastMove,
@@ -73,6 +75,10 @@ const game = (state = initialState.game, action) => {
           black: action.payload.black,
           white: action.payload.white
         }
+      })
+    case 'DEV_TOGGLE_TEAM':
+      return Object.assign({}, state, {
+        thisClientPlayer: state.thisClientPlayer === 0 ? 1 : 0
       })
     default:
       return state

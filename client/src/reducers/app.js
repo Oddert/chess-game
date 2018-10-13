@@ -9,12 +9,6 @@ const app = (state = initialState.app, action) => {
       return Object.assign({}, state, { playing: true, localGame: false })
     case types.PRE_GAME:
       return Object.assign({}, state, { playing: false })
-    case 'DEV_TOGGLE_TEAM':
-      return Object.assign({}, state, {
-        auth: Object.assign({}, state.auth, {
-          thisClientPlayer: state.auth.thisClientPlayer === 0 ? 1 : 0
-        })
-      })
     case types.LOGIN:
       console.log(action.payload)
       const loginStateAuth = Object.assign({}, state.auth)

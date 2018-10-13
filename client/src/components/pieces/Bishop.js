@@ -106,7 +106,7 @@ class Bishop extends React.Component {
     }
 
     const validTeam = !this.props.app.localGame
-                        ? this.props.game.turn === this.props.team && this.props.game.turn === this.props.app.auth.thisClientPlayer
+                        ? this.props.game.turn === this.props.team && this.props.game.turn === this.props.game.thisClientPlayer
                         : this.props.game.turn === this.props.team
 
     const showVirtual = this.state.showVirtual && validTeam

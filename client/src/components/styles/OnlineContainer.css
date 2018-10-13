@@ -5,10 +5,14 @@
 }
 
 .gameIcon-container {
+  justify-content: center;
+  border: 1px dashed steelblue;
+  flex: 1;
+}
+
+.gameIcon-container-column {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: center;
-  border: 1px dashed steelblue;
-  flex: 1;
 }
