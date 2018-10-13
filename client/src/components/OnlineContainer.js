@@ -1,14 +1,10 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import { preGame } from '../actions'
-
-import GameIcon from './GameIcon'
 import BoardWrapper from './BoardWrapper'
+import GameIconContainer from './GameIconContainer'
 
 import TemporaryAuth from './TemporaryAuth'
-
-import './styles/OnlineContainer.css'
 
 class OnlineContainer extends React.Component {
   constructor(props) {
@@ -48,23 +44,13 @@ class OnlineContainer extends React.Component {
       <div>
         {!this.state.playing ? <h2>Select Game</h2> : ''}
         <TemporaryAuth /><br />
-        <button onClick={() => this.props.preGame()}>Main Menu</button>
         {this.state.playing
           ? <BoardWrapper />
-          : <div>
-              <button onClick={this.getPublicGames}>Refresh Games</button>
-              <div className='GameIcon-container'>
-                {this.state.publicGames.map((each, idx) => <GameIcon key={idx} game={each} callback={this.callback} />)}
-              </div>
-            </div>
+          : <GameIconContainer games={this.state.publicGames} callback={this.callback} />
         }
       </div>
     )
   }
 }
 
-const mapDispatchToProps = dispatch => ({
-  preGame: () => dispatch(preGame())
-})
-
-export default connect(null, mapDispatchToProps)(OnlineContainer)
+export default connect(null, null)(OnlineContainer)

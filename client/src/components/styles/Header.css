@@ -3,15 +3,31 @@
   margin-bottom: 10px;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: space-between;
   /* min-height: 30px;
   max-height: 70px; */
   height: 40px;
 }
 
+.mainMenu {
+  align-self: stretch;
+  border: none;
+  background-color: #fff;
+  padding: 0px 20px;
+  box-shadow: 5px 0px 10px 0px rgba(0,0,0,.1);
+  border-radius: 0px 20px 20px 0px;
+  cursor: pointer;
+  transition: .1s linear;
+}
+
+.mainMenu:hover {
+  color: rgba(53,152,219,1);
+}
+
 .signIn {
   position: absolute;
   top: 50px;
+  right: 10px;
   background-color: #fff;
   padding: 0px 0px 20px 0px;
   border-radius: 20px;
@@ -86,4 +102,14 @@
 .submitButton:hover {
   background-color: rgba(45,204,112,.3);
   color: #2d3e50;
+}
+
+.profileButton {
+  border: none;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+.profileButton:hover {
+  color: rgba(53,152,219,1);
 }
