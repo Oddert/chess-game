@@ -7,7 +7,7 @@ const UserSchema = new mongoose.Schema({
   activeGames: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'chessGame-games'
+      ref: 'chessGame-game'
     }
   ]
 })

@@ -12,7 +12,20 @@ router.route('/ping')
 .get((req, res) => {
   console.log('Ping recieved:')
   console.log(req.isAuthenticated())
-  res.json({ isAuthenticated: req.isAuthenticated(), user: req.user })
+  if (req.isAuthenticated()) {
+    User.findById(req.user._id)
+    .populate('activeGames')
+    .exec((err, user) => {
+      if (err) {
+        console.log(err)
+        res.status(500).json({ err })
+      } else {
+        res.json({ isAuth: req.isAuthenticated(), user })
+      }
+    })
+  } else {
+    res.json({ isAuth: req.isAuthenticated() })
+  }
 })
 
 router.get('/logout', (req, res) => {
@@ -51,7 +64,17 @@ router.route('/local/login')
           console.log(err)
           return res.status(401).json({ err })
         }
-        return res.status(200).json({ user })
+        User.findById(user._id)
+        .populate('activeGames')
+        .exec((err, foundUser) => {
+          if (err) {
+            console.log(err)
+            return res.status(500).json({ err })
+          } else {
+            console.log(foundUser)
+            return res.status(200).json({ user: foundUser })
+          }
+        })
       })
     } else {
       console.log(info)

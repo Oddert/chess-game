@@ -6,6 +6,8 @@ import GameIconContainer from './GameIconContainer'
 
 import TemporaryAuth from './TemporaryAuth'
 
+import './styles/OnlineContainer.css'
+
 class OnlineContainer extends React.Component {
   constructor(props) {
     super(props)
@@ -33,6 +35,10 @@ class OnlineContainer extends React.Component {
       if (res.err) console.log(res.err)
       else this.setState({ publicGames: res.games })
     })
+    if (this.props.app.auth.isAuth) {
+      console.log(`### Getting User Games`)
+
+    }
   }
 
   callback () {
@@ -40,17 +46,30 @@ class OnlineContainer extends React.Component {
   }
 
   render () {
+    const auth = this.props.app.auth
     return (
       <div>
-        {!this.state.playing ? <h2>Select Game</h2> : ''}
-        <TemporaryAuth /><br />
+        <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+          {!this.state.playing ? <h2>Select Game</h2> : ''}
+          <TemporaryAuth />
+        </div>
         {this.state.playing
           ? <BoardWrapper />
-          : <GameIconContainer games={this.state.publicGames} callback={this.callback} />
+          : <div className='onlineContainer-select'>
+              <GameIconContainer games={this.state.publicGames} title='Public Games' callback={this.callback} />
+              {auth.isAuth
+                ? <GameIconContainer games={auth.user.activeGames} title='Your Games' callback={this.callback} />
+                : ''
+              }
+            </div>
         }
       </div>
     )
   }
 }
 
-export default connect(null, null)(OnlineContainer)
+const mapStateToProps = state => ({
+  app: state.app
+})
+
+export default connect(mapStateToProps, null)(OnlineContainer)

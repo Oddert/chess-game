@@ -1,0 +1,14 @@
+.onlineContainer-select {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.gameIcon-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  border: 1px dashed steelblue;
+  flex: 1;
+}

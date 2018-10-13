@@ -25,13 +25,14 @@ class Header extends React.Component {
     return (
       <header className='header'>
         <MainMenu />
-        <div>
+        <div className='profileButton-container'>
           {auth.isAuth ? <p>Welcome, </p> : ''}
           <button
             onClick={this.handleClick}
             className='profileButton'
           >
             {auth.isAuth ? auth.user.username : 'Sign In'}
+            {' '}<i className={this.state.open ? 'fa fa-angle-up'  :'fa fa-angle-down'}></i>
           </button>
         </div>
         {this.state.open
