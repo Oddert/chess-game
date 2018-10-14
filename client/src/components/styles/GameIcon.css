@@ -1,6 +1,6 @@
 
 .GameIcon {
-  padding: 10px 2px;
+  padding: 10px;
   margin: 10px;
   border-radius: 20px;
   box-shadow: 10px 10px 30px rgba(0,0,0,.2);
@@ -16,6 +16,10 @@
   font-size: .6em;
   color: #2d3e50;
 }
+
+/* .board.icon table {
+  margin: 0px 10px;
+} */
 
 .board.icon td {
   width: 10px;

@@ -91,6 +91,15 @@ io.on(`connection`, socket => {
     })
   })
 
+  socket.on('change-meta', payload => {
+    console.log(socket.room)
+    console.log(payload)
+    Game.findOneAndUpdate({_id: socket.room}, payload, (err, game) => {
+      if (err) console.log(err)
+      else socket.broadcast.to(socket.room).emit('change-meta', payload)
+    })
+  })
+
   socket.on(`disconnect`, () => console.log(`User ${socket.client.id} disconnecting`))
 
 })

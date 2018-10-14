@@ -22,9 +22,10 @@ const GameSchema = new mongoose.Schema({
 
   white: {
     id: {
-      type: String,
-      default: ''
-    },//swap out for user id once auth is implamented
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'chessGame-user'
+    },
+    username: String,
     score: Number,
     takenPieces: [ String ],
     clock: {
@@ -35,11 +36,16 @@ const GameSchema = new mongoose.Schema({
 
   black: {
     id: {
-      type: String,
-      default: ''
-    },//swap out for user id once auth is implamented
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'chessGame-user'
+    },
+    username: String,
     score: Number,
-    takenPieces: [ String ]
+    takenPieces: [ String ],
+    clock: {
+      type: Number,
+      default: 0
+    }
   }
 
 })

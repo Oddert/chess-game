@@ -29,7 +29,7 @@ class PlayerUI extends React.Component {
       <div className='playerUI'>
         <div className='takenPieces black'>
           <div className='scoreIndicator'>
-            {players.black.score}
+            {players.black.username}: {players.black.score}
           </div>
           <div className='pieceIcons'>
             {players.black.takenPieces.length > 0
@@ -40,7 +40,7 @@ class PlayerUI extends React.Component {
         </div>
         <div className='takenPieces white'>
           <div className='scoreIndicator'>
-            {players.white.score}
+            {players.white.username}: {players.white.score}
           </div>
           <div className='pieceIcons'>
             {players.white.takenPieces.length > 0

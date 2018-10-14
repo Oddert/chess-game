@@ -66,19 +66,38 @@ const game = (state = initialState.game, action) => {
     case types.SELECT_GAME:
       console.log(state)
       console.log(action.payload)
-      // let playerTeam
+      // let thisClientPlayer
       // if (action.payload.black.id === )
       return Object.assign({}, state, {
         board: action.payload.board,
         turn: action.payload.lastMove,
+        name: action.payload.name,
+        thisClientPlayer: action.payload.thisClientPlayer,
         players: {
           black: action.payload.black,
           white: action.payload.white
         }
       })
+    case types.UPDATE_TITLE:
+      return Object.assign({}, state, {
+        name: action.payload
+      })
+    case types.UPDATE_META:
+      return Object.assign({}, state, action.payload)
     case 'DEV_TOGGLE_TEAM':
       return Object.assign({}, state, {
         thisClientPlayer: state.thisClientPlayer === 0 ? 1 : 0
+      })
+    case types.LOGIN:
+      console.log('...game reducer hijacking')
+      let thisClientPlayer = null
+      return Object.assign({}, state, {
+
+      })
+    case types.LOGOUT:
+    case types.DESELECT_GAME:
+      return Object.assign({}, state, {
+        thisClientPlayer: null
       })
     default:
       return state

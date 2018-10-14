@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import SignIn from './SignIn'
 import ProfileDrop from './ProfileDrop'
 import MainMenu from './MainMenu'
+import TemporaryAuth from '../TemporaryAuth'
 
 import '../styles/Header.css'
 
@@ -25,6 +26,7 @@ class Header extends React.Component {
     return (
       <header className='header'>
         <MainMenu />
+        <TemporaryAuth />
         <div className='profileButton-container'>
           {auth.isAuth ? <p>Welcome, </p> : ''}
           <button

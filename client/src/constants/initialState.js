@@ -49,7 +49,7 @@ const initialState = {
   game: {
     board: generateBoard(),
     turn: 1,
-    thisClientPlayer: 0,
+    thisClientPlayer: null,
     players: {
       black: {
         score: 0,

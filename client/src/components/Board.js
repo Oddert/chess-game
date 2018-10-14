@@ -1,10 +1,11 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import { takePiece, move } from '../actions'
+import { takePiece, move, deselectGame, updateMeta } from '../actions'
 import socket from '../sockets'
 
 import Cell from './Cell'
+import Title from './Title'
 
 import './styles/Board.css'
 
@@ -22,7 +23,17 @@ class Board extends React.Component {
           this.props.move(payload)
         }
       })
+      socket.on('change-meta', payload => {
+        console.log('Updating meta...')
+        console.log(payload)
+        this.props.updateMeta(payload)
+      })
     }
+  }
+
+  componentWillUnmount () {
+    console.log('### BOARD unmounting...')
+    this.props.deselectGame()
   }
 
   genBoard () {
@@ -40,6 +51,7 @@ class Board extends React.Component {
   render () {
     return (
       <div className='board'>
+        <Title />
         <table>
           <tbody>
             {this.genBoard()}
@@ -57,7 +69,9 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   takePiece: payload => dispatch(takePiece(payload)),
-  move: payload => dispatch(move(payload))
+  move: payload => dispatch(move(payload)),
+  deselectGame: () => dispatch(deselectGame()),
+  updateMeta: payload => dispatch(updateMeta(payload))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Board)

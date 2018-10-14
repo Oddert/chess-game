@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import BoardWrapper from './BoardWrapper'
 import GameIconContainer from './GameIconContainer'
 
-import TemporaryAuth from './TemporaryAuth'
+// import TemporaryAuth from './TemporaryAuth'
 
 import './styles/OnlineContainer.css'
 
@@ -51,7 +51,7 @@ class OnlineContainer extends React.Component {
       <div>
         <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
           {!this.state.playing ? <h2>Select Game</h2> : ''}
-          <TemporaryAuth />
+          {/* <TemporaryAuth /> */}
         </div>
         {this.state.playing
           ? <BoardWrapper />

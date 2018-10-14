@@ -35,7 +35,7 @@ class SignIn extends React.Component {
               this.setState({ error: res.err })
             } else {
               this.username.value = ''
-              this.pasword.value = ''
+              this.password.value = ''
               if (this.confirm_password) this.confirm_password.value = ''
               console.log('User sucessfully signed up!')
               const userToDispatch = res.user

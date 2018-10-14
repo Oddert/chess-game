@@ -35,3 +35,17 @@ export const login = payload => ({
 export const logout = () => ({
   type: types.LOGOUT
 })
+
+export const deselectGame = () => ({
+  type: types.DESELECT_GAME
+})
+
+export const updateTitle = payload => ({
+  type: types.UPDATE_TITLE,
+  payload
+})
+
+export const updateMeta = payload => ({
+  type: types.UPDATE_META,
+  payload
+})

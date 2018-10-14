@@ -61,23 +61,16 @@ class GameIcon extends React.Component {
       console.log(`Server confirms game joined`)
       let thisClientPlayer = null
       if (this.props.app.auth.isAuth) {
-        console.log(this.props.app.auth.user._id)
-        console.log(this.props.stateGame.players.black.id)
-        console.log(this.props.stateGame.players.white.id)
-        // Make more accounts
-        // Make board id's (currently username strs) correspond to new users
-
-        if (this.props.stateGame.players.black.id === this.props.app.auth.user._id) thisClientPlayer = 0
-        if (this.props.stateGame.players.white.id === this.props.app.auth.user._id) thisClientPlayer = 1
+        if (this.props.game.black.id === this.props.app.auth.user._id) thisClientPlayer = 0
+        if (this.props.game.white.id === this.props.app.auth.user._id) thisClientPlayer = 1
       }
-      console.log(thisClientPlayer)
-      this.props.selectGame(this.props.game)
+      // console.log(`This client is player: ${thisClientPlayer}`)
+      this.props.selectGame(Object.assign({}, this.props.game, { thisClientPlayer }))
       this.props.callback()
     })
   }
 
   render () {
-    console.log(this.props.game)
     return (
       <div className='GameIcon' onClick={this.selectGame.bind(this)}>
         <div className='board icon'>
@@ -87,7 +80,14 @@ class GameIcon extends React.Component {
             </tbody>
           </table>
         </div>
-        <p className='GameIcon-title'>{this.props.game._id}</p>
+        <p className='GameIcon-title'>{this.props.game.name}</p>
+        <p>
+          <strong>
+            {this.props.game.white.username}
+          </strong> vs <strong>
+            {this.props.game.black.username}
+          </strong>
+        </p>
       </div>
     )
   }

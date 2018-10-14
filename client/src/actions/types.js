@@ -7,6 +7,9 @@ const types = {
   , LOGIN: 'LOGIN'
   , LOGOUT: 'LOGOUT'
   , PRE_GAME: 'PRE_GAME'
+  , DESELECT_GAME: 'DESELECT_GAME'
+  , UPDATE_TITLE: 'UPDATE_TITLE'
+  , UPDATE_META: 'UPDATE_META'
 }
 
 export default types
