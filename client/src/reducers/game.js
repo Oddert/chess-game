@@ -66,8 +66,6 @@ const game = (state = initialState.game, action) => {
     case types.SELECT_GAME:
       console.log(state)
       console.log(action.payload)
-      // let thisClientPlayer
-      // if (action.payload.black.id === )
       return Object.assign({}, state, {
         board: action.payload.board,
         turn: action.payload.lastMove,
@@ -89,10 +87,11 @@ const game = (state = initialState.game, action) => {
         thisClientPlayer: state.thisClientPlayer === 0 ? 1 : 0
       })
     case types.LOGIN:
-      console.log('...game reducer hijacking')
       let thisClientPlayer = null
+      if (state.players.black.id === action.payload._id) thisClientPlayer = 0
+      if (state.players.white.id === action.payload._id) thisClientPlayer = 1
       return Object.assign({}, state, {
-
+        thisClientPlayer
       })
     case types.LOGOUT:
     case types.DESELECT_GAME:

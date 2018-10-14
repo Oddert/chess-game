@@ -6,7 +6,7 @@
 
 .gameIcon-container {
   justify-content: center;
-  border: 1px dashed steelblue;
+  /* border: 1px dashed steelblue; */
   flex: 1;
 }
 
