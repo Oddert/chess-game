@@ -12,7 +12,6 @@ class Container extends React.Component {
     return (
       <div className='container'>
         <Header />
-        {/* {this.props.app.localGame ? <div>You are playing locally</div> : <div>Online play</div>} */}
         {this.props.app.playing
           ? this.props.app.localGame
             ? <BoardWrapper />

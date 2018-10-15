@@ -9,7 +9,7 @@ class PreGame extends React.Component {
   render () {
     return (
       <div>
-        <h3>do u think this is a game</h3>
+        <h3>Select Game Mode</h3>
         <div className='modeSelector'>
           <button onClick={() => this.props.playLocal()}>Play Local</button>
           <button onClick={() => this.props.playOnline()}>Play Online</button>

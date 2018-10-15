@@ -28,13 +28,17 @@ class MoveLogs extends React.Component {
   }
 
   render () {
+    const black = this.props.game.players.black.id
     return (
       <div className='Chat'>
         <p>Chat</p>
         <div className='messages'>
           {this.props.game.chat.map((each, idx) =>
-            <div key={idx}>
-              {each.author.username}: {each.text}
+            <div key={idx} className={each.author.id === black ? 'message black' : 'message'}>
+              <div className='message-inner'>
+                <span className='username'>{each.author.username}</span>: {each.text}
+              </div>
+              {/* <div className='date'>test date</div> */}
             </div>
           )}
         </div>
