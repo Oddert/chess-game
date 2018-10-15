@@ -1,6 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
+import './styles/MoveLogs.css'
+
 class MoveLogs extends React.Component {
   sanitise (move, x) {
     if (!x) return move
@@ -11,11 +13,13 @@ class MoveLogs extends React.Component {
     return (
       <div className='MoveLogs'>
         <p>Moves</p>
-        {this.props.game.moves.map((each, idx) =>
-          <div key={idx}>
-            {this.sanitise(each.w.t, each.w.x)} | {each.b && each.b.t ? this.sanitise(each.b.t, each.b.x) : ''}
-          </div>
-        )}
+        <div className='logs'>
+          {this.props.game.moves.map((each, idx) =>
+            <div key={idx}>
+              {this.sanitise(each.w.t, each.w.x)} | {each.b && each.b.t ? this.sanitise(each.b.t, each.b.x) : ''}
+            </div>
+          )}
+        </div>
       </div>
     )
   }

@@ -96,6 +96,8 @@ const game = (state = initialState.game, action) => {
         turn: action.payload.lastMove,
         name: action.payload.name,
         thisClientPlayer: action.payload.thisClientPlayer,
+        chat: action.payload.chat,
+        moves: action.payload.moves,
         players: {
           black: action.payload.black,
           white: action.payload.white
@@ -112,6 +114,10 @@ const game = (state = initialState.game, action) => {
     case 'DEV_TOGGLE_TEAM':
       return Object.assign({}, state, {
         thisClientPlayer: state.thisClientPlayer === 0 ? 1 : 0
+      })
+    case types.CHAT_MESSAGE:
+      return Object.assign({}, state, {
+        chat: [...state.chat, action.payload]
       })
     case types.LOGIN:
       let thisClientPlayer = null

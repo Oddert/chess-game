@@ -112,6 +112,26 @@ io.on(`connection`, socket => {
     })
   })
 
+  socket.on('chat-message', payload => {
+    console.log('New chat message')
+    console.log(payload)
+    Game.findById(socket.room, (err, foundGame) => {
+      if (err) console.log(err)
+      else {
+        console.log('Game lookup ok')
+        foundGame.chat = [...foundGame.chat, payload]
+        foundGame.save((err, game) => {
+          if (err) console.log(err)
+          else {
+            console.log('game save ok')
+            socket.broadcast.to(socket.room).emit('chat-message', payload)
+            socket.emit('chat-message', payload)
+          }
+        })
+      }
+    })
+  })
+
   socket.on(`disconnect`, () => console.log(`User ${socket.client.id} disconnecting`))
 
 })

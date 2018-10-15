@@ -39,7 +39,7 @@ class Title extends React.Component {
     return (
       <div className='Title'>
         {!this.state.editing
-          ? <h3 onClick={this.toggleEdit}>{this.props.game.name}</h3>
+          ? <h3 onClick={this.props.app.auth.isAuth ? this.toggleEdit : () => {}}>{this.props.game.name}</h3>
           : <input
               type='text'
               ref={e => this.input = e}
@@ -53,6 +53,7 @@ class Title extends React.Component {
 }
 
 const mapStateToProps = state => ({
+  app: state.app,
   game: state.game
 })
 

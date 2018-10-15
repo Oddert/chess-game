@@ -10,6 +10,7 @@ const types = {
   , DESELECT_GAME: 'DESELECT_GAME'
   , UPDATE_TITLE: 'UPDATE_TITLE'
   , UPDATE_META: 'UPDATE_META'
+  , CHAT_MESSAGE: 'CHAT_MESSAGE'
 }
 
 export default types

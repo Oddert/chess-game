@@ -49,3 +49,8 @@ export const updateMeta = payload => ({
   type: types.UPDATE_META,
   payload
 })
+
+export const chatMessage = payload => ({
+  type: types.CHAT_MESSAGE,
+  payload
+})

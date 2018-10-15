@@ -5,7 +5,6 @@ import { takePiece, move, deselectGame, updateMeta } from '../actions'
 import socket from '../sockets'
 
 import Cell from './Cell'
-import Title from './Title'
 
 import './styles/Board.css'
 
@@ -51,7 +50,6 @@ class Board extends React.Component {
   render () {
     return (
       <div className='board'>
-        <Title />
         <table>
           <tbody>
             {this.genBoard()}
