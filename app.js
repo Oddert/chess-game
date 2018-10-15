@@ -70,8 +70,15 @@ io.on(`connection`, socket => {
     .exec((err, foundGame) => {
       if (err) console.log(err)
       else console.log(`foundGame: `, !!foundGame)
+
+      const fromRow = payload.from.row
+      const fromCol = payload.from.col
+      const toRow = payload.to.row
+      const toCol = payload.to.col
+
       const clientTeam = payload.team === 0 ? 'black' : 'white'
-      const targetCellType = foundGame.board[payload.to.row][payload.to.col].type
+      const targetCellType = foundGame.board[toRow][toCol].type
+
 
       if (payload.takePiece) {
         foundGame[clientTeam].score += convertPoints(targetCellType)
@@ -79,15 +86,15 @@ io.on(`connection`, socket => {
       }
 
       if (payload.team === 0) {
-        foundGame.moves[foundGame.moves.length-1].b = toPGN(payload.piece, payload.from.row, payload.from.col, payload.piece, payload.to.row, payload.to.col, payload.takePiece)
+        foundGame.moves[foundGame.moves.length-1].b = toPGN(payload.piece, fromRow, fromCol, payload.piece, toRow, toCol, payload.takePiece)
       } else {
-        console.log({ w : toPGN(payload.piece, payload.from.row, payload.from.col, payload.piece, payload.to.row, payload.to.col, payload.takePiece) })
-        foundGame.moves.push({ w : toPGN(payload.piece, payload.from.row, payload.from.col, payload.piece, payload.to.row, payload.to.col, payload.takePiece) })
+        console.log({ w : toPGN(payload.piece, fromRow, fromCol, payload.piece, toRow, toCol, payload.takePiece) })
+        foundGame.moves.push({ w : toPGN(payload.piece, fromRow, fromCol, payload.piece, toRow, toCol, payload.takePiece) })
         console.log(foundGame.moves)
       }
 
-      foundGame.board[payload.from.row][payload.from.col] = { type: "empty", team: null }
-      foundGame.board[payload.to.row][payload.to.col] = { type: payload.piece, team: Number(payload.team) }
+      foundGame.board[fromRow][fromCol] = { type: "empty", team: null }
+      foundGame.board[toRow][toCol] = { type: payload.piece, team: Number(payload.team) }
       foundGame.markModified('board')
       // foundGame.markModified('moves')
       foundGame.lastMove = payload.team === 0 ? 1 : 0
