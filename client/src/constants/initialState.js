@@ -50,6 +50,8 @@ const initialState = {
     board: generateBoard(),
     turn: 1,
     thisClientPlayer: null,
+    moves: [],
+    chat: [],
     players: {
       black: {
         score: 0,

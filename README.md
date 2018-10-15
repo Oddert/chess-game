@@ -1,7 +1,6 @@
 # Oddert Chess game
 
 ## To Do's:
-- Implement move history notation
 - Chat function
 
 - Investigate how socket.io fits into passport auth
@@ -28,5 +27,6 @@
 - Complete socket example suits
 - Check the save 'lastMove' functionality is working
 - Add name change and display functionality
+- Implement move history notation
 
 - Add ~~proper~~ authentication

@@ -75,12 +75,12 @@ export default connect(mapStateToProps, null)(OnlineContainer)
 // w=white, b=black, f=from, t=to, x=take
 const sampleGameNotation = [
   {
-    w: {f: 'Ba3', t: 'Bb2', x: 0},
-    b: {f: 'Pd7', t: 'Pd5', x: 0}
+    w: {f: 'Ba3', t: 'Bb2', x: false},
+    b: {f: 'Pd7', t: 'Pd5', x: false}
   },
   {
-    w: {f: 'Rh1', t: 'Rh4', x: 1},
-    b: {f: 'Pe2', t: 'Pe4', x: 0}
+    w: {f: 'Rh1', t: 'Rh4', x: true},
+    b: {f: 'Pe2', t: 'Pe4', x: false}
   }
 ]
 

@@ -1,6 +1,6 @@
 import React from 'react'
-import { connect } from 'react-redux'
 
+import GameUI from './GameUI'
 import Board from './Board'
 import PlayerUI from './PlayerUI'
 
@@ -8,7 +8,7 @@ class BoardWrapper extends React.Component {
   render () {
     return (
       <div className='board-container'>
-        <div style={{flex: '1'}}>It is {this.props.game.turn === 0 ? 'black' : 'white'}'s Turn</div>
+        <GameUI />
         <Board />
         <PlayerUI />
       </div>
@@ -16,8 +16,6 @@ class BoardWrapper extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({
-  game: state.game
-})
 
-export default connect(mapStateToProps, null)(BoardWrapper)
+
+export default BoardWrapper

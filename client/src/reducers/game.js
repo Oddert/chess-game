@@ -20,6 +20,14 @@ const convertPoints = str => {
   }
 }
 
+const toPGN = (fPiece, fRow, fCol, tPiece, tRow, tCol, take) => {
+  let fPieceLetter = fPiece.substring(0,1).toUpperCase()
+  let tPieceLetter = tPiece.substring(0,1).toUpperCase()
+  let fColLetter = "abcdefgh".substring(fCol, fCol+1)
+  let tColLetter = "abcdefgh".substring(tCol, tCol+1)
+  return {f: `${fPieceLetter + fColLetter + fRow}`, t: `${tPieceLetter + tColLetter + tRow}`, x: !!take}
+}
+
 const game = (state = initialState.game, action) => {
   switch (action.type) {
     case types.TAKE_PIECE:
@@ -47,6 +55,14 @@ const game = (state = initialState.game, action) => {
 
       takePiece_State.turn = action.payload.team === 0 ? 1 : 0
 
+      let takePGN = toPGN(action.payload.piece, action.payload.from.row, action.payload.from.col, action.payload.piece, action.payload.to.row, action.payload.to.col, true)
+
+      if (action.payload.team === 0) {
+        takePiece_State.moves[takePiece_State.moves.length-1].b = takePGN
+      } else if (action.payload.team === 1) {
+        takePiece_State.moves.push({ w: takePGN })
+      }
+
       return takePiece_State
 
     case types.MOVE:
@@ -62,7 +78,16 @@ const game = (state = initialState.game, action) => {
         team: action.payload.team
       }
 
-      return Object.assign({}, state, { board: moveState, turn: action.payload.team === 0 ? 1 : 0 })
+      let movePGN = toPGN(action.payload.piece, action.payload.from.row, action.payload.from.col, action.payload.piece, action.payload.to.row, action.payload.to.col, false)
+      let moveMoves = [...state.moves]
+
+      if (action.payload.team === 0) {
+        moveMoves[moveMoves.length-1].b = movePGN
+      } else if (action.payload.team === 1) {
+        moveMoves.push({ w: movePGN })
+      }
+
+      return Object.assign({}, state, { board: moveState, turn: action.payload.team === 0 ? 1 : 0, moves: moveMoves })
     case types.SELECT_GAME:
       console.log(state)
       console.log(action.payload)
@@ -76,6 +101,8 @@ const game = (state = initialState.game, action) => {
           white: action.payload.white
         }
       })
+    case types.PLAY_LOCAL:
+      return initialState.game
     case types.UPDATE_TITLE:
       return Object.assign({}, state, {
         name: action.payload

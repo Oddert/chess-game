@@ -20,6 +20,22 @@ const GameSchema = new mongoose.Schema({
     default: 0
   },
 
+  moves: [
+    {
+      w: {
+        f: String,
+        t: String,
+        x: { type: Boolean, default: false }
+      },
+      b: {
+        f: String,
+        t: String,
+        x: { type: Boolean, default: false }
+      },
+    }
+  ],
+  chat: [],
+
   white: {
     id: {
       type: mongoose.Schema.Types.ObjectId,

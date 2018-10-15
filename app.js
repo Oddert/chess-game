@@ -13,6 +13,7 @@ const Game          = require('./models/Game')
     , User          = require('./models/User')
 
 const convertPoints = require('./utils/convertPoints')
+    , toPGN         = require('./utils/toPGN')
 
 require('dotenv').config()
 
@@ -77,10 +78,21 @@ io.on(`connection`, socket => {
         foundGame[clientTeam].takenPieces.push(targetCellType)
       }
 
+      if (payload.team === 0) {
+        foundGame.moves[foundGame.moves.length-1].b = toPGN(payload.piece, payload.from.row, payload.from.col, payload.piece, payload.to.row, payload.to.col, payload.takePiece)
+      } else {
+        console.log({ w : toPGN(payload.piece, payload.from.row, payload.from.col, payload.piece, payload.to.row, payload.to.col, payload.takePiece) })
+        foundGame.moves.push({ w : toPGN(payload.piece, payload.from.row, payload.from.col, payload.piece, payload.to.row, payload.to.col, payload.takePiece) })
+        console.log(foundGame.moves)
+      }
+
       foundGame.board[payload.from.row][payload.from.col] = { type: "empty", team: null }
       foundGame.board[payload.to.row][payload.to.col] = { type: payload.piece, team: Number(payload.team) }
       foundGame.markModified('board')
+      // foundGame.markModified('moves')
       foundGame.lastMove = payload.team === 0 ? 1 : 0
+
+      console.log(foundGame)
 
       foundGame.save((err, game) => {
         if (err) console.log(err)
