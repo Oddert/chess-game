@@ -1,8 +1,6 @@
 # Oddert Chess game
 
 ## To Do's:
-- Chat function
-
 - Investigate how socket.io fits into passport auth
 
 - Get multiple auth options working
@@ -28,5 +26,6 @@
 - Check the save 'lastMove' functionality is working
 - Add name change and display functionality
 - Implement move history notation
+- Chat function
 
 - Add ~~proper~~ authentication
