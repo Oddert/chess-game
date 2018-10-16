@@ -2,6 +2,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
+import { login, logout } from '../actions'
+
 import Header from './Header/Header'
 import BoardWrapper from './BoardWrapper'
 import OnlineContainer from './OnlineContainer'
@@ -43,4 +45,9 @@ const mapStateToProps = state => ({
   app: state.app
 })
 
-export default connect(mapStateToProps, null)(Container)
+const mapDispatchToProps = dispatch => ({
+  login: payload => dispatch(login(payload)),
+  logout: () => dispatch(logout())
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Container)
