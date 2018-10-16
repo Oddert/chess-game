@@ -27,7 +27,7 @@ class PlayerUI extends React.Component {
     const players = this.props.game.players
     return (
       <div className='playerUI'>
-        <div className='takenPieces black'>
+        <div className={this.props.game.thisClientPlayer === 0 ? 'takenPieces black client' :'takenPieces black'}>
           <div className='scoreIndicator'>
             {players.black.username}: {players.black.score}
           </div>
@@ -38,7 +38,7 @@ class PlayerUI extends React.Component {
             }
           </div>
         </div>
-        <div className='takenPieces white'>
+        <div className={this.props.game.thisClientPlayer === 1 ? 'takenPieces white client' :'takenPieces white'}>
           <div className='scoreIndicator'>
             {players.white.username}: {players.white.score}
           </div>
@@ -55,6 +55,7 @@ class PlayerUI extends React.Component {
 }
 
 const mapStateToProps = state => ({
+  // app: state.app,
   game: state.game
 })
 
