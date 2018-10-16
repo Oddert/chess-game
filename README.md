@@ -1,16 +1,21 @@
 # Oddert Chess game
 
 ## To Do's:
-- Investigate how socket.io fits into passport auth
-
 - Get multiple auth options working
+
+- Investigate how socket.io fits into passport auth
 - Add ability to request match, post public request
 - Ability to create, destroy games
 - Change existing save function to deal with auth
 
+- DM chat?
+
+- Add pawn promotion mechanic (will involve looking at PGN and move functionalities to accommodate piece's having a before and after state)
+
 - Add score tracking to user profile
   * Win condition
-  * Forefite condition
+  * Forfeit condition
+
 - Router history?
 
 - Add dynamic error events to socket
@@ -19,7 +24,7 @@
   * Leave room failsafe in 'move piece' event (server side)
 
 ### Done / Solved:
-- Figgure out how to have secure 2ppl socket connection
+- Figure out how to have secure 2ppl socket connection
 - Decide how to arrange the boards
 - Socket io can do db work ??
 - Complete socket example suits
