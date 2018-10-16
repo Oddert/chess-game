@@ -25,8 +25,8 @@ class ProfileDrop extends React.Component {
 
   render () {
     return (
-      <div className='signIn'>
-        <button onClick={this.handleLogout.bind(this)}>Logout</button>
+      <div className='signIn auth'>
+        <button onClick={this.handleLogout.bind(this)} className='logout'>Logout</button>
       </div>
     )
   }

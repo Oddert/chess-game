@@ -69,14 +69,30 @@
   border: 1px solid #bec3c7;
   border-radius: 0px 0px 0px 10px;
   padding: 5px 10px;
+  border-right: none;
 }
 
 .Chat .input button {
   flex: 1;
   border: 1px solid #bec3c7;
   border-radius: 0px 0px 10px 0px;
-  background-color: #bec3c7;
+  background-color: #ecf0f1;
+  transition: .1s linear;
+  cursor: pointer;
+  /* color: #2d3c50; */
 }
+
+.Chat .input button:hover {
+  background-color: #bec3c7;
+  /* box-shadow: inset -1px -1px 0px 0px rgba(0,0,0,.1), inset 1px 1px 0px 0px rgba(255,255,255,1); */
+}
+
+.Chat .input button:active {
+
+}
+
+
+
 
 @media only screen and (max-width: 768px) {
   .Chat {
