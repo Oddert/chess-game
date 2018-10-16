@@ -10,7 +10,7 @@ router.route('/')
 
 router.route('/ping')
 .get((req, res) => {
-  console.log('Ping recieved:')
+  console.log('Ping recieved. Is Auth:')
   console.log(req.isAuthenticated())
   if (req.isAuthenticated()) {
     User.findById(req.user._id)

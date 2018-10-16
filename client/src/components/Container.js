@@ -8,6 +8,22 @@ import OnlineContainer from './OnlineContainer'
 import PreGame from './PreGame'
 
 class Container extends React.Component {
+  componentDidMount () {
+    fetch('/api/auth/ping', {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' }
+    })
+    .then(res => res.json())
+    .then(res => {
+      if (!res.err) {
+        if (!this.props.app.auth.isAuth === res.isAuth) {
+          if (res.isAuth) this.props.login(res.user)
+          else this.props.logout()
+        }
+      }
+    })
+  }
+
   render () {
     return (
       <div className='container'>

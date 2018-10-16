@@ -1,6 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
+import { login, logout } from '../actions'
+
 import BoardWrapper from './BoardWrapper'
 import GameIconContainer from './GameIconContainer'
 
@@ -15,11 +17,38 @@ class OnlineContainer extends React.Component {
       playing: false
     }
     this.getPublicGames = this.getPublicGames.bind(this)
+    this.pingAuth = this.pingAuth.bind(this)
     this.callback = this.callback.bind(this)
   }
 
   componentDidMount () {
+    this.pingAuth()
     this.getPublicGames()
+  }
+
+  pingAuth () {
+    fetch('/api/auth/ping', {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' }
+    })
+    .then(res => res.json())
+    .then(res => {
+      console.log(res)
+      if (res.err) {
+        console.log(res.err)
+      } else {
+        if (!this.props.app.auth.isAuth === res.isAuth) {
+          console.log('server disagrees with auth status')
+          if (res.isAuth) {
+            console.log('Loggin in...')
+            this.props.login(res.user)
+          } else {
+            console.log('Loggin out...')
+            this.props.logout()
+          }
+        } else {console.log('Auth in sync.')}
+      }
+    })
   }
 
   getPublicGames () {
@@ -69,7 +98,12 @@ const mapStateToProps = state => ({
   app: state.app
 })
 
-export default connect(mapStateToProps, null)(OnlineContainer)
+const mapDispatchToProps = dispatch => ({
+  login: payload => dispatch(login(payload)),
+  logout: () => dispatch(logout())
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(OnlineContainer)
 
 
 // w=white, b=black, f=from, t=to, x=take

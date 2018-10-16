@@ -139,7 +139,10 @@ io.on(`connection`, socket => {
     })
   })
 
-  socket.on(`disconnect`, () => console.log(`User ${socket.client.id} disconnecting`))
+  socket.on(`disconnect`, () => {
+    socket.leave(socket.room)
+    console.log(`User ${socket.client.id} disconnecting`)
+  })
 
 })
 
