@@ -38,14 +38,8 @@ class OnlineContainer extends React.Component {
         console.log(res.err)
       } else {
         if (!this.props.app.auth.isAuth === res.isAuth) {
-          console.log('server disagrees with auth status')
-          if (res.isAuth) {
-            console.log('Loggin in...')
-            this.props.login(res.user)
-          } else {
-            console.log('Loggin out...')
-            this.props.logout()
-          }
+          if (res.isAuth) this.props.login(res.user)
+          else this.props.logout()
         } else {console.log('Auth in sync.')}
       }
     })
@@ -64,7 +58,7 @@ class OnlineContainer extends React.Component {
     })
     if (this.props.app.auth.isAuth) {
       console.log(`### Getting User Games`)
-
+      console.log('[functionality missing]')
     }
   }
 

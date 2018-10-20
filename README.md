@@ -3,7 +3,6 @@
 ## To Do's:
 - Get multiple auth options working
 
-- Investigate how socket.io fits into passport auth
 - Add ability to request match, post public request
 - Ability to create, destroy games
 - Change existing save function to deal with auth
@@ -34,3 +33,4 @@
 - Chat function
 
 - Add ~~proper~~ authentication
+- Investigate how socket.io fits into passport auth <-yaaaaaasssss lad
