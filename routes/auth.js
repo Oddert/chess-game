@@ -10,6 +10,7 @@ router.route('/')
 
 router.route('/ping')
 .get((req, res) => {
+  if (req.isAuthenticated()) req.session.user_id = req.user.id;
   console.log('Ping recieved. Is Auth:')
   console.log(req.isAuthenticated())
   if (req.isAuthenticated()) {
@@ -71,6 +72,7 @@ router.route('/local/login')
             console.log(err)
             return res.status(500).json({ err })
           } else {
+            req.session.user_id = req.user.id;
             console.log(foundUser)
             return res.status(200).json({ user: foundUser })
           }

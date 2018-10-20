@@ -1,21 +1,28 @@
-const express       = require('express')
-    , app           = express()
-    , bodyParser    = require('body-parser')
-    , cookieParser  = require('cookie-parser')
-    , path          = require('path')
-    , mongoose      = require('mongoose')
-    , socketio      = require('socket.io')
+const express           = require('express')
+    , app               = express()
+    , bodyParser        = require('body-parser')
+    , cookieParser      = require('cookie-parser')
+    , path              = require('path')
+    , mongoose          = require('mongoose')
+    , socketio          = require('socket.io')
 
-    , passport      = require('passport')
-    , LocalStrategy = require('passport-local')
+    , passport          = require('passport')
+    , LocalStrategy     = require('passport-local')
+    , passportSocketIo  = require('passport.socketio')
 
-const Game          = require('./models/Game')
-    , User          = require('./models/User')
+    , session           = require('express-session')
+    , sessionStore      = new session.MemoryStore()
+    , MongoStore        = require('connect-mongo')(session)
 
-const convertPoints = require('./utils/convertPoints')
-    , toPGN         = require('./utils/toPGN')
+const Game              = require('./models/Game')
+    , User              = require('./models/User')
+
+const convertPoints     = require('./utils/convertPoints')
+    , toPGN             = require('./utils/toPGN')
 
 require('dotenv').config()
+
+app.use(require('cors')())
 
 mongoose.connect(process.env.DATABASE)
 
@@ -25,12 +32,51 @@ app.use(cookieParser())
 
 app.use(express.static(path.join(__dirname + '/client/build')))
 
-app.use(require('express-session')({
-  secret: process.env.SECRET,
-  resave: false,
-  saveUninitialized: false,
+// console.log('###############################')
+// console.log(mongoose.connection.client.s.url)
+const testSessionStore = new MongoStore({ url: mongoose.connection.client.s.url })
+
+const http = require('http').Server(app)
+
+
+
+const io = socketio(http)
+
+const onAuthorizeSuccess = (data, accept) => {
+  console.log('!!!!!! app.js onAuthorizeSuccess:')
+  console.log('Successful connection to socket io')
+  accept(null, true)
+}
+
+const onAuthorizeFail = (data, message, error, accept) => {
+  console.log('app.js onAuthorizeFail:')
+  if (error)
+    throw new Error(message)
+  console.log('Failed to connect. Reason: ', message)
+  // console.log(data)
+  // console.log(data.headers.cookie)
+  console.log(error)
+  accept(null, false)
+}
+
+io.use(passportSocketIo.authorize({
+  cookieParser: cookieParser,
+  key:          'connect.sid',
+  secret:       process.env.SECRET,
+  store:        testSessionStore,
+  success:      onAuthorizeSuccess,
+  fail:         onAuthorizeFail
+}));
+
+
+app.use(session({
+  secret:             process.env.SECRET,
+  resave:             true,
+  saveUninitialized:  true,
+  key:                'connect.sid',
+  store:              testSessionStore,
   cookie: {
-    secure: false,
+    secure:   false,
     httpOnly: false
   }
 }))
@@ -43,8 +89,9 @@ passport.use(new LocalStrategy(User.authenticate()))
 passport.serializeUser(User.serializeUser())
 passport.deserializeUser(User.deserializeUser())
 
+
 const PORT = process.env.PORT || 5000
-var server = app.listen(
+var server = http.listen(
   PORT,
   () => console.log(
     `${new Date().toLocaleTimeString('en-GB')}: Server initialised on PORT: ${PORT}...`
@@ -52,13 +99,22 @@ var server = app.listen(
 )
 
 
-const io = socketio(server)
+
+
+
+
 
 io.on(`connection`, socket => {
-  console.log(`User ${socket.client.id} has connected.`)
+  console.log(`${new Date().toLocaleTimeString('en-GB')}: User ${socket.client.id} has connected.`)
+
+  console.log(socket.handshake.xdomain ? 'Cross origin connection' : 'Same origin connection')
+  console.log(socket.handshake.headers.cookie)
+  console.log('===========================')
 
   socket.on(`join-game`, payload => {
     console.log(`User ${socket.client.id} joining room: ${payload}`)
+    console.log('socket.handshake.user:', socket.handshake.user)
+    console.log('socket.request.user:', socket.request.user)
     if (socket.room) socket.leave(socket.room)
     socket.join(payload)
     socket.room = payload
@@ -145,6 +201,9 @@ io.on(`connection`, socket => {
   })
 
 })
+
+
+
 
 // const seed = require('./utils/seed')
 
