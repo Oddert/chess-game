@@ -5,17 +5,19 @@ const express           = require('express')
     , path              = require('path')
     , mongoose          = require('mongoose')
     , socketio          = require('socket.io')
+    , http              = require('http').Server(app)
 
     , passport          = require('passport')
     , LocalStrategy     = require('passport-local')
     , passportSocketIo  = require('passport.socketio')
 
     , session           = require('express-session')
-    , sessionStore      = new session.MemoryStore()
+    // , sessionStore      = new session.MemoryStore()
     , MongoStore        = require('connect-mongo')(session)
 
 const Game              = require('./models/Game')
     , User              = require('./models/User')
+    , Request           = require('./models/Request')
 
 const convertPoints     = require('./utils/convertPoints')
     , toPGN             = require('./utils/toPGN')
@@ -32,12 +34,8 @@ app.use(cookieParser())
 
 app.use(express.static(path.join(__dirname + '/client/build')))
 
-// console.log('###############################')
-// console.log(mongoose.connection.client.s.url)
-const testSessionStore = new MongoStore({ url: mongoose.connection.client.s.url })
 
-const http = require('http').Server(app)
-
+const sessionStore = new MongoStore({ url: mongoose.connection.client.s.url })
 
 
 const io = socketio(http)
@@ -53,8 +51,6 @@ const onAuthorizeFail = (data, message, error, accept) => {
   if (error)
     throw new Error(message)
   console.log('Failed to connect. Reason: ', message)
-  // console.log(data)
-  // console.log(data.headers.cookie)
   console.log(error)
   accept(null, false)
 }
@@ -63,7 +59,7 @@ io.use(passportSocketIo.authorize({
   cookieParser: cookieParser,
   key:          'connect.sid',
   secret:       process.env.SECRET,
-  store:        testSessionStore,
+  store:        sessionStore,
   success:      onAuthorizeSuccess,
   fail:         onAuthorizeFail
 }));
@@ -74,12 +70,14 @@ app.use(session({
   resave:             true,
   saveUninitialized:  true,
   key:                'connect.sid',
-  store:              testSessionStore,
+  store:              sessionStore,
   cookie: {
     secure:   false,
-    httpOnly: false
+    httpOnly: false,
+    maxAge: 1000 * 60 * 60 * 3
   }
 }))
+
 
 app.use(passport.initialize())
 app.use(passport.session())
@@ -97,11 +95,6 @@ var server = http.listen(
     `${new Date().toLocaleTimeString('en-GB')}: Server initialised on PORT: ${PORT}...`
   )
 )
-
-
-
-
-
 
 
 io.on(`connection`, socket => {
@@ -209,8 +202,7 @@ io.on(`connection`, socket => {
 
 app.use('/api/auth/', require('./routes/auth'))
 
-app.route('/api/games/public')
-  .get((req, res) => {
+app.get('/api/games/public', (req, res) => {
     console.log(req.headers['x-forwarded-for'].split(',')[0])
     Game.find({}, (err, games) => {
       if (err) console.log(err)
@@ -218,6 +210,38 @@ app.route('/api/games/public')
     })
   })
 
+app.route('/api/requests/public')
+  .get((req, res) => {
+    console.log('eff to pay respcccs FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF')
+    // res.status(200).json({ requests: [] })
+    Request.find({}, (err, requests) => {
+      if (err) console.log(err)
+      else {
+        console.log('public', requests)
+        res.json({ requests: ['public'] })
+      }
+    })
+  })
+
+app.get('/api/requests/inbound', (req, res) => {
+    Request.find({}, (err, requests) => {
+      if (err) console.log(err)
+      else {
+        console.log('inbound', requests)
+        res.status(200).json({ requests: ['inbound'] })
+      }
+    })
+  })
+
+app.get('/api/requests/outbound', (req, res) => {
+    Request.find({}, (err, requests) => {
+      if (err) console.log(err)
+      else {
+        console.log('outbound', requests)
+        res.status(200).json({ requests: ['outbound'] })
+      }
+    })
+  })
 
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname + '/build/index.html'))

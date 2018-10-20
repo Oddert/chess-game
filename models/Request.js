@@ -16,7 +16,7 @@ const RequestSchema = new mongoose.Schema ({
   target: {
     username: String,
     id: mongoose.Schema.Types.ObjectId
-  }
+  },
   created: {
     type: Date,
     default: Date.now
@@ -25,7 +25,7 @@ const RequestSchema = new mongoose.Schema ({
     type: Boolean,
     default: false
   },
-  accepted_date: Date
+  accepted_date: Date,
   game: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'chessGame-game'

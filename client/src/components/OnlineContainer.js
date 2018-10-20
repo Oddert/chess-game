@@ -5,6 +5,7 @@ import { login, logout } from '../actions'
 
 import BoardWrapper from './BoardWrapper'
 import GameIconContainer from './GameIconContainer'
+import RequestIconContainer from './RequestIconContainer'
 
 import './styles/OnlineContainer.css'
 
@@ -75,12 +76,19 @@ class OnlineContainer extends React.Component {
         </div>
         {this.state.playing
           ? <BoardWrapper />
-          : <div className='onlineContainer-select'>
-              <GameIconContainer games={this.state.publicGames} title='Public Games' callback={this.callback} />
-              {auth.isAuth
-                ? <GameIconContainer games={auth.user.activeGames} title='Your Games' callback={this.callback} />
-                : ''
-              }
+          : <div>
+              <div className='onlineContainer-select'>
+                <GameIconContainer games={this.state.publicGames} title='Public Games' callback={this.callback} />
+                {auth.isAuth
+                  ? <GameIconContainer games={auth.user.activeGames} title='Your Games' callback={this.callback} />
+                  : ''
+                }
+              </div>
+              <div className='onlineContainer-select'>
+                <RequestIconContainer mode='public' />
+                <RequestIconContainer mode='inbound' />
+                <RequestIconContainer mode='outbound' />
+              </div>
             </div>
         }
       </div>

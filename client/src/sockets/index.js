@@ -2,7 +2,7 @@ import openSocket from 'socket.io-client'
 
 const targetCookie = 'connect.sid'
 
-console.log(document.cookie)
+// console.log(document.cookie)
 
 function findCookie (input_name) {
   let name = `${input_name}=`
@@ -20,12 +20,12 @@ function findCookie (input_name) {
   }
 }
 
-console.log('AAAaaannndd the cookie is.........')
-console.log(findCookie(targetCookie))
+// console.log('AAAaaannndd the cookie is.........')
+// console.log(findCookie(targetCookie))
 
 
 const query = { token: 'session_id=' + findCookie(targetCookie) + ';' }
-console.log(query)
+// console.log(query)
 
 console.log(`Socket loading: provess.env.NODE_ENV = ${process.env.NODE_ENV}`)
 const socket = process.env.NODE_ENV === 'development'
