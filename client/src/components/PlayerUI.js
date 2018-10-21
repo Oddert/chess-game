@@ -33,7 +33,7 @@ class PlayerUI extends React.Component {
           </div>
           <div className='pieceIcons'>
             {players.black.takenPieces.length > 0
-                ? players.black.takenPieces.map(e => this.conv(e))
+                ? players.black.takenPieces.sort().map(e => this.conv(e))
                 : <br />
             }
           </div>
@@ -44,7 +44,7 @@ class PlayerUI extends React.Component {
           </div>
           <div className='pieceIcons'>
             {players.white.takenPieces.length > 0
-                ? players.white.takenPieces.map(e => this.conv(e))
+                ? players.white.takenPieces.sort().map(e => this.conv(e))
                 : <br />
             }
           </div>

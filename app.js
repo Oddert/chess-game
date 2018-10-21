@@ -213,6 +213,13 @@ app.get('/api/games/public', (req, res) => {
     })
   })
 
+app.get('/api/users/public', (req, res) => {
+    User.find({}, (err, users) => {
+      if (err) console.log(err)
+      else res.status(200).json({ users })
+    })
+  })
+
 app.route('/api/requests/public')
   .get((req, res) => {
     Request.find({}, (err, requests) => {

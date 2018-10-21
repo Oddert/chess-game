@@ -5,6 +5,10 @@ const RequestSchema = new mongoose.Schema ({
     type: String,
     default: 'Match Request'
   },
+  message: {
+    type: String,
+    default: 'Hey! Want to play a game of Chess?'
+  },
   author: {
     username: String,
     id: mongoose.Schema.Types.ObjectId

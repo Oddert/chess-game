@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 
 import { login, logout } from '../actions'
 
+import CreateRequest from './CreateRequest'
 import BoardWrapper from './BoardWrapper'
 import GameIconContainer from './GameIconContainer'
 import RequestIconContainer from './RequestIconContainer'
@@ -74,6 +75,7 @@ class OnlineContainer extends React.Component {
         <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
           {!this.state.playing ? <h2>Select Game</h2> : ''}
         </div>
+        {!this.state.playing ? <CreateRequest /> : ''}
         {this.state.playing
           ? <BoardWrapper />
           : <div>

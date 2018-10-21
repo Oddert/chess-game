@@ -16,11 +16,11 @@
   text-align: center;
   padding: 10px;
   /* border: 1px solid rgba(255, 255, 255, 1); */
-  box-shadow: inset 0px 0px 5px 0px rgba(255, 255, 255, 0);
+  /* box-shadow: inset 0px 0px 5px 0px rgba(255, 255, 255, 0); */
   border-radius: 20px;
 }
 
-.playerUI .takenPieces.client .scoreIndicator {
+.playerUI .takenPieces.client {
   /* border: 1px solid rgba(52, 157, 219, 1); */
   box-shadow: inset 0px 0px 5px 0px rgba(52, 157, 219, .6);
   border-radius: 20px;
