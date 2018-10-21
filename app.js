@@ -108,6 +108,7 @@ io.on(`connection`, socket => {
     console.log(`User ${socket.client.id} joining room: ${payload}`)
     console.log('socket.handshake.user:', socket.handshake.user)
     console.log('socket.request.user:', socket.request.user)
+    console.log('socket.request.isAuthenticated():', socket.request.isAuthenticated())
     if (socket.room) socket.leave(socket.room)
     socket.join(payload)
     socket.room = payload
@@ -152,9 +153,11 @@ io.on(`connection`, socket => {
 
       foundGame.save((err, game) => {
         if (err) console.log(err)
-        else console.log(`Game saved ok!`)
-        socket.emit(`move-piece`, payload)
-        socket.broadcast.to(socket.room).emit(`move-piece`, payload)
+        else {
+          console.log(`Game saved ok!`)
+          socket.emit(`move-piece`, payload)
+          socket.broadcast.to(socket.room).emit(`move-piece`, payload)
+        }
       })
     })
   })
@@ -212,8 +215,6 @@ app.get('/api/games/public', (req, res) => {
 
 app.route('/api/requests/public')
   .get((req, res) => {
-    console.log('eff to pay respcccs FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF')
-    // res.status(200).json({ requests: [] })
     Request.find({}, (err, requests) => {
       if (err) console.log(err)
       else {

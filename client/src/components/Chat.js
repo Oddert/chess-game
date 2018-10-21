@@ -6,10 +6,22 @@ import { chatMessage } from '../actions'
 
 import './styles/Chat.css'
 
-class MoveLogs extends React.Component {
+class Chat extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      autoScroll: true
+    }
+    this.handleSubmit = this.handleSubmit.bind(this)
+    this.handleScroll = this.handleScroll.bind(this)
+    this.scrollMax = this.scrollMax.bind(this)
+  }
+
   componentDidMount () {
+    this.scrollMax()
     socket.on('chat-message', payload => {
       this.props.chatMessage(payload)
+      if (this.state.autoScroll) this.scrollMax()
     })
   }
 
@@ -27,12 +39,26 @@ class MoveLogs extends React.Component {
     this.input.value = ''
   }
 
+  scrollMax () {
+    this.messages.scrollTop = this.messages.scrollHeight
+  }
+
+  handleScroll () {
+    if (this.messages) {
+      if (this.messages.scrollHeight - this.messages.scrollTop === this.messages.clientHeight) {
+        if (!this.state.autoScroll) this.setState({ autoScroll: true })
+      } else {
+        if (this.state.autoScroll) this.setState({ autoScroll: false })
+      }
+    }
+  }
+
   render () {
     const black = this.props.game.players.black.id
     return (
       <div className='Chat'>
         <p>Chat</p>
-        <div className='messages'>
+        <div className='messages' onScroll={this.handleScroll} ref={e => this.messages = e}>
           {this.props.game.chat.map((each, idx) =>
             <div key={idx} className={each.author.id === black ? 'message black' : 'message'}>
               <div className='message-inner'>
@@ -42,8 +68,9 @@ class MoveLogs extends React.Component {
             </div>
           )}
         </div>
+        {/* <button className='scrollmax'>auto scroll</button> */}
         {this.props.app.auth.isAuth
-          ? <form onSubmit={this.handleSubmit.bind(this)} className='input'>
+          ? <form onSubmit={this.handleSubmit} className='input'>
               <input type='text' ref={e => this.input = e} />
               <button>Send</button>
             </form>
@@ -63,4 +90,4 @@ const mapDispatchToProps = dispatch => ({
   chatMessage: payload => dispatch(chatMessage(payload))
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(MoveLogs)
+export default connect(mapStateToProps, mapDispatchToProps)(Chat)

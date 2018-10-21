@@ -9,16 +9,43 @@ import './styles/MoveLogs.css'
 // Mongoose initialises b with b.x = false
 
 class MoveLogs extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      autoScroll: true
+    }
+    this.handleScroll = this.handleScroll.bind(this)
+    this.scrollMax = this.scrollMax.bind(this)
+  }
+
+  componentDidMount () {
+    this.scrollMax()
+  }
+
   sanitise (move, x) {
     if (!x) return move
     return move.slice(0,1) + 'x' + move.slice(1)
+  }
+
+  scrollMax () {
+    this.logscroll.scrollTop = this.logscroll.scrollHeight
+  }
+
+  handleScroll () {
+    if (this.logscroll) {
+      if (this.logscroll.scrollHeight - this.logscroll.scrollTop === this.logscroll.clientHeight) {
+        if (!this.state.autoScroll) this.setState({ autoScroll: true })
+      } else {
+        if (this.state.autoScroll) this.setState({ autoScroll: false })
+      }
+    }
   }
 
   render () {
     return (
       <div className='MoveLogs'>
         <p>Moves</p>
-        <div className='logs'>
+        <div className='logs' onScroll={this.handleScroll} ref={e => this.logscroll = e}>
           {this.props.game.moves.map((each, idx) =>
             <div key={idx} className='log-line'>
               <span>{this.sanitise(each.w.t, each.w.x)}</span>

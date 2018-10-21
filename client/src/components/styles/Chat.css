@@ -19,15 +19,21 @@
 
 .Chat .messages {
   flex: 1;
+  box-sizing: border-box;
   overflow-y: auto;
 }
+
+/* .scrollmax {
+  align-self: center;
+  position: sticky;
+} */
 
 .Chat .message {
   /* border: 1px dashed tomato; */
   display: flex;
   /* flex-direction:column; */
   justify-content: flex-start;
-  margin: 3px;
+  margin: 5px;
 }
 
 .Chat .message-inner {
