@@ -6,7 +6,7 @@
   top: 0;
   left: 0;
   width: 100%;
-  border: 1px dashed tomato;
+  /* border: 1px dashed tomato; */
   display: flex;
   align-items: flex-start;
   justify-content: center;
@@ -26,24 +26,121 @@
 
 .requestForm form {
   display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.requestForm .form-flex {
+  display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: center;
   align-items: flex-start;
 }
 
+/* Form flex is incase anything needs to go bellow the form, currently nothing */
+
 .form-group {
   flex: 2;
   /* border: 1px dashed lightgreen; */
 }
 
+.form-group.user {
+  min-height: 250px;
+  overflow-y: auto;
+  position: relative;
+  /* border: 1px dashed steelblue; */
+  padding: 0px 20px 0px 0px;
+}
+
+.cover {
+  /* border: 1px solid red; */
+  background: rgba(255,255,255,.7);
+  position: absolute;
+  box-sizing: border-box;
+  height: 100%;
+  width: 100%;
+  visibility: hidden;
+}
+
+.cover.active {
+  visibility: visible;
+}
+
+.toggleOpenRequest {
+  background-color: #fff;
+  border: 1px solid #2dcc70;
+  border-radius: 20px;
+  padding: 10px;
+  cursor: pointer;
+  transition: .2s linear;
+}
+
+.toggleOpenRequest:hover {
+  background-color: #2dcc70;
+  color: #fff;
+  box-shadow: 0px 0px 20px rgba(0,0,0,.1);
+}
+
+.toggleOpenRequest:active {
+  background: #27ae61;
+  box-shadow: 0px 0px 10px rgba(0,0,0,.1);
+}
+
 .form-group.requestNote {
   height: 100%;
   flex: 3;
+  text-align: left;
+  /* border: 1px dashed steelblue; */
+}
+
+.form-group.requestNote label {
+  padding: 0px 0px 10px 40px;
+}
+
+.form-group.requestNote .submit {
+  margin-top: 20px;
+  text-align: center;
 }
 
 .userSelect {
 
+}
+
+.request-explination-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  /* border: 1px dashed tomato; */
+}
+
+.request-explination {
+  height: 25px;
+  width: 25px;
+  line-height: 25px;
+  display: inline-block;
+  cursor: default;
+  border: 1px solid steelblue;
+  border-radius: 50%;
+  margin-left: 10px;
+  transition: .2s ease;
+}
+
+.request-explination:hover {
+  background-color: steelblue;
+  color: #ecf0f1;
+}
+
+.newRequestFlex {
+  display: flex;
+  margin: 0px 0px 20px 0px;
+}
+
+.newRequestFlex .fill {
+  flex: 1;
+  /* border: 1px dashed tomato; */
 }
 
 .userSelect .option {
@@ -86,7 +183,8 @@
   min-width: 40vw;
   width: 100%;
   min-height: 150px;
-  margin-left: 20px;
+  /* margin-left: 20px; */
+  margin-top: 10px;
   padding: 10px;
   font-family: 'sans serif', arial, helvetica;
 }

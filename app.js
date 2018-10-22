@@ -42,7 +42,7 @@ const io = socketio(http)
 
 const onAuthorizeSuccess = (data, accept) => {
   console.log('!!!!!! app.js onAuthorizeSuccess:')
-  console.log('Successful connection to socket io')
+  // console.log('Successful connection to socket io')
   accept(null, true)
 }
 
@@ -100,9 +100,14 @@ var server = http.listen(
 io.on(`connection`, socket => {
   console.log(`${new Date().toLocaleTimeString('en-GB')}: User ${socket.client.id} has connected.`)
 
-  console.log(socket.handshake.xdomain ? 'Cross origin connection' : 'Same origin connection')
-  console.log(socket.handshake.headers.cookie)
+  // console.log(socket.handshake.xdomain ? 'Cross origin connection' : 'Same origin connection')
+  // console.log(socket.handshake.headers.cookie)
+
+  // console.log(socket.request.user)
   console.log('===========================')
+
+
+  socket.join(socket.request.user._id)
 
   socket.on(`join-game`, payload => {
     console.log(`User ${socket.client.id} joining room: ${payload}`)
@@ -191,8 +196,35 @@ io.on(`connection`, socket => {
     })
   })
 
+  socket.on('new-request', payload => {
+    console.log('Request to create a new game offer:')
+    console.log(socket.request.user.username)
+    console.log(payload)
+    if (payload.targetUser) socket.broadcast.to(payload.targetUser).emit('dev', payload)
+    User.findById(socket.request.user._id, (err, user) => {
+      if (err) console.log(err)
+      else {
+        let newRequest = {
+          message: payload.message,
+          author: {
+            username: user.username,
+            id: user._id
+          },
+          open: payload.openRequest,
+          target: payload.openRequest ? null : payload.targetUser
+        }
+        console.log(newRequest)
+        Request.create(newRequest, (err, request) => {
+          if (err) console.log(err)
+          else console.log('Request made successfully!')
+        })
+      }
+    })
+  })
+
   socket.on(`disconnect`, () => {
     socket.leave(socket.room)
+    socket.leave(socket.request.user._id)
     console.log(`User ${socket.client.id} disconnecting`)
   })
 
@@ -206,7 +238,7 @@ io.on(`connection`, socket => {
 app.use('/api/auth/', require('./routes/auth'))
 
 app.get('/api/games/public', (req, res) => {
-    console.log(req.headers['x-forwarded-for'].split(',')[0])
+    // console.log(req.headers['x-forwarded-for'].split(',')[0])
     Game.find({}, (err, games) => {
       if (err) console.log(err)
       else res.status(200).json({ games })
@@ -220,13 +252,26 @@ app.get('/api/users/public', (req, res) => {
     })
   })
 
+app.get('/api/users/friends', (req, res) => {
+  // PLACEHOLDER for friends adding functionality
+    User.find({}, (err, users) => {
+      if (err) console.log(err)
+      else res.status(200).json({ users: users.sort((a, b) => a.username < b.username ? 1 : -1) })
+    })
+  })
+
+app.post('/api/requests', (req, res) => {
+  console.log(req.body)
+  res.json({ server: 'res ok' })
+})
+
 app.route('/api/requests/public')
   .get((req, res) => {
-    Request.find({}, (err, requests) => {
+    Request.find({ open: false }, (err, requests) => {
       if (err) console.log(err)
       else {
         console.log('public', requests)
-        res.json({ requests: ['public'] })
+        res.json({ requests })
       }
     })
   })
@@ -236,7 +281,7 @@ app.get('/api/requests/inbound', (req, res) => {
       if (err) console.log(err)
       else {
         console.log('inbound', requests)
-        res.status(200).json({ requests: ['inbound'] })
+        res.status(200).json({ requests: [] })
       }
     })
   })
@@ -246,7 +291,7 @@ app.get('/api/requests/outbound', (req, res) => {
       if (err) console.log(err)
       else {
         console.log('outbound', requests)
-        res.status(200).json({ requests: ['outbound'] })
+        res.status(200).json({ requests: [] })
       }
     })
   })

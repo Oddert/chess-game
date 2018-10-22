@@ -11,8 +11,12 @@ const RequestSchema = new mongoose.Schema ({
   },
   author: {
     username: String,
-    id: mongoose.Schema.Types.ObjectId
+    id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'chessGame-user'
+    }
   },
+
   open: {
     type: Boolean,
     default: true
@@ -21,15 +25,28 @@ const RequestSchema = new mongoose.Schema ({
     username: String,
     id: mongoose.Schema.Types.ObjectId
   },
+
   created: {
     type: Date,
     default: Date.now
   },
+
+  deleted: {
+    type: Boolean,
+    default: false
+  },
+  deleted_by: {
+    type: mongoose.Schema.ObjectId,
+    ref: 'chessGame-user'
+  },
+  deleted_on: Date,
+
   accepted: {
     type: Boolean,
     default: false
   },
   accepted_date: Date,
+
   game: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'chessGame-game'

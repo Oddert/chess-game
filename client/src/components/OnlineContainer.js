@@ -75,7 +75,7 @@ class OnlineContainer extends React.Component {
         <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
           {!this.state.playing ? <h2>Select Game</h2> : ''}
         </div>
-        {!this.state.playing ? <CreateRequest /> : ''}
+        {(!this.state.playing && this.props.app.auth.isAuth) ? <CreateRequest /> : ''}
         {this.state.playing
           ? <BoardWrapper />
           : <div>

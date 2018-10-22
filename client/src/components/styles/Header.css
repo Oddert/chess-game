@@ -23,6 +23,12 @@
   color: rgba(53,152,219,1);
 }
 
+.Hamburger {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+}
+
 .signIn {
   position: absolute;
   top: 50px;

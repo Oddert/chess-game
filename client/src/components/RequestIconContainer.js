@@ -22,7 +22,7 @@ class RequestIconContainer extends React.Component {
         console.log(res)
         if (res.err) console.log(res.err)
         else {
-          this.setState({ publicGames: res.games })
+          this.setState({ data: res.requests })
         }
       })
     }
@@ -36,6 +36,11 @@ class RequestIconContainer extends React.Component {
           {mode.substring(0,1).toUpperCase() + mode.substring(1)}
           {' Requests'}
         </p>
+        <div>
+          {this.state.data.map(each =>
+            <div key={each._id}>{each._id}</div>
+          )}
+        </div>
       </div>
     )
   }
