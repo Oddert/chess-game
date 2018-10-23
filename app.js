@@ -267,7 +267,7 @@ app.post('/api/requests', (req, res) => {
 
 app.route('/api/requests/public')
   .get((req, res) => {
-    Request.find({ open: false }, (err, requests) => {
+    Request.find({ open: true, accepted: false }, (err, requests) => {
       if (err) console.log(err)
       else {
         console.log('public', requests)
@@ -295,6 +295,14 @@ app.get('/api/requests/outbound', (req, res) => {
       }
     })
   })
+
+app.post('/api/requests/accept', (req, res) => {
+  console.log('# USer wants to accept request!')
+  // Set old req to accepted true;
+  // Create new game instance;
+  //
+  res.json({ message: 'Server res to accept request OK' })
+})
 
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname + '/build/index.html'))

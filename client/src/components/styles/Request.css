@@ -1,0 +1,92 @@
+
+.req-icon {
+
+}
+
+.RequestOpen-container {
+  border: 1px dashed tomato;
+  box-sizing: border-box;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(255,255,255,.5);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  overflow-y: auto;
+}
+
+.RequestOpen {
+  background: #fff;
+  box-shadow: 5px 5px 20px rgba(0,0,0,.3);
+  border: 1px solid #bec3c7;
+  border-radius: 20px;
+  padding: 10px 20px;
+  margin-top: 10px;
+  margin-bottom: 50px;
+}
+
+.RequestOpen .message {
+  border: 1px solid rgba(27,188,155,1);
+  border-radius: 15px;
+  padding: 20px;
+}
+
+.RequestOpen textarea {
+  font-family: arial;
+  border: 2px solid #bec3c7;
+  border-radius: 10px;
+  padding: 6px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.accept-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.accept-buttons div {
+  flex: 1;
+}
+
+.accept-buttons button {
+  padding: 8px 20px;
+  margin: 10px 6px;
+  cursor: pointer;
+  border-radius: 20px;
+  transition: .15s ease;
+}
+
+.accept-buttons .decline {
+  border: 2px solid rgba(210,84,0,1);
+  background: #fff;
+  padding: 4px 20px;
+}
+.accept-buttons .close {
+  border: 2px solid rgba(53,152,219,1);
+  background: rgba(53,152,219,.3);
+}
+.accept-buttons .accept {
+  border: 2px solid rgba(39,174,97,1);
+  background: rgba(39,174,97,.3);
+}
+
+.accept-buttons .decline:hover {
+  border: 2px solid rgba(210,84,0,1);
+  background: rgba(230,127,34,.3);
+  color: rgba(232,76,61,1);
+}
+.accept-buttons .close:hover {
+  border: 2px solid rgba(53,152,219,1);
+  background: rgba(53,152,219,1);
+  color: #fff;
+}
+.accept-buttons .accept:hover {
+  border: 2px solid rgba(39,174,97,1);
+  background: rgba(39,174,97,1);
+  color: #fff;
+}

@@ -1,5 +1,7 @@
 import React from 'react'
 
+import Request from './Request'
+
 import './styles/RequestIconContainer.css'
 
 class RequestIconContainer extends React.Component {
@@ -38,7 +40,7 @@ class RequestIconContainer extends React.Component {
         </p>
         <div>
           {this.state.data.map(each =>
-            <div key={each._id}>{each._id}</div>
+            <Request item={each} key={each._id} />
           )}
         </div>
       </div>

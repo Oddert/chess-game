@@ -9,6 +9,7 @@ const RequestSchema = new mongoose.Schema ({
     type: String,
     default: 'Hey! Want to play a game of Chess?'
   },
+  responce_message: String,
   author: {
     username: String,
     id: {
