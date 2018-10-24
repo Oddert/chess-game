@@ -22,6 +22,30 @@
   background: #fff;
   padding: 20px 50px;
   margin-top: 10vh;
+  position: relative;
+}
+
+
+.requestForm .top-left-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 35px;
+  height: 35px;
+  background: #fff;
+  border: 1px solid rgba(53,152,219,1);
+  border-radius: 50%;
+  line-height: 30px;
+  font-weight: 700;
+  font-family: arial;
+  font-size: 18px;
+  cursor: pointer;
+  transition: .1s linear;
+}
+
+.requestForm .top-left-close:hover {
+  background: rgba(53,152,219,1);
+  color: #ecf0f1;
 }
 
 .requestForm form {

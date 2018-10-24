@@ -62,6 +62,32 @@ const initialState = {
         takenPieces: []
       }
     }
+  },
+  onlineData: {
+    games: {
+      public: {
+        lastUpdated: Date.now(),
+        data: []
+      },
+      active: {
+        lastUpdated: Date.now(),
+        data: []
+      }
+    },
+    requests: {
+      public: {
+        lastUpdated: Date.now(),
+        data: []
+      },
+      outbound: {
+        lastUpdated: Date.now(),
+        data: []
+      },
+      inbound: {
+        lastUpdated: Date.now(),
+        data: []
+      }
+    }
   }
 }
 

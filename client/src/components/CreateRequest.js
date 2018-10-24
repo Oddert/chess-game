@@ -79,7 +79,7 @@ class CreateRequest extends React.Component {
 
   handleSubmit (e) {
     e.preventDefault()
-    
+
     const payload = {
       targetUser: this.state.oponent ? this.state.oponent._id : null,
       user: this.props.app.auth.user._id,
@@ -105,6 +105,8 @@ class CreateRequest extends React.Component {
         {this.state.open
           ? <div className='requestForm-container' onClick={this.handleOutOfBounds}>
               <div className='requestForm'>
+
+                <button className='top-left-close' onClick={this.toggleOpen}>✖</button>
                 <h2>Challenge someone to a new match!</h2>
 
                 <div className='newRequestFlex'>
@@ -144,7 +146,7 @@ Closed requests are a specific player only'>?</div>
                                 className={(this.state.oponent && this.state.oponent._id === each._id) ? 'option selected' : 'option'}
                               >
                                 <h3 className='username'>{each.username}</h3>
-                                <h6 className='id'># {each._id}</h6>
+                                <h6 className='id'>#{each._id}</h6>
                               </div>
                           )
                         }

@@ -14,21 +14,12 @@ class OnlineContainer extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      publicGames: [],
-      userGames: [],
       playing: false
     }
-    this.getPublicGames = this.getPublicGames.bind(this)
-    this.pingAuth = this.pingAuth.bind(this)
     this.callback = this.callback.bind(this)
   }
 
   componentDidMount () {
-    this.pingAuth()
-    this.getPublicGames()
-  }
-
-  pingAuth () {
     fetch('/api/auth/ping', {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' }
@@ -47,23 +38,6 @@ class OnlineContainer extends React.Component {
     })
   }
 
-  getPublicGames () {
-    console.log(`### Getting Public Games`)
-    fetch('/api/games/public', {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' }
-    })
-    .then(res => res.json())
-    .then(res => {
-      if (res.err) console.log(res.err)
-      else this.setState({ publicGames: res.games })
-    })
-    if (this.props.app.auth.isAuth) {
-      console.log(`### Getting User Games`)
-      console.log('[functionality missing]')
-    }
-  }
-
   callback () {
     this.setState({ playing: true })
   }
@@ -72,21 +46,21 @@ class OnlineContainer extends React.Component {
     const auth = this.props.app.auth
     return (
       <div>
-        <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+        <div className='OnlineContainer-title'>
           {!this.state.playing ? <h2>Select Game</h2> : ''}
         </div>
         {(!this.state.playing && this.props.app.auth.isAuth) ? <CreateRequest /> : ''}
         {this.state.playing
           ? <BoardWrapper />
           : <div>
-              <div className='onlineContainer-select'>
-                <GameIconContainer games={this.state.publicGames} title='Public Games' callback={this.callback} />
+              <div className='OnlineContainer-select'>
+                <GameIconContainer type='public' callback={this.callback} />
                 {auth.isAuth
-                  ? <GameIconContainer games={auth.user.activeGames} title='Your Games' callback={this.callback} />
+                  ? <GameIconContainer type='user' callback={this.callback} />
                   : ''
                 }
               </div>
-              <div className='onlineContainer-select'>
+              <div className='OnlineContainer-select'>
                 <RequestIconContainer mode='public' />
                 <RequestIconContainer mode='inbound' />
                 <RequestIconContainer mode='outbound' />

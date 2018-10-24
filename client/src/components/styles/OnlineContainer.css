@@ -1,4 +1,11 @@
-.onlineContainer-select {
+
+.OnlineContainer-title {
+  display: 'flex';
+  align-items: 'center';
+  justify-content: 'center';
+}
+
+.OnlineContainer-select {
   display: flex;
   align-items: flex-start;
   justify-content: center;

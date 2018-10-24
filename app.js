@@ -32,7 +32,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 app.use(cookieParser())
 
-app.use(express.static(path.join(__dirname + '/client/build')))
+app.use(express.static(path.join(__dirname, '/client/build')))
 
 
 const sessionStore = new MongoStore({ url: mongoose.connection.client.s.url })
@@ -201,25 +201,39 @@ io.on(`connection`, socket => {
     console.log(socket.request.user.username)
     console.log(payload)
     if (payload.targetUser) socket.broadcast.to(payload.targetUser).emit('dev', payload)
-    User.findById(socket.request.user._id, (err, user) => {
-      if (err) console.log(err)
-      else {
-        let newRequest = {
-          message: payload.message,
-          author: {
-            username: user.username,
-            id: user._id
-          },
-          open: payload.openRequest,
-          target: payload.openRequest ? null : payload.targetUser
+    if (socket.request.isAuthenticated()) {
+      User.findById(socket.request.user._id, (err, user) => {
+        if (err) console.log(err)
+        else {
+          console.log(user)
+          let newRequest = {
+            message: payload.message,
+            author: {
+              username: user.username,
+              id: user._id
+            },
+            open: payload.openRequest,
+            target: payload.openRequest ? null : payload.targetUser
+          }
+          console.log(newRequest)
+          Request.create(newRequest, (err, request) => {
+            if (err) console.log(err)
+            else console.log('Request made successfully!')
+          })
         }
-        console.log(newRequest)
-        Request.create(newRequest, (err, request) => {
-          if (err) console.log(err)
-          else console.log('Request made successfully!')
-        })
-      }
-    })
+      })
+    }
+
+  })
+
+  socket.on('accept-request', payload => {
+    console.log('User wants to accept a request:')
+    console.log(socket.request.user.username)
+    console.log(payload)
+    setTimeout(() => {
+      socket.emit('accept-request', true)
+    }, 3000)
+
   })
 
   socket.on(`disconnect`, () => {
@@ -237,13 +251,25 @@ io.on(`connection`, socket => {
 
 app.use('/api/auth/', require('./routes/auth'))
 
+
+
 app.get('/api/games/public', (req, res) => {
-    // console.log(req.headers['x-forwarded-for'].split(',')[0])
-    Game.find({}, (err, games) => {
-      if (err) console.log(err)
-      else res.status(200).json({ games })
-    })
+  Game.find({}, (err, games) => {
+    if (err) console.log(err)
+    else res.status(200).json({ games })
   })
+})
+
+app.get('/api/games/user', (req, res) => {
+  User.findById(req.user._id)
+    .populate('activeGames')
+    .exec((err, user) => {
+      if (err) console.log(err)
+      else res.status(200).json({ games: user.activeGames })
+    })
+})
+
+
 
 app.get('/api/users/public', (req, res) => {
     User.find({}, (err, users) => {
@@ -253,28 +279,29 @@ app.get('/api/users/public', (req, res) => {
   })
 
 app.get('/api/users/friends', (req, res) => {
-  // PLACEHOLDER for friends adding functionality
-    User.find({}, (err, users) => {
-      if (err) console.log(err)
-      else res.status(200).json({ users: users.sort((a, b) => a.username < b.username ? 1 : -1) })
-    })
+// PLACEHOLDER for friends adding functionality
+  User.find({}, (err, users) => {
+    if (err) console.log(err)
+    else res.status(200).json({ users: users.sort((a, b) => a.username < b.username ? 1 : -1) })
   })
+})
+
+
 
 app.post('/api/requests', (req, res) => {
   console.log(req.body)
   res.json({ server: 'res ok' })
 })
 
-app.route('/api/requests/public')
-  .get((req, res) => {
-    Request.find({ open: true, accepted: false }, (err, requests) => {
-      if (err) console.log(err)
-      else {
-        console.log('public', requests)
-        res.json({ requests })
-      }
-    })
+app.get('/api/requests/public', (req, res) => {
+  Request.find({ open: true, accepted: false }, (err, requests) => {
+    if (err) console.log(err)
+    else {
+      console.log('public', requests)
+      res.json({ requests })
+    }
   })
+})
 
 app.get('/api/requests/inbound', (req, res) => {
     Request.find({}, (err, requests) => {
@@ -296,14 +323,7 @@ app.get('/api/requests/outbound', (req, res) => {
     })
   })
 
-app.post('/api/requests/accept', (req, res) => {
-  console.log('# USer wants to accept request!')
-  // Set old req to accepted true;
-  // Create new game instance;
-  //
-  res.json({ message: 'Server res to accept request OK' })
-})
 
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname + '/build/index.html'))
+  res.sendFile(path.join(__dirname, '/build/index.html'))
 })

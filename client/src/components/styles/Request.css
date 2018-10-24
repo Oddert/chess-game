@@ -4,7 +4,7 @@
 }
 
 .RequestOpen-container {
-  border: 1px dashed tomato;
+  /* border: 1px dashed tomato; */
   box-sizing: border-box;
   position: fixed;
   top: 0;
@@ -75,6 +75,23 @@
   background: rgba(39,174,97,.3);
 }
 
+
+.accept-buttons .decline.disabled:hover {
+  border: 2px solid rgba(210,84,0,1);
+  background: #fff;
+  padding: 4px 20px;
+}
+.accept-buttons .close.disabled:hover {
+  border: 2px solid rgba(53,152,219,1);
+  background: rgba(53,152,219,.3);
+}
+.accept-buttons .accept.disabled:hover {
+  border: 2px solid rgba(39,174,97,1);
+  background: rgba(39,174,97,.3);
+}
+
+
+
 .accept-buttons .decline:hover {
   border: 2px solid rgba(210,84,0,1);
   background: rgba(230,127,34,.3);
@@ -89,4 +106,9 @@
   border: 2px solid rgba(39,174,97,1);
   background: rgba(39,174,97,1);
   color: #fff;
+}
+
+.accept-buttons .disabled, .accept-buttons .disabled:hover {
+  color: #bec3c7;
+  cursor: default;
 }

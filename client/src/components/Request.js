@@ -1,4 +1,7 @@
 import React from 'react'
+import { connect } from 'react-redux'
+
+import socket from '../sockets'
 
 import './styles/Request.css'
 
@@ -24,23 +27,17 @@ class Request extends React.Component {
   }
 
   handleAccept () {
-    fetch('/api/requests/accept', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        id: this.props.item._id
-      })
-    })
-    .then(res => res.json())
-    .then(res => console.log(res))
+    socket.emit('accept-request', this.props.item._id)
+    socket.on('accept-request', payload => console.log(payload))
   }
 
   render () {
     const item = this.props.item
+    const app = this.props.app
     return (
       <div className='Request'>
         {!this.state.open
-          ? <button className='req-icon' onClick={this.toggleOpen}>Match request by <strong>{item.author.username}</strong></button>
+          ? <button className='req-icon' onClick={this.toggleOpen}>Public request by <strong>{item.author.username}</strong></button>
           : <div className='RequestOpen-container' onClick={this.handleOutOfBounds}>
               <div className='RequestOpen'>
                 <h5>{item.author.username} says:</h5>
@@ -50,7 +47,10 @@ class Request extends React.Component {
                   {item.open ? '' : <div><button className='decline'>Decline Offer</button></div>}
                   <div>
                     <button className='close' onClick={this.toggleOpen}>Close</button>
-                    <button className='accept'>Accept</button>
+                    {app.auth.isAuth
+                      ? <button className='accept' onClick={this.handleAccept}>Accept</button>
+                      : <button className='accept disabled' disabled title='Login to accept this request'>Accept</button>
+                    }
                   </div>
                 </div>
               </div>
@@ -61,4 +61,8 @@ class Request extends React.Component {
   }
 }
 
-export default Request
+const mapStateToProps = state => ({
+  app: state.app
+})
+
+export default connect(mapStateToProps, null)(Request)

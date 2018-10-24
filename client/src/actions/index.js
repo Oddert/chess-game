@@ -54,3 +54,31 @@ export const chatMessage = payload => ({
   type: types.CHAT_MESSAGE,
   payload
 })
+
+
+
+export const addPublicGames = payload => ({
+  type: types.ADD_PUBLIC_GAMES,
+  payload
+})
+
+export const addActiveGames = payload => ({
+  type: types.ADD_ACTIVE_GAMES,
+  payload
+})
+
+
+export const addPublicReq = payload => ({
+  type: types.ADD_PUBLIC_REQ,
+  payload
+})
+
+export const addOutboundReq = payload => ({
+  type: types.ADD_OUTBOUND_REQ,
+  payload
+})
+
+export const addInboundReq = payload => ({
+  type: types.ADD_INBOUND_REQ,
+  payload
+})
