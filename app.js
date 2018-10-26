@@ -228,11 +228,65 @@ io.on(`connection`, socket => {
 
   socket.on('accept-request', payload => {
     console.log('User wants to accept a request:')
-    console.log(socket.request.user.username)
+    console.log(socket.request.user)
     console.log(payload)
-    setTimeout(() => {
-      socket.emit('accept-request', true)
-    }, 3000)
+    if (!socket.request.isAuthenticated()) {
+      socket.emit('accept-request', { success: false })
+    } else {
+      Request.findById(payload, (err, request) => {
+        if (err) console.log(err)
+        else {
+          console.log('# Found Request')
+          User.findById(socket.request.user._id, (err, recipient) => {
+            if (err) console.log(err)
+            else {
+              console.log('# Found Recipient')
+              User.findById(request.author.id, (err, author) => {
+                if (err) console.log(err)
+                else {
+                  console.log('# Found Author')
+                  Game.create({ request: request._id }, (err, game) => {
+                    if (err) console.log(err)
+                    else {
+                      console.log('Game Created!')
+
+                      //add game to author
+                      author.activeGames.push(game._id)
+                      //add game to recipient
+                      recipient.activeGames.push(game._id)
+                      //add game to request
+                      request.game = game._id
+                      //set req to accepted
+                      request.accepted = true
+                      //set req to accepted date
+                      request.accepted_date = Date.now()
+                      author.save()
+                      recipient.save()
+                      request.save((err, saved_request) => {
+                        if (err) console.log(err)
+                        else {
+                            socket.emit('accept-request', {
+                            success: true,
+                            game
+                          })
+                          socket.broadcast.to(author._id).emit('dev', {
+                            dev_type: 'accept-request',
+                            success: true,
+                            game
+                          })
+                        }
+                      })
+
+
+                    }
+                  })
+                }
+              })
+            }
+          })
+        }
+      })
+    }
 
   })
 

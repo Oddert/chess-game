@@ -6,6 +6,11 @@ const GameSchema = new mongoose.Schema({
     default: 'Chess Game'
   },
 
+  request: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'chessGame-request'
+  },
+
   board: [
     [
       {

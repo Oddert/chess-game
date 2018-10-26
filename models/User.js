@@ -9,6 +9,18 @@ const UserSchema = new mongoose.Schema({
       type: mongoose.Schema.Types.ObjectId,
       ref: 'chessGame-game'
     }
+  ],
+  inboundRequests: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'chessGame-request'
+    }
+  ],
+  outboundRequests: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'chessGame-request'
+    }
   ]
 })
 
