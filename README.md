@@ -1,11 +1,18 @@
 # Oddert Chess game
 
 ## To Do's:
+- ADD GLOBAL NOTIFICATION SYSTEM
+
 - Get multiple auth options working
 
-- Add ability to request match, post public request
-- Ability to create, destroy games
-- Change existing save function to deal with auth
+- Add callback for creating a request
+- Ability to modify or delete requests
+- Clean up cascading mongoose queries
+
+- Synchronise local and database game structure
+
+- Ability to destroy games
+- Change existing save function to check auth
 
 - DM chat?
 

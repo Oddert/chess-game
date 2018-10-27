@@ -368,24 +368,30 @@ app.get('/api/requests/public', (req, res) => {
 })
 
 app.get('/api/requests/inbound', (req, res) => {
-    Request.find({}, (err, requests) => {
+  if (req.user._id) {
+    User.findById(req.user._id)
+    .populate('inboundRequests')
+    .exec((err, user) => {
       if (err) console.log(err)
-      else {
-        // console.log('inbound', requests)
-        res.status(200).json({ requests: [] })
-      }
+      else res.status(200).json({ requests: user.inboundRequests })
     })
-  })
+  } else {
+    res.status(200).json({ requests: [] })
+  }
+})
 
 app.get('/api/requests/outbound', (req, res) => {
-    Request.find({}, (err, requests) => {
+  if (req.user._id) {
+    User.findById(req.user._id)
+    .populate('outboundRequests')
+    .exec((err, user) => {
       if (err) console.log(err)
-      else {
-        // console.log('outbound', requests)
-        res.status(200).json({ requests: [] })
-      }
+      else res.status(200).json({ requests: user.outboundRequests })
     })
-  })
+  } else {
+    res.status(200).json({ requests: [] })
+  }
+})
 
 
 app.get('*', (req, res) => {
