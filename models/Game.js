@@ -22,7 +22,7 @@ const GameSchema = new mongoose.Schema({
 
   lastMove: {
     type: Number,
-    default: 0
+    default: 1
   },
 
   moves: [

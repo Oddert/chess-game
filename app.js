@@ -1,26 +1,27 @@
-const express           = require('express')
-    , app               = express()
-    , bodyParser        = require('body-parser')
-    , cookieParser      = require('cookie-parser')
-    , path              = require('path')
-    , mongoose          = require('mongoose')
-    , socketio          = require('socket.io')
-    , http              = require('http').Server(app)
+const express             = require('express')
+    , app                 = express()
+    , bodyParser          = require('body-parser')
+    , cookieParser        = require('cookie-parser')
+    , path                = require('path')
+    , mongoose            = require('mongoose')
+    , socketio            = require('socket.io')
+    , http                = require('http').Server(app)
 
-    , passport          = require('passport')
-    , LocalStrategy     = require('passport-local')
-    , passportSocketIo  = require('passport.socketio')
+    , passport            = require('passport')
+    , LocalStrategy       = require('passport-local')
+    , passportSocketIo    = require('passport.socketio')
 
-    , session           = require('express-session')
+    , session             = require('express-session')
     // , sessionStore      = new session.MemoryStore()
-    , MongoStore        = require('connect-mongo')(session)
+    , MongoStore          = require('connect-mongo')(session)
 
-const Game              = require('./models/Game')
-    , User              = require('./models/User')
-    , Request           = require('./models/Request')
+const Game                = require('./models/Game')
+    , User                = require('./models/User')
+    , Request             = require('./models/Request')
 
-const convertPoints     = require('./utils/convertPoints')
-    , toPGN             = require('./utils/toPGN')
+const convertPoints       = require('./utils/convertPoints')
+    , toPGN               = require('./utils/toPGN')
+    , createDefaultBoard  = require('./utils/createDefaultBoard')
 
 require('dotenv').config()
 
@@ -201,7 +202,7 @@ io.on(`connection`, socket => {
     console.log(socket.request.user.username)
     console.log(payload)
     if (payload.targetUser) socket.broadcast.to(payload.targetUser).emit('dev', payload)
-    if (socket.request.isAuthenticated()) {
+    if (socket.request.user._id) {
       User.findById(socket.request.user._id, (err, user) => {
         if (err) console.log(err)
         else {
@@ -245,21 +246,30 @@ io.on(`connection`, socket => {
                 if (err) console.log(err)
                 else {
                   console.log('# Found Author')
-                  Game.create({ request: request._id }, (err, game) => {
+                  Game.create({
+                    request: request._id,
+                    board: createDefaultBoard(),
+                    white: {
+                      id: request.author.id,
+                      username: request.author.username,
+                      score: 0
+                    },
+                    black: {
+                      id: socket.request.user._id,
+                      username: socket.request.user.username,
+                      score: 0
+                    }
+                  }, (err, game) => {
                     if (err) console.log(err)
                     else {
                       console.log('Game Created!')
 
-                      //add game to author
                       author.activeGames.push(game._id)
-                      //add game to recipient
                       recipient.activeGames.push(game._id)
-                      //add game to request
                       request.game = game._id
-                      //set req to accepted
                       request.accepted = true
-                      //set req to accepted date
                       request.accepted_date = Date.now()
+
                       author.save()
                       recipient.save()
                       request.save((err, saved_request) => {
