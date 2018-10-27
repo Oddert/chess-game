@@ -361,7 +361,7 @@ app.get('/api/requests/public', (req, res) => {
   Request.find({ open: true, accepted: false }, (err, requests) => {
     if (err) console.log(err)
     else {
-      console.log('public', requests)
+      // console.log('public', requests)
       res.json({ requests })
     }
   })
@@ -371,7 +371,7 @@ app.get('/api/requests/inbound', (req, res) => {
     Request.find({}, (err, requests) => {
       if (err) console.log(err)
       else {
-        console.log('inbound', requests)
+        // console.log('inbound', requests)
         res.status(200).json({ requests: [] })
       }
     })
@@ -381,7 +381,7 @@ app.get('/api/requests/outbound', (req, res) => {
     Request.find({}, (err, requests) => {
       if (err) console.log(err)
       else {
-        console.log('outbound', requests)
+        // console.log('outbound', requests)
         res.status(200).json({ requests: [] })
       }
     })

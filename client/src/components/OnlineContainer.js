@@ -61,9 +61,9 @@ class OnlineContainer extends React.Component {
                 }
               </div>
               <div className='OnlineContainer-select'>
-                <RequestIconContainer mode='public' />
-                <RequestIconContainer mode='inbound' />
-                <RequestIconContainer mode='outbound' />
+                <RequestIconContainer mode='public' callback={this.callback} />
+                <RequestIconContainer mode='inbound' callback={this.callback} />
+                <RequestIconContainer mode='outbound' callback={this.callback} />
               </div>
             </div>
         }

@@ -65,6 +65,8 @@ class GameIcon extends React.Component {
         if (this.props.game.white.id === this.props.app.auth.user._id) thisClientPlayer = 1
       }
       // console.log(`This client is player: ${thisClientPlayer}`)
+      console.log('Select game object as follows:')
+      console.log(this.props.game)
       this.props.selectGame(Object.assign({}, this.props.game, { thisClientPlayer }))
       this.props.callback()
     })

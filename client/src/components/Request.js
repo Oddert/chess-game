@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
+import { selectGame } from '../actions'
 import socket from '../sockets'
 
 import './styles/Request.css'
@@ -28,7 +29,11 @@ class Request extends React.Component {
 
   handleAccept () {
     socket.emit('accept-request', this.props.item._id)
-    socket.on('accept-request', payload => console.log(payload))
+    socket.on('accept-request', payload => {
+      console.log(payload)
+      this.props.selectGame(Object.assign({}, payload.game, { thisClientPlayer: 0 }))
+      this.props.callback()
+    })
   }
 
   render () {
@@ -65,4 +70,8 @@ const mapStateToProps = state => ({
   app: state.app
 })
 
-export default connect(mapStateToProps, null)(Request)
+const mapDispatchToProps = dispatch => ({
+  selectGame: payload => dispatch(selectGame(payload))
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Request)
