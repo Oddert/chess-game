@@ -41,3 +41,4 @@
 
 - Add ~~proper~~ authentication
 - Investigate how socket.io fits into passport auth <-yaaaaaasssss lad
+- Add request functionality
