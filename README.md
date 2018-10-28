@@ -3,6 +3,7 @@
 ## To Do's:
 - ADD GLOBAL NOTIFICATION SYSTEM
 
+-Figgure out why non auth users cant interact with sockets
 - Get multiple auth options working
 
 - Add callback for creating a request
