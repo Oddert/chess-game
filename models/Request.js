@@ -31,6 +31,7 @@ const RequestSchema = new mongoose.Schema ({
     type: Date,
     default: Date.now
   },
+  updated: Date,
 
   deleted: {
     type: Boolean,

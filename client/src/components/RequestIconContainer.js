@@ -67,7 +67,7 @@ class RequestIconContainer extends React.Component {
         </p>
         <div>
           {data.map(each => {
-            return (auth.isAuth && each.author.id !== user._id)
+            return (mode === 'outbound' ? true : each.author.id !== user._id)
             ? <Request item={each} key={each._id} callback={this.props.callback} />
             : ''
           })}

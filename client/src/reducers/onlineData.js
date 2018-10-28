@@ -48,6 +48,20 @@ const onlineData = (state = initialState.onlineData, action) => {
           }
         })
       })
+    case types.EDIT_REQ:
+      let edit_req_data = state.requests.outbound.data.map(
+        each => each._id === action.payload.id ? Object.assign({}, each, action.payload.data) : each
+      )
+      console.log(edit_req_data)
+
+      return Object.assign({}, state, {
+        requests: Object.assign({}, state.requests, {
+          outbound: {
+            lastUpdated: Date.now(),
+            data: edit_req_data
+          }
+        })
+      })
     default:
       return state
   }

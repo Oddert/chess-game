@@ -82,3 +82,8 @@ export const addInboundReq = payload => ({
   type: types.ADD_INBOUND_REQ,
   payload
 })
+
+export const editRequest = payload => ({
+  type: types.EDIT_REQ,
+  payload
+})

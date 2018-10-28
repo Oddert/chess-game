@@ -17,6 +17,7 @@ const types = {
   , ADD_PUBLIC_REQ: 'ADD_PUBLIC_REQ'
   , ADD_OUTBOUND_REQ: 'ADD_OUTBOUND_REQ'
   , ADD_INBOUND_REQ: 'ADD_INBOUND_REQ'
+  , EDIT_REQ: 'EDIT_REQ'
 }
 
 export default types

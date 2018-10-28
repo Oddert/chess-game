@@ -26,12 +26,20 @@
   padding: 10px 20px;
   margin-top: 10px;
   margin-bottom: 50px;
+  width: 50vw;
 }
 
 .RequestOpen .message {
   border: 1px solid rgba(27,188,155,1);
   border-radius: 15px;
   padding: 20px;
+  font-size: 18px;
+  font-weight: 650;
+  text-align: center;
+}
+
+.RequestOpen .date {
+  color: #bec3c7;
 }
 
 .RequestOpen textarea {

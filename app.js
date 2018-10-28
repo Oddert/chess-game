@@ -203,15 +203,15 @@ io.on(`connection`, socket => {
     console.log(payload)
     if (payload.targetUser) socket.broadcast.to(payload.targetUser).emit('dev', payload)
     if (socket.request.user._id) {
-      User.findById(socket.request.user._id, (err, user) => {
+      User.findById(socket.request.user._id, (err, author) => {
         if (err) console.log(err)
         else {
-          console.log(user)
+          console.log(author)
           let newRequest = {
             message: payload.message,
             author: {
-              username: user.username,
-              id: user._id
+              username: author.username,
+              id: author._id
             },
             open: payload.openRequest,
             target: payload.openRequest ? null : payload.targetUser
@@ -219,12 +219,29 @@ io.on(`connection`, socket => {
           console.log(newRequest)
           Request.create(newRequest, (err, request) => {
             if (err) console.log(err)
-            else console.log('Request made successfully!')
+            else {
+              author.outboundRequests.push(request._id)
+              author.save(err => {
+                // if (!payload.openRequest) {
+                //
+                // }
+                console.log('Request made successfully!')
+              })
+            }
           })
         }
       })
     }
 
+  })
+
+  socket.on('edit-request', payload => {
+    Request.findByIdAndUpdate(payload.id, payload.data, (err, request) => {
+      if (err) console.log(err)
+      else {
+        socket.emit('edit-request', payload)
+      }
+    })
   })
 
   socket.on('accept-request', payload => {
@@ -368,7 +385,7 @@ app.get('/api/requests/public', (req, res) => {
 })
 
 app.get('/api/requests/inbound', (req, res) => {
-  if (req.user._id) {
+  if (req.user) {
     User.findById(req.user._id)
     .populate('inboundRequests')
     .exec((err, user) => {
@@ -381,10 +398,11 @@ app.get('/api/requests/inbound', (req, res) => {
 })
 
 app.get('/api/requests/outbound', (req, res) => {
-  if (req.user._id) {
+  if (req.user) {
     User.findById(req.user._id)
     .populate('outboundRequests')
     .exec((err, user) => {
+      console.log(user.outboundRequests)
       if (err) console.log(err)
       else res.status(200).json({ requests: user.outboundRequests })
     })
