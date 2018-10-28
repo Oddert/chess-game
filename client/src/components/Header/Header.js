@@ -3,7 +3,8 @@ import React from 'react'
 import socket from '../../sockets'
 
 import MainMenu from './MainMenu'
-import TemporaryAuth from '../TemporaryAuth'
+// import TemporaryAuth from '../TemporaryAuth'
+import MscSocketDev from '../MscSocketDev'
 import Hamburger from './Hamburger'
 
 import '../styles/Header.css'
@@ -17,7 +18,7 @@ class Header extends React.Component {
     return (
       <header className='header'>
         <MainMenu />
-        <TemporaryAuth />
+        <MscSocketDev />
         <Hamburger />
       </header>
     )

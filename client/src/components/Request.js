@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import { selectGame, editRequest } from '../actions'
+import { selectGame, editRequest, deleteRequest } from '../actions'
 import socket from '../sockets'
 
 import './styles/Request.css'
@@ -11,12 +11,15 @@ class Request extends React.Component {
     super(props)
     this.state = {
       open: false,
-      editing: false
+      editing: false,
+      deleteing: false
     }
     this.toggleOpen = this.toggleOpen.bind(this)
     this.toggleEdit = this.toggleEdit.bind(this)
+    this.toggleDelete = this.toggleDelete.bind(this)
     this.handleChange = this.handleChange.bind(this)
     this.handleSave = this.handleSave.bind(this)
+    this.handleDelete = this.handleDelete.bind(this)
     this.handleOutOfBounds = this.handleOutOfBounds.bind(this)
     this.handleAccept = this.handleAccept.bind(this)
   }
@@ -33,6 +36,10 @@ class Request extends React.Component {
       )
   }
 
+  toggleDelete () {
+    this.setState(state => ({ deleteing: !state.deleteing }))
+  }
+
   handleChange (e) {
     this.setState({ [e.target.className]: e.target.value })
   }
@@ -46,6 +53,16 @@ class Request extends React.Component {
       }
     })
     socket.on('edit-request', payload => this.props.editRequest(payload))
+  }
+
+  handleDelete () {
+    console.log('deleting')
+    socket.emit('delete-request', this.props.item._id)
+    socket.on('delete-request', payload => {
+      if (payload.success) this.props.deleteRequest(payload.id)
+      else console.log('ERROR: Delete request failed')
+    })
+    this.toggleDelete()
   }
 
   handleOutOfBounds (e) {
@@ -84,7 +101,13 @@ class Request extends React.Component {
                         <button onClick={this.handleSave}>Save</button>
                         <button onClick={this.toggleEdit}>Close without saving</button>
                       </div>
-                    : <button onClick={this.toggleEdit}>Click to edit</button>
+                    : <div>
+                      <button onClick={this.toggleEdit}>Click to edit</button>
+                      <div>
+                        <button onClick={this.toggleDelete}>{this.state.deleteing ? 'Cancel' : 'Delete Request'}</button>
+                        {this.state.deleteing ? <button onClick={this.handleDelete}>Confirm Delete</button> : ''}
+                      </div>
+                    </div>
                   : ''
                 }
                 <h5>{item.author.username} says:</h5>
@@ -135,7 +158,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   selectGame: payload => dispatch(selectGame(payload)),
-  editRequest: payload => dispatch(editRequest(payload))
+  editRequest: payload => dispatch(editRequest(payload)),
+  deleteRequest: payload => dispatch(deleteRequest(payload))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Request)

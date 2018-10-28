@@ -87,3 +87,8 @@ export const editRequest = payload => ({
   type: types.EDIT_REQ,
   payload
 })
+
+export const deleteRequest = payload => ({
+  type: types.DELETE_REQ,
+  payload
+})

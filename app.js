@@ -53,7 +53,7 @@ const onAuthorizeFail = (data, message, error, accept) => {
     throw new Error(message)
   console.log('Failed to connect. Reason: ', message)
   console.log(error)
-  accept(null, false)
+  accept(null, true)
 }
 
 io.use(passportSocketIo.authorize({
@@ -108,13 +108,20 @@ io.on(`connection`, socket => {
   console.log('===========================')
 
 
-  socket.join(socket.request.user._id)
+  if (socket.request.isAuthenticated()) socket.join(socket.request.user._id)
+
+  socket.on('tester', payload => {
+    console.log(`=== Test connection from user: ${payload}`)
+    console.log('sending res')
+    socket.emit('tester', payload)
+    console.log('...sent')
+  })
 
   socket.on(`join-game`, payload => {
     console.log(`User ${socket.client.id} joining room: ${payload}`)
-    console.log('socket.handshake.user:', socket.handshake.user)
-    console.log('socket.request.user:', socket.request.user)
-    console.log('socket.request.isAuthenticated():', socket.request.isAuthenticated())
+    // console.log('socket.handshake.user:', socket.handshake.user)
+    // console.log('socket.request.user:', socket.request.user)
+    // console.log('socket.request.isAuthenticated():', socket.request.isAuthenticated())
     if (socket.room) socket.leave(socket.room)
     socket.join(payload)
     socket.room = payload
@@ -240,6 +247,19 @@ io.on(`connection`, socket => {
       if (err) console.log(err)
       else {
         socket.emit('edit-request', payload)
+      }
+    })
+  })
+
+  socket.on('delete-request', payload => {
+    Request.findByIdAndUpdate(payload, {
+      deleted: true,
+      deleted_on: Date.now(),
+      deleted_by: socket.request.isAuthenticated() ? socket.request.user._id : undefined
+    }, err => {
+      if (err) console.log(err)
+      else {
+        socket.emit('delete-request', { success: true, id: payload })
       }
     })
   })
@@ -375,7 +395,7 @@ app.post('/api/requests', (req, res) => {
 })
 
 app.get('/api/requests/public', (req, res) => {
-  Request.find({ open: true, accepted: false }, (err, requests) => {
+  Request.find({ open: true, accepted: false, deleted: false }, (err, requests) => {
     if (err) console.log(err)
     else {
       // console.log('public', requests)
@@ -390,7 +410,7 @@ app.get('/api/requests/inbound', (req, res) => {
     .populate('inboundRequests')
     .exec((err, user) => {
       if (err) console.log(err)
-      else res.status(200).json({ requests: user.inboundRequests })
+      else res.status(200).json({ requests: user.inboundRequests.filter(e => !e.deleted) })
     })
   } else {
     res.status(200).json({ requests: [] })

@@ -18,6 +18,7 @@ const types = {
   , ADD_OUTBOUND_REQ: 'ADD_OUTBOUND_REQ'
   , ADD_INBOUND_REQ: 'ADD_INBOUND_REQ'
   , EDIT_REQ: 'EDIT_REQ'
+  , DELETE_REQ: 'DELETE_REQ'
 }
 
 export default types

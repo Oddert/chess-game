@@ -54,6 +54,7 @@ class GameIcon extends React.Component {
   selectGame () {
     // emit 'join game' and await 'join-game-confirmed'
     socket.emit('join-game', this.props.game._id)
+    console.log(`Sent request to join: ${this.props.game._id}`)
     socket.on(`join-game-confirm`, payload => {
       if (!payload) {
         console.error(`ERROR JOINING ROOM`)

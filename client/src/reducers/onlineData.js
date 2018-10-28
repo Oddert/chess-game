@@ -62,6 +62,18 @@ const onlineData = (state = initialState.onlineData, action) => {
           }
         })
       })
+    case types.DELETE_REQ:
+    let delete_req_data = [...state.requests.outbound.data].filter(each => each._id !== action.payload)
+    console.log(delete_req_data)
+
+    return Object.assign({}, state, {
+      requests: Object.assign({}, state.requests, {
+        outbound: {
+          lastUpdated: Date.now(),
+          data: delete_req_data
+        }
+      })
+    })
     default:
       return state
   }
