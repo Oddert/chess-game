@@ -3,15 +3,10 @@
 ## To Do's:
 - ADD GLOBAL NOTIFICATION SYSTEM
 
--Figgure out why non auth users cant interact with sockets
 - Get multiple auth options working
-
 - Add callback for creating a request
-- Ability to modify or delete requests
 - Clean up cascading mongoose queries
-
 - Synchronise local and database game structure
-
 - Ability to destroy games
 - Change existing save function to check auth
 
@@ -43,3 +38,6 @@
 - Add ~~proper~~ authentication
 - Investigate how socket.io fits into passport auth <-yaaaaaasssss lad
 - Add request functionality
+
+- Figgure out why non auth users cant interact with sockets <- keep an eye on this
+- Ability to modify or delete requests

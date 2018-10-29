@@ -100,14 +100,8 @@ var server = http.listen(
 
 io.on(`connection`, socket => {
   console.log(`${new Date().toLocaleTimeString('en-GB')}: User ${socket.client.id} has connected.`)
-
-  // console.log(socket.handshake.xdomain ? 'Cross origin connection' : 'Same origin connection')
-  // console.log(socket.handshake.headers.cookie)
-
-  // console.log(socket.request.user)
   console.log('===========================')
-
-  console.log(`Testing for socket.request: `, socket.request)
+  console.log(`Testing for socket.request: `, !!socket.request)
 
   // This might break things; there was an issue with non auth users not being able to interact with socekts
   // even once accept(null, false) was changed to accpet(null, true) in onAuthorizeFail
@@ -355,85 +349,9 @@ io.on(`connection`, socket => {
 // const seed = require('./utils/seed')
 
 app.use('/api/auth/', require('./routes/auth'))
-
-
-
-app.get('/api/games/public', (req, res) => {
-  Game.find({}, (err, games) => {
-    if (err) console.log(err)
-    else res.status(200).json({ games })
-  })
-})
-
-app.get('/api/games/user', (req, res) => {
-  User.findById(req.user._id)
-    .populate('activeGames')
-    .exec((err, user) => {
-      if (err) console.log(err)
-      else res.status(200).json({ games: user.activeGames })
-    })
-})
-
-
-
-app.get('/api/users/public', (req, res) => {
-    User.find({}, (err, users) => {
-      if (err) console.log(err)
-      else res.status(200).json({ users })
-    })
-  })
-
-app.get('/api/users/friends', (req, res) => {
-// PLACEHOLDER for friends adding functionality
-  User.find({}, (err, users) => {
-    if (err) console.log(err)
-    else res.status(200).json({ users: users.sort((a, b) => a.username < b.username ? 1 : -1) })
-  })
-})
-
-
-
-app.post('/api/requests', (req, res) => {
-  console.log(req.body)
-  res.json({ server: 'res ok' })
-})
-
-app.get('/api/requests/public', (req, res) => {
-  Request.find({ open: true, accepted: false, deleted: false }, (err, requests) => {
-    if (err) console.log(err)
-    else {
-      // console.log('public', requests)
-      res.json({ requests })
-    }
-  })
-})
-
-app.get('/api/requests/inbound', (req, res) => {
-  if (req.user) {
-    User.findById(req.user._id)
-    .populate('inboundRequests')
-    .exec((err, user) => {
-      if (err) console.log(err)
-      else res.status(200).json({ requests: user.inboundRequests.filter(e => !e.deleted) })
-    })
-  } else {
-    res.status(200).json({ requests: [] })
-  }
-})
-
-app.get('/api/requests/outbound', (req, res) => {
-  if (req.user) {
-    User.findById(req.user._id)
-    .populate('outboundRequests')
-    .exec((err, user) => {
-      console.log(user.outboundRequests)
-      if (err) console.log(err)
-      else res.status(200).json({ requests: user.outboundRequests })
-    })
-  } else {
-    res.status(200).json({ requests: [] })
-  }
-})
+app.use('/api/games', require('./routes/games'))
+app.use('/api/users', require('./routes/users'))
+app.use('/api/requests', require('./routes/requests'))
 
 
 app.get('*', (req, res) => {
