@@ -107,8 +107,12 @@ io.on(`connection`, socket => {
   // console.log(socket.request.user)
   console.log('===========================')
 
+  console.log(`Testing for socket.request: `, socket.request)
 
-  if (socket.request.isAuthenticated()) socket.join(socket.request.user._id)
+  // This might break things; there was an issue with non auth users not being able to interact with socekts
+  // even once accept(null, false) was changed to accpet(null, true) in onAuthorizeFail
+  if (socket.request && socket.request.isAuthenticated()) socket.join(socket.request.user._id)
+  // if (socket.request.isAuthenticated()) socket.join(socket.request.user._id)
 
   socket.on('tester', payload => {
     console.log(`=== Test connection from user: ${payload}`)
