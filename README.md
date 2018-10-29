@@ -1,6 +1,8 @@
 # Oddert Chess game
 
 ## To Do's:
+- Review all socket functionality, test for holes, create inventory of things before moving on
+
 - ADD GLOBAL NOTIFICATION SYSTEM
 
 - Get multiple auth options working
