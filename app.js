@@ -80,6 +80,21 @@ app.use(session({
 }))
 
 
+function testSocketError (err, socket, event, message, room) {
+  console.log('Test socket err')
+  console.log(err)
+  socket.emit(event, {
+    err,
+    message: message ? message : null
+  })
+  if (room) socket.broadcast.to(room).emit(event, {
+    err,
+    message: message ? message : null
+  })
+  console.log('end test error handler, how\'d it do?')
+}
+
+
 app.use(passport.initialize())
 app.use(passport.session())
 
@@ -206,8 +221,11 @@ io.on(`connection`, socket => {
     console.log('Request to create a new game offer:')
     console.log(socket.request.user.username)
     console.log(payload)
-    if (payload.targetUser) socket.broadcast.to(payload.targetUser).emit('dev', payload)
+    console.log('this is the hurdle to pass:')
+    if (payload.targetUser) socket.broadcast.to(payload.targetUser._id).emit('dev', payload)
+    console.log('success(ish)')
     if (socket.request.user._id) {
+      console.log('user is auth (definately, not making that up, I promis)')
       User.findById(socket.request.user._id, (err, author) => {
         if (err) console.log(err)
         else {
@@ -219,23 +237,50 @@ io.on(`connection`, socket => {
               id: author._id
             },
             open: payload.openRequest,
-            target: payload.openRequest ? null : payload.targetUser
+            target: payload.openRequest ? null : { username: payload.targetUser.username, id: payload.targetUser._id }
           }
+          console.log('USer found, creating request:')
           console.log(newRequest)
           Request.create(newRequest, (err, request) => {
-            if (err) console.log(err)
+            if (err) testSocketError(err, socket, 'new-request', err.message)
             else {
+              console.log('...request created...')
               author.outboundRequests.push(request._id)
               author.save(err => {
-                // if (!payload.openRequest) {
-                //
-                // }
+                console.log(`...pushed to outbound req on ${author.username}`)
+                if (!payload.openRequest) {
+                  console.log('# is not an open request')
+                  User.findById(payload.targetUser._id, (err, target) => {
+                    if (err) console.log(err)
+                    else {
+                      console.log('...target user found')
+                      target.inboundRequests.push(request._id)
+                      target.save(err => {
+                        if (err) console.log(err)
+                        else {
+                          console.log('pushed to target user inbound')
+                          socket.broadcast.to(target._id).emit('inbound-request', request)
+                          socket.broadcast.to(target._id).emit('dev', request)
+                          console.log(`...pushed to inbound req on ${target.username}`)
+                        }
+                      })
+                    }
+                  })
+                }
+                socket.emit('new-request', {
+                  err: null,
+                  message: 'Request created successfully!'
+                })
                 console.log('Request made successfully!')
               })
             }
           })
         }
       })
+    } else {
+      console.log('User not authenticated:')
+      console.log(socket.request.isAuthenticated())
+      console.log(socket.request.user)
     }
 
   })
@@ -255,7 +300,7 @@ io.on(`connection`, socket => {
       deleted_on: Date.now(),
       deleted_by: socket.request.isAuthenticated() ? socket.request.user._id : undefined
     }, err => {
-      if (err) console.log(err)
+      if (err) socket.emit('delete-request', { err })
       else {
         socket.emit('delete-request', { success: true, id: payload })
       }
@@ -267,7 +312,7 @@ io.on(`connection`, socket => {
     console.log(socket.request.user)
     console.log(payload)
     if (!socket.request.isAuthenticated()) {
-      socket.emit('accept-request', { success: false })
+      socket.emit('accept-request', { err: 'You are not singed in, please log in again.' })
     } else {
       Request.findById(payload, (err, request) => {
         if (err) console.log(err)
@@ -281,6 +326,7 @@ io.on(`connection`, socket => {
                 if (err) console.log(err)
                 else {
                   console.log('# Found Author')
+
                   Game.create({
                     request: request._id,
                     board: createDefaultBoard(),
@@ -294,7 +340,8 @@ io.on(`connection`, socket => {
                       username: socket.request.user.username,
                       score: 0
                     }
-                  }, (err, game) => {
+                  })
+                  .then((err, game) => {
                     if (err) console.log(err)
                     else {
                       console.log('Game Created!')
@@ -310,7 +357,7 @@ io.on(`connection`, socket => {
                       request.save((err, saved_request) => {
                         if (err) console.log(err)
                         else {
-                            socket.emit('accept-request', {
+                          socket.emit('accept-request', {
                             success: true,
                             game
                           })
@@ -349,9 +396,9 @@ io.on(`connection`, socket => {
 // const seed = require('./utils/seed')
 
 app.use('/api/auth/', require('./routes/auth'))
-app.use('/api/games', require('./routes/games'))
-app.use('/api/users', require('./routes/users'))
-app.use('/api/requests', require('./routes/requests'))
+app.use('/api/games/', require('./routes/games'))
+app.use('/api/users/', require('./routes/users'))
+app.use('/api/requests/', require('./routes/requests'))
 
 
 app.get('*', (req, res) => {

@@ -1,9 +1,9 @@
-const router = require('express').Router(),
-      passport = require('passport')
+const router = require('express').Router()
+    , passport = require('passport')
 
-const User = require('../models/User'),
-      Request = require('../models/Request'),
-      Game = require('../models/Game')
+const User = require('../models/User')
+    , Request = require('../models/Request')
+    , Game = require('../models/Game')
 
 router.post('', (req, res) => {
   console.log(req.body)

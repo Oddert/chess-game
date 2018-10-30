@@ -81,14 +81,20 @@ class CreateRequest extends React.Component {
     e.preventDefault()
 
     const payload = {
-      targetUser: this.state.oponent ? this.state.oponent._id : null,
+      targetUser: this.state.oponent ? this.state.oponent : null,
       user: this.props.app.auth.user._id,
       message: /\S/.test(this.state.message) ? this.state.message : null,
       openRequest: this.state.isOpenRequest
     }
     console.log(payload)
     socket.emit('new-request', payload)
-    this.setState({ open: false })
+    socket.on('new-request', payload => {
+      if (payload.err) console.error(payload.err)
+      else {
+        console.log(payload.message)
+        this.setState({ open: false })
+      }
+    })
   }
 
   handleOutOfBounds (e) {

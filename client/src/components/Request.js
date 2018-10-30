@@ -14,14 +14,14 @@ class Request extends React.Component {
       editing: false,
       deleteing: false
     }
-    this.toggleOpen = this.toggleOpen.bind(this)
-    this.toggleEdit = this.toggleEdit.bind(this)
-    this.toggleDelete = this.toggleDelete.bind(this)
-    this.handleChange = this.handleChange.bind(this)
-    this.handleSave = this.handleSave.bind(this)
-    this.handleDelete = this.handleDelete.bind(this)
+    this.toggleOpen = this.toggleOpen.bind(this)  // R
+    this.toggleEdit = this.toggleEdit.bind(this)  // U
+    this.toggleDelete = this.toggleDelete.bind(this) // D
+    this.handleChange = this.handleChange.bind(this) // U
+    this.handleSave = this.handleSave.bind(this)  // C
+    this.handleDelete = this.handleDelete.bind(this) // D
     this.handleOutOfBounds = this.handleOutOfBounds.bind(this)
-    this.handleAccept = this.handleAccept.bind(this)
+    this.handleAccept = this.handleAccept.bind(this) // C
   }
 
   toggleOpen () {
@@ -59,8 +59,8 @@ class Request extends React.Component {
     console.log('deleting')
     socket.emit('delete-request', this.props.item._id)
     socket.on('delete-request', payload => {
-      if (payload.success) this.props.deleteRequest(payload.id)
-      else console.log('ERROR: Delete request failed')
+      if (payload.err) console.error(payload.err)
+      else this.props.deleteRequest(payload.id)
     })
     this.toggleDelete()
   }
@@ -75,8 +75,11 @@ class Request extends React.Component {
     socket.emit('accept-request', this.props.item._id)
     socket.on('accept-request', payload => {
       console.log(payload)
-      this.props.selectGame(Object.assign({}, payload.game, { thisClientPlayer: 0 }))
-      this.props.callback()
+      if (payload.err) console.error(payload.err)
+      else {
+        this.props.selectGame(Object.assign({}, payload.game, { thisClientPlayer: 0 }))
+        this.props.callback()
+      }
     })
   }
 
@@ -85,11 +88,18 @@ class Request extends React.Component {
     const app = this.props.app
     const isAuthor = item.author.id === app.auth.user._id
 
+    let style = {}
+    if (item.accepted) style.border = '2px solid steelblue'
+    if (item.deleted) style.background = 'tomato'
+
     return (
       <div className='Request'>
 
-        <button className='req-icon' onClick={this.toggleOpen}>
-          {item.open ? 'Public request by' : 'Request from'} <strong>{item.author.username}</strong>
+        <button className='req-icon' onClick={this.toggleOpen} title={item._id} style={style}>
+          {isAuthor
+            ? item.open ? <span>Your Public Request</span> : <span>Your request to <strong>{item.target.username}</strong></span>
+            : <span>{item.open ? 'Public request by' : 'Request from'} <strong>{item.author.username}</strong></span>
+          }
         </button>
 
         {this.state.open
@@ -110,7 +120,10 @@ class Request extends React.Component {
                     </div>
                   : ''
                 }
-                <h5>{item.author.username} says:</h5>
+                {item.openRequest
+                  ? <h5>Game request from {item.author.username} to {item.target.username}:</h5>
+                  : <h5>Game request from {item.author.username}:</h5>
+                }
                 {this.state.editing
                   ? <textarea className='message' value={this.state.message} onChange={this.handleChange} />
                   : <h4 className='message'>{item.message}</h4>
