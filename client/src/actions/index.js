@@ -92,3 +92,8 @@ export const deleteRequest = payload => ({
   type: types.DELETE_REQ,
   payload
 })
+
+export const refreshNotifications = payload => ({
+  type: types.REFRESH_NOTIFICATIONS,
+  payload
+})

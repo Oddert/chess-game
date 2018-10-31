@@ -41,6 +41,7 @@ const initialState = {
   app: {
     localGame: true,
     playing: false,
+    notifications: [],
     auth: {
       isAuth: false,
       user: {}

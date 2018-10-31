@@ -16,6 +16,9 @@ router.route('/ping')
   if (req.isAuthenticated()) {
     User.findById(req.user._id)
     .populate('activeGames')
+    .populate('notifications')
+    .populate('outboundRequests')
+    .populate('inboundRequests')
     .exec((err, user) => {
       if (err) {
         console.log(err)
@@ -67,6 +70,9 @@ router.route('/local/login')
         }
         User.findById(user._id)
         .populate('activeGames')
+        .populate('notifications')
+        .populate('outboundRequests')
+        .populate('inboundRequests')
         .exec((err, foundUser) => {
           if (err) {
             console.log(err)

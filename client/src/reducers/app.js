@@ -25,6 +25,10 @@ const app = (state = initialState.app, action) => {
           thisClientPlayer: null
         }
       })
+    case types.REFRESH_NOTIFICATIONS:
+      return Object.assign({}, state, {
+        notifications: action.payload
+      })
     default:
       return state
   }

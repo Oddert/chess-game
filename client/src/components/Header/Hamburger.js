@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
+import NotificationMenu from './NotificationMenu'
 import SignIn from './SignIn'
 import ProfileDrop from './ProfileDrop'
 
@@ -21,6 +22,7 @@ class Hamburger extends React.Component {
     const auth = this.props.app.auth
     return (
       <div className='Hamburger'>
+        {auth.isAuth ? <NotificationMenu /> : ''}
         <div className='profileButton-container'>
           {auth.isAuth ? <p>Welcome, </p> : ''}
           <button

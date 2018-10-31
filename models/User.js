@@ -21,7 +21,8 @@ const UserSchema = new mongoose.Schema({
       type: mongoose.Schema.Types.ObjectId,
       ref: 'chessGame-request'
     }
-  ]
+  ],
+  notifications: [String]
 })
 
 UserSchema.plugin(passportLocalMongoose)

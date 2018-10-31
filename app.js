@@ -302,7 +302,7 @@ io.on(`connection`, socket => {
     }, err => {
       if (err) socket.emit('delete-request', { err })
       else {
-        socket.emit('delete-request', { success: true, id: payload })
+        socket.emit('delete-request', { err: null, id: payload })
       }
     })
   })
@@ -399,6 +399,7 @@ app.use('/api/auth/', require('./routes/auth'))
 app.use('/api/games/', require('./routes/games'))
 app.use('/api/users/', require('./routes/users'))
 app.use('/api/requests/', require('./routes/requests'))
+app.use('/api/notifications/', require('./routes/notifications'))
 
 
 app.get('*', (req, res) => {

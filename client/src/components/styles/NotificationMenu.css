@@ -1,0 +1,26 @@
+
+
+
+.NotificationMenu {
+  display: flex;
+  align-items: center;
+  /* position: relative; */
+}
+
+.NotificationDrop {
+  position: fixed;
+  top: 50px;
+  right: 20px;
+  width: 35vw;
+  border: 1px solid #bec3c7;
+  border-radius: 20px;
+  box-shadow: 10px 10px 30px rgba(0,0,0,.1);
+  padding: 20px 10px;
+  background: #fff;
+}
+
+.NotificationDrop p {
+  padding: 0;
+  margin: 0;
+  border: 1px dashed tomato;
+}
