@@ -97,3 +97,8 @@ export const refreshNotifications = payload => ({
   type: types.REFRESH_NOTIFICATIONS,
   payload
 })
+
+export const addNotification = payload => ({
+  type: types.ADD_NOTIFICATION,
+  payload
+})

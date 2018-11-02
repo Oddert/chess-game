@@ -29,7 +29,7 @@ class PlayerUI extends React.Component {
       <div className='playerUI'>
         <div className={this.props.game.thisClientPlayer === 0 ? 'takenPieces black client' :'takenPieces black'}>
           <div className='scoreIndicator'>
-            {players.black.username}: {players.black.score}
+            Black - {players.black.username}: {players.black.score}
           </div>
           <div className='pieceIcons'>
             {players.black.takenPieces.length > 0
@@ -40,7 +40,7 @@ class PlayerUI extends React.Component {
         </div>
         <div className={this.props.game.thisClientPlayer === 1 ? 'takenPieces white client' :'takenPieces white'}>
           <div className='scoreIndicator'>
-            {players.white.username}: {players.white.score}
+            White - {players.white.username}: {players.white.score}
           </div>
           <div className='pieceIcons'>
             {players.white.takenPieces.length > 0

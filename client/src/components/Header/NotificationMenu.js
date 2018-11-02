@@ -1,7 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import { refreshNotifications } from '../../actions'
+import socket from '../../sockets'
+import { refreshNotifications, addNotification } from '../../actions'
 
 import NotificationDrop from './NotificationDrop'
 
@@ -27,6 +28,11 @@ class NotificationMenu extends React.Component {
       if (res.err) console.log(res.err)
       else this.props.refreshNotifications(res.notifications)
     })
+    socket.on('notification', payload => {
+      console.log('# New notification!')
+      console.log(payload)
+      this.props.addNotification(payload)
+    })
   }
 
   toggleOpen () {
@@ -34,17 +40,23 @@ class NotificationMenu extends React.Component {
   }
 
   render () {
+    let number = this.props.app.notifications.filter(each => !each.read).length.toString()
     return (
       <div className='NotificationMenu'>
-        <button onClick={this.toggleOpen}>?</button>
+        <button onClick={this.toggleOpen}>{number}</button>
         {this.state.open ? <NotificationDrop /> : ''}
       </div>
     )
   }
 }
 
-const mapDispatchToProps = dispatch => ({
-  refreshNotifications: payload => dispatch(refreshNotifications(payload))
+const mapStateToProps = state => ({
+  app: state.app
 })
 
-export default connect(null, mapDispatchToProps)(NotificationMenu)
+const mapDispatchToProps = dispatch => ({
+  refreshNotifications: payload => dispatch(refreshNotifications(payload)),
+  addNotification: payload => dispatch(addNotification(payload))
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(NotificationMenu)

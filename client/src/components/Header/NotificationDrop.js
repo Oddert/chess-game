@@ -6,9 +6,14 @@ class NotificationDrop extends React.Component {
     return (
       <div className='NotificationDrop'>
         <p>notificaitons will hence be displayed to be goes here</p>
+        {this.props.app.notifications.map(each => <div key={each._id}>{each.name}</div>)}
       </div>
     )
   }
 }
 
-export default connect(null, null)(NotificationDrop)
+const mapStateToProps = state => ({
+  app: state.app
+})
+
+export default connect(mapStateToProps, null)(NotificationDrop)

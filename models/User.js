@@ -22,7 +22,12 @@ const UserSchema = new mongoose.Schema({
       ref: 'chessGame-request'
     }
   ],
-  notifications: [String]
+  notifications: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'chessGame-notification'
+    }
+  ]
 })
 
 UserSchema.plugin(passportLocalMongoose)

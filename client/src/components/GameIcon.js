@@ -75,7 +75,7 @@ class GameIcon extends React.Component {
 
   render () {
     return (
-      <div className='GameIcon' onClick={this.selectGame.bind(this)}>
+      <div className='GameIcon' onClick={this.selectGame.bind(this)} title={this.props.game._id}>
         <div className='board icon'>
           <table>
             <tbody>

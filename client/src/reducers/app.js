@@ -29,6 +29,10 @@ const app = (state = initialState.app, action) => {
       return Object.assign({}, state, {
         notifications: action.payload
       })
+    case types.ADD_NOTIFICATION:
+      return Object.assign({}, state, {
+        notifications: [...state.notifications, action.payload]
+      })
     default:
       return state
   }

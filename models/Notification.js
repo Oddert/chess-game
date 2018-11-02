@@ -7,11 +7,11 @@ const NotificationSchema = new mongoose.Schema ({
   },
   message: {
     type: String,
-    required: true
+    // required: true
   },
   notification_type: {
     type: String,
-    required: true
+    // required: true
   },
 
   user: {
@@ -20,7 +20,7 @@ const NotificationSchema = new mongoose.Schema ({
       type: mongoose.Schema.Types.ObjectId,
       ref: 'chessGame-user'
     },
-    required: true
+    // required: true
   },
 
   other_users: [

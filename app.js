@@ -18,6 +18,7 @@ const express             = require('express')
 const Game                = require('./models/Game')
     , User                = require('./models/User')
     , Request             = require('./models/Request')
+    , Notification        = require('./models/Notification')
 
 const convertPoints       = require('./utils/convertPoints')
     , toPGN               = require('./utils/toPGN')
@@ -144,7 +145,7 @@ io.on(`connection`, socket => {
   socket.on(`move-piece`, payload => {
     Game.findById(socket.room)
     .exec((err, foundGame) => {
-      if (err) console.log(err)
+      if (err) testSocketError(err, socket, 'move-piece', err.message)
       else console.log(`foundGame: `, !!foundGame)
 
       const fromRow = payload.from.row
@@ -178,7 +179,7 @@ io.on(`connection`, socket => {
       console.log(foundGame)
 
       foundGame.save((err, game) => {
-        if (err) console.log(err)
+        if (err) testSocketError(err, socket, 'move-piece', err.message, socket.room)
         else {
           console.log(`Game saved ok!`)
           socket.emit(`move-piece`, payload)
@@ -192,7 +193,7 @@ io.on(`connection`, socket => {
     console.log(socket.room)
     console.log(payload)
     Game.findOneAndUpdate({_id: socket.room}, payload, (err, game) => {
-      if (err) console.log(err)
+      if (err) testSocketError(err, socket, 'change-meta', err.message, socket.room)
       else socket.broadcast.to(socket.room).emit('change-meta', payload)
     })
   })
@@ -201,12 +202,12 @@ io.on(`connection`, socket => {
     console.log('New chat message')
     console.log(payload)
     Game.findById(socket.room, (err, foundGame) => {
-      if (err) console.log(err)
+      if (err) testSocketError(err, socket, 'chat-message', err.message)
       else {
         console.log('Game lookup ok')
         foundGame.chat = [...foundGame.chat, payload]
         foundGame.save((err, game) => {
-          if (err) console.log(err)
+          if (err) testSocketError(err, socket, 'chat-message', err.message, socket.room)
           else {
             console.log('game save ok')
             socket.broadcast.to(socket.room).emit('chat-message', payload)
@@ -226,8 +227,10 @@ io.on(`connection`, socket => {
     console.log('success(ish)')
     if (socket.request.user._id) {
       console.log('user is auth (definately, not making that up, I promis)')
-      User.findById(socket.request.user._id, (err, author) => {
-        if (err) console.log(err)
+      // User.findById(socket.request.user._id, (err, author) => {
+      console.log('### DEV: swapping out real functionality for dummy to deliberately crash')
+      User.findById('somenonsenceid', (err, author) => {
+        if (err) testSocketError(err, socket, 'new-request', err.message)
         else {
           console.log(author)
           let newRequest = {
@@ -251,12 +254,12 @@ io.on(`connection`, socket => {
                 if (!payload.openRequest) {
                   console.log('# is not an open request')
                   User.findById(payload.targetUser._id, (err, target) => {
-                    if (err) console.log(err)
+                    if (err) testSocketError(err, socket, 'new-request', err.message, target._id)
                     else {
                       console.log('...target user found')
                       target.inboundRequests.push(request._id)
                       target.save(err => {
-                        if (err) console.log(err)
+                        if (err) testSocketError(err, socket, 'new-request', err.message, target._id)
                         else {
                           console.log('pushed to target user inbound')
                           socket.broadcast.to(target._id).emit('inbound-request', request)
@@ -287,10 +290,8 @@ io.on(`connection`, socket => {
 
   socket.on('edit-request', payload => {
     Request.findByIdAndUpdate(payload.id, payload.data, (err, request) => {
-      if (err) console.log(err)
-      else {
-        socket.emit('edit-request', payload)
-      }
+      if (err) testSocketError(err, socket, 'edit-request', err.message)
+      else socket.emit('edit-request', payload)
     })
   })
 
@@ -315,15 +316,15 @@ io.on(`connection`, socket => {
       socket.emit('accept-request', { err: 'You are not singed in, please log in again.' })
     } else {
       Request.findById(payload, (err, request) => {
-        if (err) console.log(err)
+        if (err) testSocketError(err, socket, 'accept-request', err.message)
         else {
           console.log('# Found Request')
           User.findById(socket.request.user._id, (err, recipient) => {
-            if (err) console.log(err)
+            if (err) testSocketError(err, socket, 'accept-request', err.message)
             else {
               console.log('# Found Recipient')
               User.findById(request.author.id, (err, author) => {
-                if (err) console.log(err)
+                if (err) testSocketError(err, socket, 'accept-request', err.message)
                 else {
                   console.log('# Found Author')
 
@@ -340,9 +341,8 @@ io.on(`connection`, socket => {
                       username: socket.request.user.username,
                       score: 0
                     }
-                  })
-                  .then((err, game) => {
-                    if (err) console.log(err)
+                  }, (err, game) => {
+                    if (err) testSocketError(err, socket, 'accept-request', err.message)
                     else {
                       console.log('Game Created!')
 
@@ -355,8 +355,38 @@ io.on(`connection`, socket => {
                       author.save()
                       recipient.save()
                       request.save((err, saved_request) => {
-                        if (err) console.log(err)
+                        if (err) testSocketError(err, socket, 'accept-request', err.message)
                         else {
+                          console.log('# request saved, creating notification...')
+                          Notification.create({
+                            name: 'Request Accepted',
+                            message: `${recipient.username} accepted your request for a game, click to play against them!`,
+                            notification_type: 'accept-request',
+                            user: {
+                              username: author.username,
+                              id: author._id
+                            },
+                            other_users: [{
+                              username: recipient.username,
+                              id: recipient._id
+                            }],
+                            game: game._id,
+                            request: request._id
+                          }, (err, notification) => {
+                            console.log(notification)
+                            if (err) testSocketError(err, socket, 'accept-request', err.message)
+                            else {
+                              console.log('saving to author')
+                              author.notifications.push(notification._id)
+                              author.save(err => {
+                                if (err) testSocketError(err, socket, 'accept-request', err.message)
+                                else {
+                                  console.log(`broadcasting to author id: ${author._id}`)
+                                  socket.broadcast.to(author._id).emit('notification', notification)
+                                }
+                              })
+                            }
+                          })
                           socket.emit('accept-request', {
                             success: true,
                             game
