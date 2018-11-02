@@ -1,12 +1,18 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
+import Notification from './Notification'
+
 class NotificationDrop extends React.Component {
   render () {
     return (
       <div className='NotificationDrop'>
-        <p>notificaitons will hence be displayed to be goes here</p>
-        {this.props.app.notifications.map(each => <div key={each._id}>{each.name}</div>)}
+        <p className='NotificationDrop-title'>Notifications</p>
+        <div className='Notificaiton-container'>
+          {this.props.app.notifications.map(each =>
+            <Notification item={each} key={each._id} />
+          )}
+        </div>
       </div>
     )
   }

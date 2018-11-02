@@ -33,6 +33,11 @@ const NotificationSchema = new mongoose.Schema ({
     }
   ],
 
+  created: {
+    type: Date,
+    default: Date.now
+  },
+
   recieved: {
     type: Boolean,
     default: false

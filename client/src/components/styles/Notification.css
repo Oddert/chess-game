@@ -1,0 +1,40 @@
+
+
+.Notification {
+  flex: 1;
+  border: 1px solid #bec3c7;
+  padding: 10px 8px;
+  text-align: left;
+  color: #2d3e50;
+  transition: .2s linear;
+}
+
+.Notification:hover {
+  color: #1c2631;
+  border: 1px solid #a0a6ac;
+  cursor: pointer;
+}
+
+.Notification .title {
+  font-size: 16px;
+  margin-bottom: 8px;
+  font-weight: lighter;
+}
+.Notification .message {
+  font-size: 12px;
+  margin-bottom: 6px;
+}
+.Notification .date {
+  color: #bec3c7;
+  font-size: 10px;
+}
+
+.Notification.unread {
+  border-left: 5px solid rgba(53,152,219,.7);
+}
+.Notification.unread .title {
+  font-weight: 700;
+}
+.Notification.unread .message {
+  font-weight: 600;
+}
