@@ -226,61 +226,66 @@ io.on(`connection`, socket => {
     console.log('this is the hurdle to pass:')
     if (payload.targetUser) socket.broadcast.to(payload.targetUser._id).emit('dev', payload)
     console.log('success(ish)')
+
     if (socket.request.user._id) {
       console.log('user is auth (definately, not making that up, I promis)')
-      // User.findById(socket.request.user._id, (err, author) => {
       console.log('### DEV: swapping out real functionality for dummy to deliberately crash')
-      User.findById('somenonsenceid', (err, author) => {
-        if (err) testSocketError(err, socket, 'new-request', err.message)
-        else {
-          console.log(author)
-          let newRequest = {
-            message: payload.message,
-            author: {
-              username: author.username,
-              id: author._id
-            },
-            open: payload.openRequest,
-            target: payload.openRequest ? null : { username: payload.targetUser.username, id: payload.targetUser._id }
-          }
-          console.log('USer found, creating request:')
-          console.log(newRequest)
-          Request.create(newRequest, (err, request) => {
-            if (err) testSocketError(err, socket, 'new-request', err.message)
-            else {
-              console.log('...request created...')
-              author.outboundRequests.push(request._id)
-              author.save(err => {
-                console.log(`...pushed to outbound req on ${author.username}`)
-                if (!payload.openRequest) {
-                  console.log('# is not an open request')
-                  User.findById(payload.targetUser._id, (err, target) => {
-                    if (err) testSocketError(err, socket, 'new-request', err.message, target._id)
-                    else {
-                      console.log('...target user found')
-                      target.inboundRequests.push(request._id)
-                      target.save(err => {
-                        if (err) testSocketError(err, socket, 'new-request', err.message, target._id)
-                        else {
-                          console.log('pushed to target user inbound')
-                          socket.broadcast.to(target._id).emit('inbound-request', request)
-                          socket.broadcast.to(target._id).emit('dev', request)
-                          console.log(`...pushed to inbound req on ${target.username}`)
-                        }
-                      })
-                    }
-                  })
-                }
-                socket.emit('new-request', {
-                  err: null,
-                  message: 'Request created successfully!'
-                })
-                console.log('Request made successfully!')
-              })
-            }
-          })
+      User.findById(socket.request.user._id)
+      .then(author => {
+        console.log(author)
+        let newRequest = {
+          message: payload.message,
+          author: {
+            username: author.username,
+            id: author._id
+          },
+          open: payload.openRequest,
+          target: payload.openRequest ? null : { username: payload.targetUser.username, id: payload.targetUser._id }
         }
-      })
+        console.log('USer found, creating request:')
+        console.log({ newRequest })
+        // ==========
+        Request.create(newRequest)
+
+
+        .then(request => {
+          console.log('...request created...')
+          author.outboundRequests.push(request._id)
+          // ==========
+          author.save()
+          .then(() => {
+            console.log(`...pushed to outbound req on ${author.username}`)
+
+            if (!payload.openRequest) {
+              console.log('# is not an open request')
+              User.findById(payload.targetUser._id)
+              .then(target => {
+                console.log('...target user found')
+                target.inboundRequests.push(request._id)
+                target.save()
+                .then(() => {
+                  console.log('pushed to target user inbound')
+                  socket.broadcast.to(target._id).emit('inbound-request', request)
+                  socket.broadcast.to(target._id).emit('dev', request)
+                  console.log(`...pushed to inbound req on ${target.username}`)
+                }).catch(err => testSocketError(err, socket, 'new-request', err.message, target._id))
+              }).catch(err => testSocketError(err, socket, 'new-request', err.message, target._id))
+            }
+
+            socket.emit('new-request', {
+              err: null,
+              message: 'Request created successfully!'
+            })
+            console.log('Request made successfully!')
+          }).catch(err => testSocketError(err, socket, 'new-request', err.message))
+          // ========== Request.save()
+        }).catch(err => testSocketError(err, socket, 'new-request', err.message))
+
+
+
+        // ========== Request.create()
+      }).catch(err => testSocketError(err, socket, 'new-request', err.message))
+      // ========== User.findById()
     } else {
       console.log('User not authenticated:')
       console.log(socket.request.isAuthenticated())
