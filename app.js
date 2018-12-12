@@ -50,10 +50,12 @@ const onAuthorizeSuccess = (data, accept) => {
 
 const onAuthorizeFail = (data, message, error, accept) => {
   console.log('app.js onAuthorizeFail:')
-  if (error)
-    throw new Error(message)
-  console.log('Failed to connect. Reason: ', message)
-  console.log(error)
+  if (error) {
+    console.log('Error onAuthorizeFail:')
+    console.log({ error, message })
+  }
+  // console.log('Failed to connect. Reason: ', message)
+  // console.log(error)
   accept(null, true)
 }
 
@@ -435,3 +437,5 @@ app.use('/api/notifications/', require('./routes/notifications'))
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '/build/index.html'))
 })
+
+// $ git reset --hard HEAD
