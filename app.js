@@ -195,30 +195,28 @@ io.on(`connection`, socket => {
   socket.on('change-meta', payload => {
     console.log(socket.room)
     console.log(payload)
-    Game.findOneAndUpdate({_id: socket.room}, payload, (err, game) => {
-      if (err) testSocketError(err, socket, 'change-meta', err.message, socket.room)
-      else socket.broadcast.to(socket.room).emit('change-meta', payload)
-    })
+    Game.findOneAndUpdate({ _id: socket.room }, payload)
+    .then(game => socket.broadcast.to(socket.room).emit('change-meta', payload))
+    .catch(err => testSocketError(err, socket, 'change-meta', err.message, socket.room))
   })
 
   socket.on('chat-message', payload => {
     console.log('New chat message')
     console.log(payload)
-    Game.findById(socket.room, (err, foundGame) => {
-      if (err) testSocketError(err, socket, 'chat-message', err.message)
-      else {
-        console.log('Game lookup ok')
-        foundGame.chat = [...foundGame.chat, payload]
-        foundGame.save((err, game) => {
-          if (err) testSocketError(err, socket, 'chat-message', err.message, socket.room)
-          else {
-            console.log('game save ok')
-            socket.broadcast.to(socket.room).emit('chat-message', payload)
-            socket.emit('chat-message', payload)
-          }
-        })
-      }
+    Game.findById(socket.room)
+    .then(foundGame => {
+      console.log('Game lookup ok')
+      console.log({ foundGame })
+      foundGame.chat = [...foundGame.chat, payload]
+      foundGame.save()
+      .then(game => {
+        console.log('game save ok')
+        socket.broadcast.to(socket.room).emit('chat-message', payload)
+        socket.emit('chat-message', payload)
+      })
+      .catch(err => testSocketError(err, socket, 'chat-message', err.message, socket.room))
     })
+    .catch(err => testSocketError(err, socket, 'chat-message', err.message))
   })
 
   socket.on('new-request', payload => {
