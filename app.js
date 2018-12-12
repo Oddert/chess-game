@@ -286,10 +286,9 @@ io.on(`connection`, socket => {
   })
 
   socket.on('edit-request', payload => {
-    Request.findByIdAndUpdate(payload.id, payload.data, (err, request) => {
-      if (err) testSocketError(err, socket, 'edit-request', err.message)
-      else socket.emit('edit-request', payload)
-    })
+    Request.findByIdAndUpdate(payload.id, payload.data)
+    .then(request => socket.emit('edit-request', payload))
+    .catch(err => testSocketError(err, socket, 'edit-request', err.message))
   })
 
   socket.on('delete-request', payload => {
@@ -297,12 +296,9 @@ io.on(`connection`, socket => {
       deleted: true,
       deleted_on: Date.now(),
       deleted_by: socket.request.isAuthenticated() ? socket.request.user._id : undefined
-    }, err => {
-      if (err) socket.emit('delete-request', { err })
-      else {
-        socket.emit('delete-request', { err: null, id: payload })
-      }
     })
+    .then(() => socket.emit('delete-request', { err: null, id: payload }))
+    .catch(err => socket.emit('delete-request', { err }))
   })
 
   socket.on('accept-request', payload => {
@@ -312,99 +308,82 @@ io.on(`connection`, socket => {
     if (!socket.request.isAuthenticated()) {
       socket.emit('accept-request', { err: 'You are not singed in, please log in again.' })
     } else {
-      Request.findById(payload, (err, request) => {
-        if (err) testSocketError(err, socket, 'accept-request', err.message)
-        else {
-          console.log('# Found Request')
-          User.findById(socket.request.user._id, (err, recipient) => {
-            if (err) testSocketError(err, socket, 'accept-request', err.message)
-            else {
-              console.log('# Found Recipient')
-              User.findById(request.author.id, (err, author) => {
-                if (err) testSocketError(err, socket, 'accept-request', err.message)
-                else {
-                  console.log('# Found Author')
+      Request.findById(payload)
+      .then(request => {
+        console.log('# Found Request')
+        User.findById(socket.request.user._id)
+        .then(recipient => {
+          console.log('# Found Recipient')
+          User.findById(request.author.id)
+          .then(author => {
+            console.log('# Found Author')
+            Game.create({
+              request: request._id,
+              board: createDefaultBoard(),
+              white: {
+                id: request.author.id,
+                username: request.author.username,
+                score: 0
+              },
+              black: {
+                id: socket.request.user._id,
+                username: socket.request.user.username,
+                score: 0
+              }
+            })
+            .then(game => {
+              console.log('Game Created!')
 
-                  Game.create({
-                    request: request._id,
-                    board: createDefaultBoard(),
-                    white: {
-                      id: request.author.id,
-                      username: request.author.username,
-                      score: 0
-                    },
-                    black: {
-                      id: socket.request.user._id,
-                      username: socket.request.user.username,
-                      score: 0
-                    }
-                  }, (err, game) => {
-                    if (err) testSocketError(err, socket, 'accept-request', err.message)
-                    else {
-                      console.log('Game Created!')
+              author.activeGames.push(game._id)
+              recipient.activeGames.push(game._id)
+              request.game = game._id
+              request.accepted = true
+              request.accepted_date = Date.now()
 
-                      author.activeGames.push(game._id)
-                      recipient.activeGames.push(game._id)
-                      request.game = game._id
-                      request.accepted = true
-                      request.accepted_date = Date.now()
-
-                      author.save()
-                      recipient.save()
-                      request.save((err, saved_request) => {
-                        if (err) testSocketError(err, socket, 'accept-request', err.message)
-                        else {
-                          console.log('# request saved, creating notification...')
-                          Notification.create({
-                            name: 'Request Accepted',
-                            message: `${recipient.username} accepted your request for a game, click to play against them!`,
-                            notification_type: 'accept-request',
-                            user: {
-                              username: author.username,
-                              id: author._id
-                            },
-                            other_users: [{
-                              username: recipient.username,
-                              id: recipient._id
-                            }],
-                            game: game._id,
-                            request: request._id
-                          }, (err, notification) => {
-                            console.log(notification)
-                            if (err) testSocketError(err, socket, 'accept-request', err.message)
-                            else {
-                              console.log('saving to author')
-                              author.notifications.push(notification._id)
-                              author.save(err => {
-                                if (err) testSocketError(err, socket, 'accept-request', err.message)
-                                else {
-                                  console.log(`broadcasting to author id: ${author._id}`)
-                                  socket.broadcast.to(author._id).emit('notification', notification)
-                                }
-                              })
-                            }
-                          })
-                          socket.emit('accept-request', {
-                            success: true,
-                            game
-                          })
-                          socket.broadcast.to(author._id).emit('dev', {
-                            dev_type: 'accept-request',
-                            success: true,
-                            game
-                          })
-                        }
-                      })
-
-
-                    }
-                  })
-                }
-              })
-            }
-          })
-        }
-      })
+              author.save()
+              recipient.save()
+              request.save()
+              .then(saved_request => {
+                console.log('# request saved, creating notification...')
+                Notification.create({
+                  name: 'Request Accepted',
+                  message: `${recipient.username} accepted your request for a game, click to play against them!`,
+                  notification_type: 'accept-request',
+                  user: {
+                    username: author.username,
+                    id: author._id
+                  },
+                  other_users: [{
+                    username: recipient.username,
+                    id: recipient._id
+                  }],
+                  game: game._id,
+                  request: request._id
+                })
+                .then(notification => {
+                  console.log({ notification })
+                  console.log('saving to author')
+                  author.notifications.push(notification._id)
+                  author.save()
+                  .then(err => {
+                    console.log(`broadcasting to author id: ${author._id}`)
+                    socket.broadcast.to(author._id).emit('notification', notification)
+                  }).catch(err => testSocketError(err, socket, 'accept-request', err.message))
+                }).catch(err => testSocketError(err, socket, 'accept-request', err.message))
+                socket.emit('accept-request', {
+                  success: true,
+                  game
+                })
+                socket.broadcast.to(author._id).emit('dev', {
+                  dev_type: 'accept-request',
+                  success: true,
+                  game
+                })
+              }).catch(err => testSocketError(err, socket, 'accept-request', err.message))
+            }).catch(err => testSocketError(err, socket, 'accept-request', err.message))
+          }).catch(err => testSocketError(err, socket, 'accept-request', err.message))
+        }).catch(err => testSocketError(err, socket, 'accept-request', err.message))
+      }).catch(err => testSocketError(err, socket, 'accept-request', err.message))
     }
 
   })
