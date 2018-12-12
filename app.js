@@ -146,9 +146,9 @@ io.on(`connection`, socket => {
 
   socket.on(`move-piece`, payload => {
     Game.findById(socket.room)
-    .exec((err, foundGame) => {
-      if (err) testSocketError(err, socket, 'move-piece', err.message)
-      else console.log(`foundGame: `, !!foundGame)
+    .exec()
+    .then(foundGame => {
+      console.log(`foundGame: `, !!foundGame)
 
       const fromRow = payload.from.row
       const fromCol = payload.from.col
@@ -178,17 +178,18 @@ io.on(`connection`, socket => {
       // foundGame.markModified('moves')
       foundGame.lastMove = payload.team === 0 ? 1 : 0
 
-      console.log(foundGame)
+      console.log({ foundGame })
 
-      foundGame.save((err, game) => {
-        if (err) testSocketError(err, socket, 'move-piece', err.message, socket.room)
-        else {
-          console.log(`Game saved ok!`)
-          socket.emit(`move-piece`, payload)
-          socket.broadcast.to(socket.room).emit(`move-piece`, payload)
-        }
+      foundGame.save()
+      .then(game => {
+        console.log(`Game saved ok!`)
+        socket.emit(`move-piece`, payload)
+        socket.broadcast.to(socket.room).emit(`move-piece`, payload)
       })
+      .catch(err => testSocketError(err, socket, 'move-piece', err.message, socket.room))
+
     })
+    .catch(err => testSocketError(err, socket, 'move-piece', err.message))
   })
 
   socket.on('change-meta', payload => {
