@@ -13,9 +13,17 @@ class MscSocketDev extends React.Component {
     })
   }
 
+  handleSecondTest () {
+    socket.emit('mongoose', { id: '5bc125e803a3f4388c11224b' })
+    socket.on('mongoose', mongoose_res => console.log({ mongoose_res }))
+  }
+
   render () {
     return (
-      <button onClick={this.handleTest.bind(this)}>Ping Socket connection</button>
+      <div>
+        <button onClick={this.handleTest.bind(this)}>Ping Socket connection</button>
+        <button onClick={this.handleSecondTest.bind(this)}>Test Dev Event</button>
+      </div>
     )
   }
 }

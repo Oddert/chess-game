@@ -388,6 +388,23 @@ io.on(`connection`, socket => {
 
   })
 
+
+  socket.on('mongoose', payload => {
+    console.log({ payload })
+    console.log('### SIMULATION ### User wants to accept a request:')
+    const dummyId = '5bc125e803a3f4388c11224b'
+    console.log(`Dummy Id for oddert: ${dummyId}`)
+
+    User.findById(payload.id)
+    .then(user => {
+      return Game.findById(user.activeGames[0])
+    })
+    .then(game => {
+      console.log(`The users fist game is called: ${game.name}`)
+      socket.emit('mongoose', `found game: ${game.name}`)
+    })
+  })
+
   socket.on(`disconnect`, () => {
     socket.leave(socket.room)
     socket.leave(socket.request.user._id)
