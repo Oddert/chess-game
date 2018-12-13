@@ -401,7 +401,24 @@ io.on(`connection`, socket => {
     })
     .then(game => {
       console.log(`The users fist game is called: ${game.name}`)
-      socket.emit('mongoose', `found game: ${game.name}`)
+      return User.findByIdAndUpdate(dummyId, {})
+      .then(user => {
+        console.log('Second user find function, going to try returning twice:')
+        return game
+      })
+    })
+    .then(whatIsThis => {
+      console.log({ whatIsThis })
+      return User.findByIdAndUpdate(dummyId, {})
+      .then(user => {
+        console.log('THIRD user lookup, pretend this is a diffirent one...')
+        return whatIsThis
+      })
+      // socket.emit('mongoose', `found game: ${game.name}`)
+    })
+    .then(onceMore => console.log({ onceMore }))
+    .catch(err => {
+      console.log({ err })
     })
   })
 
