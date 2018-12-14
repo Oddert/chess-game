@@ -1,0 +1,56 @@
+socket.on('accept-request', payload => {
+  console.log('NEW ROUTE, User wants to accept a request:')
+  console.log('User: ', socket.request.user)
+  console.log({ payload })
+  if (!socket.request.isAuthenticated()) {
+    socket.emit('accept-request', { err: { message: 'You are not signed in, please log in again' } })
+  } else {
+    const defaultGame = {
+      request: request._id,
+      board: createDefaultBoard(),
+      white: {
+        id: request.author.id,
+        username: request.author.username,
+        score: 0
+      },
+      black: {
+        id: socket.request.user._id,
+        username: socket.request.user.username,
+        score: 0
+      }
+    }
+    // Create the new Game
+    Game.create(defaultGame)
+    .then(game => {
+      console.log('...game created')
+      // Update the request to complete, return 'up'
+      return Request.findByIdAndUpdate(payload, {
+        game: game._id,
+        accepted: true,
+        accepted_date: Date.now()
+      }).then(request => request)
+    })
+    .then(request => {
+      console.log('...request created, updating author', { request })
+      // Update the Author (user who created the request) to have the new game
+      return User.findByIdAndUpdate(request.author.id, { $push: { activeGames: request.game } })
+      .then(author => {
+        console.log(`Author updated, returning request (2nd level)`, { author })
+        // return the game for next opperation
+        return request
+      })
+    })
+    .then(request => {
+      console.log('ohh laawwwwd this is uncharted territory', { game })
+      // Update the Recipient (target of request)
+      return User.findByIdAndUpdate(request.target.id, { $push: { activeGames: request.game } })
+      .then(recipient => {
+        console.log(`Recipient updated, returning game (2nd level)`, { recipient })
+        return request
+      })
+    })
+    .then(request => {
+
+    })
+  }
+})
