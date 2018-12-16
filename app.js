@@ -154,26 +154,30 @@ io.on(`connection`, socket => {
       const fromCol = payload.from.col
       const toRow = payload.to.row
       const toCol = payload.to.col
+      const fromPiece = payload.piece
+      const toPiece = fromPiece
 
       const clientTeam = payload.team === 0 ? 'black' : 'white'
-      const targetCellType = foundGame.board[toRow][toCol].type
+
+      const thisPGN = toPGN(fromPiece, fromRow, fromCol, toPiece, toRow, toCol, payload.takePiece)
 
 
       if (payload.takePiece) {
+        const targetCellType = foundGame.board[toRow][toCol].type
         foundGame[clientTeam].score += convertPoints(targetCellType)
         foundGame[clientTeam].takenPieces.push(targetCellType)
       }
 
       if (payload.team === 0) {
-        foundGame.moves[foundGame.moves.length-1].b = toPGN(payload.piece, fromRow, fromCol, payload.piece, toRow, toCol, payload.takePiece)
+        foundGame.moves[foundGame.moves.length-1].b = thisPGN
       } else {
-        console.log({ w : toPGN(payload.piece, fromRow, fromCol, payload.piece, toRow, toCol, payload.takePiece) })
-        foundGame.moves.push({ w : toPGN(payload.piece, fromRow, fromCol, payload.piece, toRow, toCol, payload.takePiece) })
+        console.log({ w : thisPGN })
+        foundGame.moves.push({ w : thisPGN })
         console.log(foundGame.moves)
       }
 
       foundGame.board[fromRow][fromCol] = { type: "empty", team: null }
-      foundGame.board[toRow][toCol] = { type: payload.piece, team: Number(payload.team) }
+      foundGame.board[toRow][toCol] = { type: toPiece, team: Number(payload.team) }
       foundGame.markModified('board')
       // foundGame.markModified('moves')
       foundGame.lastMove = payload.team === 0 ? 1 : 0
