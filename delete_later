@@ -5,7 +5,7 @@ socket.on('accept-request', payload => {
   if (!socket.request.isAuthenticated()) {
     socket.emit('accept-request', { err: { message: 'You are not signed in, please log in again' } })
   } else {
-    const defaultGame = {
+    const defaultGame = request => ({
       request: request._id,
       board: createDefaultBoard(),
       white: {
@@ -18,25 +18,45 @@ socket.on('accept-request', payload => {
         username: socket.request.user.username,
         score: 0
       }
-    }
-    // Create the new Game
-    Game.create(defaultGame)
+    })
+
+    const notificationBody = request => ({
+      name: 'Request Accepted',
+      message: `${request.target.username} accepted your request for a game, click to play against them!`,
+      notification_type: 'accept-request',
+      user: {
+        username: request.author.username,
+        id: request.author._id
+      },
+      other_users: [{
+        username: request.target.username,
+        id: request.target._id
+      }],
+      game: request.game,
+      request: request._id
+    })
+
+    // Find the request to use IDs in game creation
+    Request.findById(payload)
+    .then(request => {
+      return Game.create(defaultGame(request)) // Create the new Game
+    })
     .then(game => {
       console.log('...game created')
-      // Update the request to complete, return 'up'
+      // Update the request to say 'complete'
       return Request.findByIdAndUpdate(payload, {
         game: game._id,
         accepted: true,
         accepted_date: Date.now()
-      }).then(request => request)
+      })
     })
     .then(request => {
       console.log('...request created, updating author', { request })
       // Update the Author (user who created the request) to have the new game
       return User.findByIdAndUpdate(request.author.id, { $push: { activeGames: request.game } })
       .then(author => {
-        console.log(`Author updated, returning request (2nd level)`, { author })
-        // return the game for next opperation
+        console.log(`Author updated, returning request (2nd level)`, { author, request })
+        // return the request again for next opperation
         return request
       })
     })
@@ -50,7 +70,28 @@ socket.on('accept-request', payload => {
       })
     })
     .then(request => {
-
+      let newNotification = notificationBody(request)
+      console.log('Going to create a notification from this: ', { newNotification })
+      return Notification.create(newNotification)
     })
+    .then(notification => {
+      return User.findByIdAndUpdate(request.author.id, { $push: { notifications: notification._id } })
+      .then(author => {
+        socket.broadcast.to(author._id).emit('notification', notification)
+        return notification
+      })
+    })
+    .then(author => {
+      console.log(`Author ${author.username} updated with notification`)
+      socket.emit('accept-request', {
+        success: true,
+        game
+      })
+      socket.broadcast.to(author._id).emit('dev', {
+        dev_type: 'accept-request',
+        success: true,
+        game
+      })
+    }).catch(err => testSocketError(err, socket, 'accept-request', err.message))
   }
 })

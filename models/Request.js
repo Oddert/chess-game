@@ -38,7 +38,7 @@ const RequestSchema = new mongoose.Schema ({
     default: false
   },
   deleted_by: {
-    type: mongoose.Schema.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'chessGame-user'
   },
   deleted_on: Date,
