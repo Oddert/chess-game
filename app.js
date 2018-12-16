@@ -301,94 +301,6 @@ io.on(`connection`, socket => {
     .catch(err => socket.emit('delete-request', { err }))
   })
 
-  // socket.on('accept-request', payload => {
-  //   console.log('User wants to accept a request:')
-  //   console.log(socket.request.user)
-  //   console.log(payload)
-  //   if (!socket.request.isAuthenticated()) {
-  //     socket.emit('accept-request', { err: 'You are not singed in, please log in again.' })
-  //   } else {
-  //     Request.findById(payload)
-  //     .then(request => {
-  //       console.log('# Found Request')
-  //       User.findById(socket.request.user._id)
-  //       .then(recipient => {
-  //         console.log('# Found Recipient')
-  //         User.findById(request.author.id)
-  //         .then(author => {
-  //           console.log('# Found Author')
-  //           Game.create({
-  //             request: request._id,
-  //             board: createDefaultBoard(),
-  //             white: {
-  //               id: request.author.id,
-  //               username: request.author.username,
-  //               score: 0
-  //             },
-  //             black: {
-  //               id: socket.request.user._id,
-  //               username: socket.request.user.username,
-  //               score: 0
-  //             }
-  //           })
-  //           .then(game => {
-  //             console.log('Game Created!')
-  //
-  //             author.activeGames.push(game._id)
-  //             recipient.activeGames.push(game._id)
-  //             request.game = game._id
-  //             request.accepted = true
-  //             request.accepted_date = Date.now()
-  //
-  //             author.save()
-  //             recipient.save()
-  //             request.save()
-  //             .then(saved_request => {
-  //               console.log('# request saved, creating notification...')
-  //               Notification.create({
-  //                 name: 'Request Accepted',
-  //                 message: `${recipient.username} accepted your request for a game, click to play against them!`,
-  //                 notification_type: 'accept-request',
-  //                 user: {
-  //                   username: author.username,
-  //                   id: author._id
-  //                 },
-  //                 other_users: [{
-  //                   username: recipient.username,
-  //                   id: recipient._id
-  //                 }],
-  //                 game: game._id,
-  //                 request: request._id
-  //               })
-  //               .then(notification => {
-  //                 console.log({ notification })
-  //                 console.log('saving to author')
-  //                 author.notifications.push(notification._id)
-  //                 author.save()
-  //                 .then(err => {
-  //                   console.log(`broadcasting to author id: ${author._id}`)
-  //                   socket.broadcast.to(author._id).emit('notification', notification)
-  //                 }).catch(err => testSocketError(err, socket, 'accept-request', err.message))
-  //               }).catch(err => testSocketError(err, socket, 'accept-request', err.message))
-  //               socket.emit('accept-request', {
-  //                 success: true,
-  //                 game
-  //               })
-  //               socket.broadcast.to(author._id).emit('dev', {
-  //                 dev_type: 'accept-request',
-  //                 success: true,
-  //                 game
-  //               })
-  //             }).catch(err => testSocketError(err, socket, 'accept-request', err.message))
-  //           }).catch(err => testSocketError(err, socket, 'accept-request', err.message))
-  //         }).catch(err => testSocketError(err, socket, 'accept-request', err.message))
-  //       }).catch(err => testSocketError(err, socket, 'accept-request', err.message))
-  //     }).catch(err => testSocketError(err, socket, 'accept-request', err.message))
-  //   }
-  //
-  // })
-
-
   socket.on('accept-request', payload => {
     console.log('NEW ROUTE, User wants to accept a request:')
     console.log('User: ', socket.request.user)
@@ -448,7 +360,7 @@ io.on(`connection`, socket => {
       })
       .then(game => {
         console.log('[437]...game created', { game })
-        // Update the request to say 'complete'
+        // Update the request to say 'complete', update the target user to latest credentials
         const requestUpdate = {
           game: game._id,
           accepted: true,
@@ -471,21 +383,22 @@ io.on(`connection`, socket => {
           })
         })
       })
-      // REQUEST DOES NOT NOTE THE 'OTHER USER'
+      // This is to circumvent a bug with mongoose where returning does not include the updated doc
       .then(requestId => Request.findById(requestId))
       .then(request => {
         console.log('[459]Now going to update the recipient: ', request.target)
-        console.log('[460] Request.game: ', request.game)
-        // Update the Recipient (target of request) to have the game
-        console.log('[462]', !!request.target, !!request.target.id, !!(!!request.target && !!request.target.id))
+        // console.log('[460] Request.game: ', request.game)
+        // console.log('[462]', !!request.target, !!request.target.id, !!(!!request.target && !!request.target.id))
         if (request.target && request.target.id) {
           console.log('[464]...target found')
+          // Update the Recipient (user accepting the request) to have the new game
           return User.findByIdAndUpdate(request.target.id, { $push: { activeGames: request.game } })
           .then(recipient => {
             console.log(`[467]Recipient updated, returning game (2nd level)`, { recipient })
             return request._id
           })
         } else {
+          // This is a failsafe, should not actually reach
           console.log('[471]...no target')
           return request._id
         }
@@ -497,12 +410,14 @@ io.on(`connection`, socket => {
         console.log('[478]Going to create a notification from this: ', { newNotification })
         return Game.findById(request.game)
         .then(game => {
+          // Create the notification
           newNotification.game = game._id
           return Notification.create(newNotification)
         })
       })
       .then(notification => {
         console.log('[486]...notification created', { notification })
+        // Using the request we find the Author
         return Request.findById(notification.request)
         .then(request => {
           console.log('[489](2nd) level, found request, adding to author')
@@ -510,9 +425,11 @@ io.on(`connection`, socket => {
         })
         .then(author => {
           console.log(`[493] Author ${author.username} updated with notification`)
+          // Once author is found, emit a notification
           socket.broadcast.to(author._id).emit('notification', notification)
           return Game.findById(notification.game)
           .then(game => {
+            // All complete, fire the callback socket event (+ dev event)
             socket.emit('accept-request', {
               success: true,
               game
@@ -527,6 +444,7 @@ io.on(`connection`, socket => {
         })
       })
       .then(author => {
+        // Strictly uneccessary, for degub purposes
         console.log('FINISHING')
       }).catch(err => testSocketError(err, socket, 'accept-request', err.message))
     }
