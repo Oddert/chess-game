@@ -456,6 +456,7 @@ io.on(`connection`, socket => {
       })
       .then(request => {
         console.log('[457]Now going to update the recipient: ', request.target)
+        console.log('[458] here is request.game: ', request.game)
         // Update the Recipient (target of request) to have the game
         console.log('[459]', !!request.target, !!request.target.id, !!(!!request.target && !!request.target.id))
         if (request.target && request.target.id) {
