@@ -229,7 +229,7 @@ io.on(`connection`, socket => {
 
     if (socket.request.user._id) {
       console.log('user is auth (definately, not making that up, I promis)')
-      console.log('### DEV: swapping out real functionality for dummy to deliberately crash')
+      // console.log('### DEV: swapping out real functionality for dummy to deliberately crash')
       User.findById(socket.request.user._id)
       .then(author => {
         console.log(author)
@@ -240,7 +240,8 @@ io.on(`connection`, socket => {
             id: author._id
           },
           open: payload.openRequest,
-          target: payload.openRequest ? null : { username: payload.targetUser.username, id: payload.targetUser._id }
+          target: payload.openRequest ? null : { username: payload.targetUser.username, id: payload.targetUser._id },
+          target_self_assigned: payload.openRequest ? null : false
         }
         console.log('USer found, creating request:')
         console.log({ newRequest })
@@ -249,26 +250,25 @@ io.on(`connection`, socket => {
       .then(request => {
         console.log('...request created...', { request })
         return User.findByIdAndUpdate(socket.request.user._id, { $push: { outboundRequests: request._id } })
+        .then(user => request)
+      })
+      .then(request => {
+        if (!payload.openRequest) {
+          console.log('# is not an open request')
+          return User.findByIdAndUpdate(payload.targetUser._id, { $push: { inboundRequests: request._id } })
+          .then(target => {
+            console.log('...target user found and updated with request')
+            socket.broadcast.to(target._id).emit('inbound-request', request)
+            socket.broadcast.to(target._id).emit('dev', request)
+            console.log(`...pushed to inbound req on ${target.username}`)
+            return User.findById(request.author.id)
+          })
+        } else {
+          return User.findById(request.author.id)
+        }
       })
       .then(author => {
         console.log(`...SAVED: pushed to outbound req on ${author.username}`)
-
-        if (!payload.openRequest) {
-          console.log('# is not an open request')
-          User.findById(payload.targetUser._id)//, { $push: { inboundRequests: request._id } }) // ?????????? request obj where?
-          .then(target => {
-            console.log('...target user found')
-            target.inboundRequests.push(request._id)
-            target.save()
-            .then(() => {
-              console.log('pushed to target user inbound')
-              socket.broadcast.to(target._id).emit('inbound-request', request)
-              socket.broadcast.to(target._id).emit('dev', request)
-              console.log(`...pushed to inbound req on ${target.username}`)
-            }).catch(err => testSocketError(err, socket, 'new-request', err.message, target._id))
-          }).catch(err => testSocketError(err, socket, 'new-request', err.message, target._id))
-        }
-
         console.log('Request made successfully!')
         return socket.emit('new-request', {
           err: null,
@@ -421,8 +421,8 @@ io.on(`connection`, socket => {
           id: request.author.id
         },
         other_users: [{
-          username: request.target ? request.target.username : socket.request.user.username,
-          id: request.target ? request.target._id : socket.request.user._id
+          username: socket.request.user.username,
+          id: socket.request.user._id
         }],
         game: request.game,
         request: request._id
@@ -431,7 +431,20 @@ io.on(`connection`, socket => {
       // Find the request to use IDs in game creation
       Request.findById(payload)
       .then(request => {
-        return Game.create(defaultGame(request)) // Create the new Game
+        // Duplicate routes. If there is a target on the request then this person was targeted
+        // by the author, otherwise we simply override the 'target' with self if its an open request
+        // this means we dont need two values, for example "target" vs "actual_recipient"
+        if (request.target.id) {
+          return Request.findByIdAndUpdate(request._id, { target_self_assigned: false })
+          .then(request => {
+            return Game.create(defaultGame(request)) // Create the new Game after updating the self assigned variable
+          })
+        } else {
+          return Request.findByIdAndUpdate(request._id, { target_self_assigned: true })
+          .then(request => {
+            return Game.create(defaultGame(request)) // Create the new Game after updating the self assigned variable
+          })
+        }
       })
       .then(game => {
         console.log('[437]...game created', { game })
@@ -439,41 +452,49 @@ io.on(`connection`, socket => {
         const requestUpdate = {
           game: game._id,
           accepted: true,
-          accepted_date: Date.now()
+          accepted_date: Date.now(),
+          target: {
+            id: socket.request.user._id,
+            username: socket.request.user.username
+          }
         }
         console.log({ requestUpdate })
         return Request.findByIdAndUpdate(payload, requestUpdate)
         .then(request => {
           console.log('[447]...request updated, updating author', { request })
-          console.log(request.game)
+          console.log(request.game, game._id)
           // Update the Author (user who created the request) to have the new game
-          return User.findByIdAndUpdate(request.author.id, { $push: { activeGames: request.game } })
+          return User.findByIdAndUpdate(request.author.id, { $push: { activeGames: game._id } })
           .then(author => {
             console.log(`[452]Author updated, returning request (2nd level)`, { author, request })
-            return request
+            return request._id
           })
         })
       })
+      // REQUEST DOES NOT NOTE THE 'OTHER USER'
+      .then(requestId => Request.findById(requestId))
       .then(request => {
-        console.log('[457]Now going to update the recipient: ', request.target)
-        console.log('[458] here is request.game: ', request.game)
+        console.log('[459]Now going to update the recipient: ', request.target)
+        console.log('[460] Request.game: ', request.game)
         // Update the Recipient (target of request) to have the game
-        console.log('[459]', !!request.target, !!request.target.id, !!(!!request.target && !!request.target.id))
+        console.log('[462]', !!request.target, !!request.target.id, !!(!!request.target && !!request.target.id))
         if (request.target && request.target.id) {
-          console.log('[460]...target found')
+          console.log('[464]...target found')
           return User.findByIdAndUpdate(request.target.id, { $push: { activeGames: request.game } })
           .then(recipient => {
-            console.log(`[463]Recipient updated, returning game (2nd level)`, { recipient })
-            return request
+            console.log(`[467]Recipient updated, returning game (2nd level)`, { recipient })
+            return request._id
           })
         } else {
-          console.log('[467]...no target')
-          return request
+          console.log('[471]...no target')
+          return request._id
         }
       })
+      .then(requestId => Request.findById(requestId))
       .then(request => {
         let newNotification = notificationBody(request)
-        console.log('[473]Going to create a notification from this: ', { newNotification })
+        console.log('[477] here is request.game: ', request.game)
+        console.log('[478]Going to create a notification from this: ', { newNotification })
         return Game.findById(request.game)
         .then(game => {
           newNotification.game = game._id
@@ -481,14 +502,14 @@ io.on(`connection`, socket => {
         })
       })
       .then(notification => {
-        console.log('[477]...notification created', { notification })
+        console.log('[486]...notification created', { notification })
         return Request.findById(notification.request)
         .then(request => {
-          console.log('[481](2nd) level, found request, adding to author')
+          console.log('[489](2nd) level, found request, adding to author')
           return User.findByIdAndUpdate(request.author.id, { $push: { notifications: notification._id } })
         })
         .then(author => {
-          console.log(`[485] Author ${author.username} updated with notification`)
+          console.log(`[493] Author ${author.username} updated with notification`)
           socket.broadcast.to(author._id).emit('notification', notification)
           return Game.findById(notification.game)
           .then(game => {

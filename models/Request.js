@@ -22,9 +22,13 @@ const RequestSchema = new mongoose.Schema ({
     type: Boolean,
     default: true
   },
+
   target: {
     username: String,
     id: mongoose.Schema.Types.ObjectId
+  },
+  target_self_assigned: {
+    type: Boolean
   },
 
   created: {
