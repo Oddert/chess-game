@@ -53,6 +53,12 @@ const RequestSchema = new mongoose.Schema ({
   },
   accepted_date: Date,
 
+  declined: {
+    type: Boolean,
+    default: false
+  },
+  declined_date: Date,
+
   game: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'chessGame-game'

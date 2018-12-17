@@ -450,8 +450,61 @@ io.on(`connection`, socket => {
       .then(author => {
         // Strictly uneccessary, for degub purposes
         console.log('FINISHING')
-      }).catch(err => testSocketError(err, socket, 'accept-request', err.message))
+      })
+      .catch(err => testSocketError(err, socket, 'accept-request', err.message))
     }
+  })
+
+
+  socket.on('decline-request', payload => {
+
+    const samplePyaload = {
+      id: '3979hgfe8h892yr9',
+      message: 'Sory but im bissy the now'
+    }
+
+    const notificationBody = request => ({
+      name: 'Request Declined',
+      message: `${socket.request.user.username} politely declined your request for a game.`,
+      notification_type: 'decline-request',
+      user: {
+        username: request.author.username,
+        id: request.author.id
+      },
+      other_users: [{
+        username: socket.request.user.username,
+        id: socket.request.user._id
+      }],
+      request: request._id
+    })
+
+    Request.findById(payload.id)
+    .then(request => {
+      if (!(request.target && request.target.id)) {
+        socket.emit('decline-request', { err: 'This is an open request, you may not decline it' })
+      } else if (!request.target.id.equals(socket.request.user._id)) {
+        socket.emit('decline-request', { err: 'You are not the intended target of this request' })
+      } else {
+        return Request.findByIdAndUpdate(payload.id, {
+          declined: true,
+          declined_date: Date.now()
+        })
+      }
+    })
+    .then(request => {
+      return Notification.create(notificationBody(request))
+    })
+    .then(notification => {
+      return User.findByIdAndUpdate(notification.user.id, { $push: { notifications: notification } })
+      .then(author => {
+        socket.broadcast.to(author._id).emit('notification', notification)
+        return notification
+      })
+    })
+    .then(notification => {
+      console.log('FINISHING', { notification })
+    })
+    .catch(err => testSocketError(err, socket, 'decline-request', err.message))
   })
 
 
