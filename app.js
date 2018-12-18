@@ -256,6 +256,30 @@ io.on(`connection`, socket => {
         return User.findByIdAndUpdate(socket.request.user._id, { $push: { outboundRequests: request._id } })
         .then(user => request)
       })
+
+      .then(request => {
+        return Notification.create({
+          name: 'Request Created',
+          message: `${request.author.username} wants to play a game of chess!`,
+          notification_type: 'create-request',
+          user: {
+            username: request.target.username,
+            id: request.target.id
+          },
+          other_users: [{
+            username: request.author.username,
+            id: request.author._id
+          }],
+          request: request._id
+        })
+        .then(notification => {
+          socket.broadcast.to(request.target._id).emit('notification', notification)
+          return User.findByIdAndUpdate(request.target.id, { $push: { notifications: notification._id } })
+          // User.findByIdAndUpdate(request.author.id, { $push: { notifications: notification._id } })
+          .then(target => request)
+        })
+      })
+
       .then(request => {
         if (!payload.openRequest) {
           console.log('# is not an open request')
