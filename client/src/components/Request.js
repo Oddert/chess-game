@@ -4,6 +4,8 @@ import { connect } from 'react-redux'
 import { selectGame, editRequest, deleteRequest } from '../actions'
 import socket from '../sockets'
 
+import RequestDecline from './RequestDecline'
+
 import './styles/Request.css'
 
 class Request extends React.Component {
@@ -12,7 +14,8 @@ class Request extends React.Component {
     this.state = {
       open: false,
       editing: false,
-      deleteing: false
+      deleteing: false,
+      responce: ''
     }
     this.toggleOpen = this.toggleOpen.bind(this)  // R
     this.toggleEdit = this.toggleEdit.bind(this)  // U
@@ -89,7 +92,7 @@ class Request extends React.Component {
     const isAuthor = item.author.id === app.auth.user._id
 
     let style = {}
-    if (item.accepted) style.border = '2px solid steelblue'
+    if (item.accepted) style.border = '2px solid limegreen'
     if (item.deleted) style.background = 'tomato'
 
     return (
@@ -135,15 +138,13 @@ class Request extends React.Component {
                   }
                 </h6>
                 {!item.open
-                  ? <textarea placeholder='Add a responce message here' />
+                  ? <textarea className='responce' onChange={this.handleChange} value={this.state.responce} placeholder='Add a responce message here' />
                   : ''
                 }
                 <div className='accept-buttons'>
                   {item.open
                     ? ''
-                    : <div>
-                        <button className='decline'>Decline Offer</button>
-                      </div>
+                    : <RequestDecline id={item._id} responce={this.state.responce} />
                   }
                   <div>
                     <button className='close' onClick={this.toggleOpen}>Close</button>

@@ -28,6 +28,9 @@ class NotificationMenu extends React.Component {
       if (res.err) console.log(res.err)
       else this.props.refreshNotifications(res.notifications)
     })
+    .catch(err => {
+      console.log(err)
+    })
     socket.on('notification', payload => {
       console.log('# New notification!')
       console.log(payload)

@@ -484,7 +484,7 @@ io.on(`connection`, socket => {
 
     const samplePyaload = {
       id: '3979hgfe8h892yr9',
-      message: 'Sory but im bissy the now'
+      responce: 'Sory but im bissy the now'
     }
 
     const notificationBody = request => ({
@@ -502,33 +502,37 @@ io.on(`connection`, socket => {
       request: request._id
     })
 
-    Request.findById(payload.id)
-    .then(request => {
-      if (!(request.target && request.target.id)) {
-        socket.emit('decline-request', { err: 'This is an open request, you may not decline it' })
-      } else if (!request.target.id.equals(socket.request.user._id)) {
-        socket.emit('decline-request', { err: 'You are not the intended target of this request' })
-      } else {
-        return Request.findByIdAndUpdate(payload.id, {
-          declined: true,
-          declined_date: Date.now()
-        })
-      }
-    })
-    .then(request => {
-      return Notification.create(notificationBody(request))
-    })
-    .then(notification => {
-      return User.findByIdAndUpdate(notification.user.id, { $push: { notifications: notification } })
-      .then(author => {
-        socket.broadcast.to(author._id).emit('notification', notification)
-        return notification
-      })
-    })
-    .then(notification => {
-      console.log('FINISHING', { notification })
-    })
-    .catch(err => testSocketError(err, socket, 'decline-request', err.message))
+    console.log('### Decline Request')
+    console.log(payload)
+    socket.emit('decline-request', Object.assign({}, payload, {res: 'functionality to be tested'}))
+
+    // Request.findById(payload.id)
+    // .then(request => {
+    //   if (!(request.target && request.target.id)) {
+    //     socket.emit('decline-request', { err: 'This is an open request, you may not decline it' })
+    //   } else if (!request.target.id.equals(socket.request.user._id)) {
+    //     socket.emit('decline-request', { err: 'You are not the intended target of this request' })
+    //   } else {
+    //     return Request.findByIdAndUpdate(payload.id, {
+    //       declined: true,
+    //       declined_date: Date.now()
+    //     })
+    //   }
+    // })
+    // .then(request => {
+    //   return Notification.create(notificationBody(request))
+    // })
+    // .then(notification => {
+    //   return User.findByIdAndUpdate(notification.user.id, { $push: { notifications: notification } })
+    //   .then(author => {
+    //     socket.broadcast.to(author._id).emit('notification', notification)
+    //     return notification
+    //   })
+    // })
+    // .then(notification => {
+    //   console.log('FINISHING', { notification })
+    // })
+    // .catch(err => testSocketError(err, socket, 'decline-request', err.message))
   })
 
 
