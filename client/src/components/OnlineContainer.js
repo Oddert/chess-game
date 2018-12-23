@@ -3,10 +3,10 @@ import { connect } from 'react-redux'
 
 import { login, logout } from '../actions'
 
-import CreateRequest from './CreateRequest'
+import CreateRequest from './Request/Create'
 import BoardWrapper from './BoardWrapper'
 import GameIconContainer from './GameIconContainer'
-import RequestIconContainer from './RequestIconContainer'
+import RequestIconContainer from './Request/IconContainer'
 
 import './styles/OnlineContainer.css'
 

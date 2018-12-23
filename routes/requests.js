@@ -26,7 +26,7 @@ router.get('/inbound', (req, res) => {
     .populate('inboundRequests')
     .exec((err, user) => {
       if (err) console.log(err)
-      else res.status(200).json({ requests: user.inboundRequests.filter(e => !e.deleted) })
+      else res.status(200).json({ requests: user.inboundRequests.filter(e => !e.deleted && !e.declined) })
     })
   } else {
     res.status(200).json({ requests: [] })

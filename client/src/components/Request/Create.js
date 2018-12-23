@@ -1,9 +1,9 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import socket from '../sockets'
+import socket from '../../sockets'
 
-import './styles/CreateRequest.css'
+import '../styles/CreateRequest.css'
 
 class CreateRequest extends React.Component {
   constructor(props) {

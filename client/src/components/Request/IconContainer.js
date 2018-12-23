@@ -1,11 +1,11 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import { addPublicReq, addInboundReq, addOutboundReq } from '../actions'
+import { addPublicReq, addInboundReq, addOutboundReq } from '../../actions'
 
-import Request from './Request'
+import Request from './Index'
 
-import './styles/RequestIconContainer.css'
+import '../styles/RequestIconContainer.css'
 
 class RequestIconContainer extends React.Component {
   componentDidMount () {
@@ -34,6 +34,9 @@ class RequestIconContainer extends React.Component {
               return
           }
         }
+      })
+      .catch(err => {
+        console.log({ err })
       })
     }
   }

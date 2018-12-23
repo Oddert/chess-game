@@ -1,6 +1,6 @@
 import React from 'react'
 
-import socket from '../sockets'
+import socket from '../../sockets'
 
 class RequestDecline extends React.Component {
   constructor (props) {
@@ -21,7 +21,11 @@ class RequestDecline extends React.Component {
       id: this.props.id,
       responce: this.props.responce
     })
-    socket.on('decline-request', p => console.log(p))
+    socket.on('decline-request', payload => {
+      console.log(payload)
+      if (payload.err) console.log(payload.err)
+      else this.props.cb()
+    })
   }
 
   render () {

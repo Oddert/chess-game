@@ -3,12 +3,11 @@
 ## To Do's:
 - Review all socket functionality, test for holes, create inventory of things before moving on
 
-- ADD GLOBAL NOTIFICATION SYSTEM
+- Notifications - Add 'read' mechanism
+- Notifications - Add 'action' mechanism
 
 - Get multiple auth options working
-- Add callback for creating a request
-- Clean up cascading mongoose queries
-- Synchronise local and database game structure
+- Add callback for creating a request (check)
 - Ability to destroy games
 - Change existing save function to check auth
 
@@ -20,12 +19,22 @@
   * Win condition
   * Forfeit condition
 
-- Router history?
+- Router / location history?
 
 - Add dynamic error events to socket
   * Disconnect notification
-  * opponent visibility indicator
+  * Opponent visibility indicator
   * Leave room failsafe in 'move piece' event (server side)
+
+### Optional / Do Later
+- Synchronise local and database game structure
+- Initialising games, notifications and requests does not overide data causing duplicates
+
+### Bugs
+- Authentication does not auth on socket-passport (must reload)
+
+
+
 
 ### Done / Solved:
 - Figure out how to have secure 2ppl socket connection

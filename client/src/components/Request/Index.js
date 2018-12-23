@@ -1,12 +1,12 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import { selectGame, editRequest, deleteRequest } from '../actions'
-import socket from '../sockets'
+import { selectGame, editRequest, deleteRequest } from '../../actions'
+import socket from '../../sockets'
 
-import RequestDecline from './RequestDecline'
+import RequestDecline from './Decline'
 
-import './styles/Request.css'
+import '../styles/Request.css'
 
 class Request extends React.Component {
   constructor(props) {
@@ -144,7 +144,7 @@ class Request extends React.Component {
                 <div className='accept-buttons'>
                   {item.open
                     ? ''
-                    : <RequestDecline id={item._id} responce={this.state.responce} />
+                    : <RequestDecline id={item._id} responce={this.state.responce} cb={this.toggleOpen} />
                   }
                   <div>
                     <button className='close' onClick={this.toggleOpen}>Close</button>
