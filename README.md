@@ -2,6 +2,10 @@
 
 ## To Do's:
 - Review all socket functionality, test for holes, create inventory of things before moving on
+- Review when game, notification and request data is updated (1.)
+  * Notifications (should be k)
+  * Requests (who even knows what goes on there)
+  * Games (...)
 
 - Notifications - Add 'read' mechanism
 - Notifications - Add 'action' mechanism
@@ -29,6 +33,7 @@
 ### Optional / Do Later
 - Synchronise local and database game structure
 - Initialising games, notifications and requests does not overide data causing duplicates
+- (1.) Each item gets own data on timer?
 
 ### Bugs
 - Authentication does not auth on socket-passport (must reload)
