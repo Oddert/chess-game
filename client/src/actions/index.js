@@ -67,7 +67,6 @@ export const addActiveGame = payload => ({
   payload
 })
 
-
 export const refreshPublicGames = payload => ({
   type: types.REFRESH_PUBLIC_GAMES,
   payload
@@ -83,14 +82,26 @@ export const addPublicReq = payload => ({
   type: types.ADD_PUBLIC_REQ,
   payload
 })
+export const refreshPublicReqs = payload => ({
+  type: types.REFRESH_PUBLIC_REQS,
+  payload
+})
 
 export const addOutboundReq = payload => ({
   type: types.ADD_OUTBOUND_REQ,
   payload
 })
+export const refreshOutboundReqs = payload => ({
+  type: types.REFRESH_OUTBOUND_REQS,
+  payload
+})
 
 export const addInboundReq = payload => ({
   type: types.ADD_INBOUND_REQ,
+  payload
+})
+export const refreshInboundReqs = payload => ({
+  type: types.REFRESH_INBOUND_REQS,
   payload
 })
 

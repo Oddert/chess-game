@@ -39,8 +39,8 @@ const onlineData = (state = initialState.onlineData, action) => {
           }
         })
       })
-      
-    case types.ADD_PUBLIC_REQ:
+
+      case types.ADD_PUBLIC_REQ:
       return Object.assign({}, state, {
         requests: Object.assign({}, state.requests, {
           public: {
@@ -49,7 +49,7 @@ const onlineData = (state = initialState.onlineData, action) => {
           }
         })
       })
-    case types.ADD_OUTBOUND_REQ:
+      case types.ADD_OUTBOUND_REQ:
       return Object.assign({}, state, {
         requests: Object.assign({}, state.requests, {
           outbound: {
@@ -58,7 +58,7 @@ const onlineData = (state = initialState.onlineData, action) => {
           }
         })
       })
-    case types.ADD_INBOUND_REQ:
+      case types.ADD_INBOUND_REQ:
       return Object.assign({}, state, {
         requests: Object.assign({}, state.requests, {
           inbound: {
@@ -67,6 +67,34 @@ const onlineData = (state = initialState.onlineData, action) => {
           }
         })
       })
+    case types.REFRESH_PUBLIC_REQS:
+      return Object.assign({}, state, {
+        requests: Object.assign({}, state.requests, {
+          public: {
+            lastUpdated: Date.now(),
+            data: action.payload
+          }
+        })
+      })
+    case types.REFRESH_OUTBOUND_REQS:
+      return Object.assign({}, state, {
+        requests: Object.assign({}, state.requests, {
+          outbound: {
+            lastUpdated: Date.now(),
+            data: action.payload
+          }
+        })
+      })
+    case types.REFRESH_INBOUND_REQS:
+      return Object.assign({}, state, {
+        requests: Object.assign({}, state.requests, {
+          inbound: {
+            lastUpdated: Date.now(),
+            data: action.payload
+          }
+        })
+      })
+
     case types.EDIT_REQ:
       let edit_req_data = state.requests.outbound.data
       .map(each => each._id === action.payload.id

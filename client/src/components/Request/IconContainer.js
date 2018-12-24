@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import { addPublicReq, addInboundReq, addOutboundReq } from '../../actions'
+import { refreshPublicReqs, refreshInboundReqs, refreshOutboundReqs } from '../../actions'
 
 import Request from './Index'
 
@@ -9,36 +9,36 @@ import '../styles/RequestIconContainer.css'
 
 class RequestIconContainer extends React.Component {
   componentDidMount () {
-    if (this.props.mode) {
+    if (!this.props.mode) return
       // console.log(`/api/requests/${this.props.mode}`)
-      fetch(`/api/requests/${this.props.mode}`, {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' }
-      })
-      .then(res => res.json())
-      .then(res => {
-        if (res.err) console.log(res.err)
-        else {
-          switch(this.props.mode) {
-            case 'public':
-              this.props.addPublicReq(res.requests)
-              break;
-            case 'inbound':
-              this.props.addInboundReq(res.requests)
-              break;
-            case 'outbound':
-              this.props.addOutboundReq(res.requests)
-              break;
-            default:
-              console.log('ERROR Request.js')
-              return
-          }
+    fetch(`/api/requests/${this.props.mode}`, {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' }
+    })
+    .then(res => res.json())
+    .then(res => {
+      if (res.err) console.log(res.err)
+      else {
+        switch(this.props.mode) {
+          case 'public':
+            this.props.refreshPublicReqs(res.requests)
+            break;
+          case 'inbound':
+            this.props.refreshInboundReqs(res.requests)
+            break;
+          case 'outbound':
+            this.props.refreshOutboundReqs(res.requests)
+            break;
+          default:
+            console.log('ERROR Request.js')
+            return
         }
-      })
-      .catch(err => {
-        console.log({ err })
-      })
-    }
+      }
+    })
+    .catch(err => {
+      console.log({ err })
+    })
+
   }
 
   render () {
@@ -86,9 +86,9 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  addPublicReq: payload => dispatch(addPublicReq(payload)),
-  addInboundReq: payload => dispatch(addInboundReq(payload)),
-  addOutboundReq: payload => dispatch(addOutboundReq(payload))
+  refreshPublicReqs: payload => dispatch(refreshPublicReqs(payload)),
+  refreshInboundReqs: payload => dispatch(refreshInboundReqs(payload)),
+  refreshOutboundReqs: payload => dispatch(refreshOutboundReqs(payload))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(RequestIconContainer)
