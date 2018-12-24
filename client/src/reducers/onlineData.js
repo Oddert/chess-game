@@ -3,7 +3,7 @@ import initialState from '../constants/initialState'
 
 const onlineData = (state = initialState.onlineData, action) => {
   switch(action.type) {
-    case types.ADD_PUBLIC_GAMES:
+    case types.ADD_PUBLIC_GAME:
       return Object.assign({}, state, {
         games: Object.assign({}, state.games, {
           public: {
@@ -12,7 +12,7 @@ const onlineData = (state = initialState.onlineData, action) => {
           }
         })
       })
-    case types.ADD_ACTIVE_GAMES:
+    case types.ADD_ACTIVE_GAME:
       return Object.assign({}, state, {
         games: Object.assign({}, state.games, {
           active: {
@@ -21,6 +21,25 @@ const onlineData = (state = initialState.onlineData, action) => {
           }
         })
       })
+    case types.REFRESH_PUBLIC_GAMES:
+      return Object.assign({}, state, {
+        games: Object.assign({}, state.games, {
+          public: {
+            lastUpdated: Date.now(),
+            data: action.payload
+          }
+        })
+      })
+    case types.REFRESH_ACTIVE_GAMES:
+      return Object.assign({}, state, {
+        games: Object.assign({}, state.games, {
+          active: {
+            lastUpdated: Date.now(),
+            data: action.payload
+          }
+        })
+      })
+      
     case types.ADD_PUBLIC_REQ:
       return Object.assign({}, state, {
         requests: Object.assign({}, state.requests, {
@@ -49,8 +68,10 @@ const onlineData = (state = initialState.onlineData, action) => {
         })
       })
     case types.EDIT_REQ:
-      let edit_req_data = state.requests.outbound.data.map(
-        each => each._id === action.payload.id ? Object.assign({}, each, action.payload.data) : each
+      let edit_req_data = state.requests.outbound.data
+      .map(each => each._id === action.payload.id
+            ? Object.assign({}, each, action.payload.data)
+            : each
       )
       console.log(edit_req_data)
 

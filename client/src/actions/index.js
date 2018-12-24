@@ -57,13 +57,24 @@ export const chatMessage = payload => ({
 
 
 
-export const addPublicGames = payload => ({
-  type: types.ADD_PUBLIC_GAMES,
+export const addPublicGame = payload => ({
+  type: types.ADD_PUBLIC_GAME,
   payload
 })
 
-export const addActiveGames = payload => ({
-  type: types.ADD_ACTIVE_GAMES,
+export const addActiveGame = payload => ({
+  type: types.ADD_ACTIVE_GAME,
+  payload
+})
+
+
+export const refreshPublicGames = payload => ({
+  type: types.REFRESH_PUBLIC_GAMES,
+  payload
+})
+
+export const refreshActiveGames = payload => ({
+  type: types.REFRESH_ACTIVE_GAMES,
   payload
 })
 

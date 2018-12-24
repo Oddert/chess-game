@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import { addPublicGames, addActiveGames } from '../actions'
+import { refreshPublicGames, refreshActiveGames } from '../actions'
 
 import GameIcon from './GameIcon'
 
@@ -16,8 +16,8 @@ class GameIconContainer extends React.Component {
     .then(res => {
       if (res.err) console.log(res.err)
       else {
-        if (this.props.type === 'public') this.props.addPublicGames(res.games)
-        else this.props.addActiveGames(res.games)
+        if (this.props.type === 'public') this.props.refreshPublicGames(res.games)
+        else this.props.refreshActiveGames(res.games)
       }
     })
   }
@@ -45,8 +45,8 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  addPublicGames: payload => dispatch(addPublicGames(payload)),
-  addActiveGames: payload => dispatch(addActiveGames(payload))
+  refreshPublicGames: payload => dispatch(refreshPublicGames(payload)),
+  refreshActiveGames: payload => dispatch(refreshActiveGames(payload))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(GameIconContainer)
