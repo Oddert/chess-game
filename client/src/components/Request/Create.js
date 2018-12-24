@@ -18,7 +18,8 @@ class CreateRequest extends React.Component {
       friends: [],
 
       oponent: null,
-      message: 'Hey! Want to play a game of Chess?'
+      message: 'Hey! Want to play a game of Chess?',
+      error: null
     }
     this.toggleOpen = this.toggleOpen.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
@@ -26,6 +27,7 @@ class CreateRequest extends React.Component {
     this.toggleOpenRequest = this.toggleOpenRequest.bind(this)
     this.toggleFriendsOnly = this.toggleFriendsOnly.bind(this)
     this.messageChange = this.messageChange.bind(this)
+    this.handleError = this.handleError.bind(this)
   }
 
   componentDidMount () {
@@ -35,7 +37,7 @@ class CreateRequest extends React.Component {
     })
     .then(res => res.json())
     .then(res => {
-      if (res.err) console.log(res.err)
+      if (res.err) this.handleError(res.err)
       else this.setState(state => ({ publicOponents: [...state.publicOponents, ...res.users] }))
     })
     fetch('/api/users/friends', {
@@ -45,14 +47,19 @@ class CreateRequest extends React.Component {
     .then(res => res.json())
     .then(res => {
       console.log(res)
-      if (res.err) console.log(res.err)
+      if (res.err) this.handleError(res.err)
       else this.setState(state => ({ friends: [...state.friends, ...res.users] }))
     })
   }
 
   toggleOpen (e) {
     e.preventDefault()
-    this.setState(state => ({ open: !state.open }))
+    this.setState(state => ({ open: !state.open, error: null }))
+  }
+
+  handleError (error) {
+    console.log({ error })
+    this.setState({ error })
   }
 
   selectOponent (oponent) {
@@ -86,14 +93,12 @@ class CreateRequest extends React.Component {
       message: /\S/.test(this.state.message) ? this.state.message : null,
       openRequest: this.state.isOpenRequest
     }
-    console.log(payload)
+    console.log({ payload })
     socket.emit('new-request', payload)
-    socket.on('new-request', payload => {
-      if (payload.err) console.error(payload.err)
-      else {
-        console.log(payload.message)
-        this.setState({ open: false })
-      }
+    socket.on('new-request', payloadReturn => {
+      console.log({ payloadReturn })
+      if (payloadReturn.err) this.handleError(payloadReturn.err)
+      else this.setState({ open: false })
     })
   }
 
@@ -115,6 +120,13 @@ class CreateRequest extends React.Component {
                 <button className='top-left-close' onClick={this.toggleOpen}>✖</button>
                 <h2>Challenge someone to a new match!</h2>
 
+                {this.state.error
+                  ? <div class='display_error'>
+                      <p>{this.state.error}</p>
+                    </div>
+                  : ''
+                }
+
                 <div className='newRequestFlex'>
                   <div className='fill' />
 
@@ -122,7 +134,7 @@ class CreateRequest extends React.Component {
 
                   <div className='request-explination-container'>
                     <div className='request-explination' title='Open requests can be accepted by anyone.
-Closed requests are a specific player only'>?</div>
+                    Closed requests are a specific player only'>?</div>
                     <div className='fill'></div>
                   </div>
 

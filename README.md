@@ -2,13 +2,12 @@
 
 ## To Do's:
 - Review all socket functionality, test for holes, create inventory of things before moving on
-- Review when game, notification and request data is updated (1.)
-  * Notifications (should be k)
-  * Requests (who even knows what goes on there)
-  * Games (...)
 
 - Notifications - Add 'read' mechanism
 - Notifications - Add 'action' mechanism
+  * Open a new game state
+  * Open a notification to read (will require further actionables)
+  * Contain a request
 
 - Get multiple auth options working
 - Add callback for creating a request (check)

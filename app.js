@@ -83,7 +83,7 @@ app.use(session({
 }))
 
 
-function universalSocketErrorCatch (err, socket, event, message, room) {
+function universalSocketErrorHandle (err, socket, event, message, room) {
   console.log('Test socket err')
   console.log(err)
   socket.emit(event, {
@@ -182,10 +182,10 @@ io.on(`connection`, socket => {
         socket.emit(`move-piece`, payload)
         socket.broadcast.to(socket.room).emit(`move-piece`, payload)
       })
-      .catch(err => universalSocketErrorCatch(err, socket, 'move-piece', err.message, socket.room))
+      .catch(err => universalSocketErrorHandle(err, socket, 'move-piece', err.message, socket.room))
 
     })
-    .catch(err => universalSocketErrorCatch(err, socket, 'move-piece', err.message))
+    .catch(err => universalSocketErrorHandle(err, socket, 'move-piece', err.message))
   })
 
   socket.on('change-meta', payload => {
@@ -193,7 +193,7 @@ io.on(`connection`, socket => {
     console.log(payload)
     Game.findOneAndUpdate({ _id: socket.room }, payload)
     .then(game => socket.broadcast.to(socket.room).emit('change-meta', payload))
-    .catch(err => universalSocketErrorCatch(err, socket, 'change-meta', err.message, socket.room))
+    .catch(err => universalSocketErrorHandle(err, socket, 'change-meta', err.message, socket.room))
   })
 
   socket.on('chat-message', payload => {
@@ -210,9 +210,9 @@ io.on(`connection`, socket => {
         socket.broadcast.to(socket.room).emit('chat-message', payload)
         socket.emit('chat-message', payload)
       })
-      .catch(err => universalSocketErrorCatch(err, socket, 'chat-message', err.message, socket.room))
+      .catch(err => universalSocketErrorHandle(err, socket, 'chat-message', err.message, socket.room))
     })
-    .catch(err => universalSocketErrorCatch(err, socket, 'chat-message', err.message))
+    .catch(err => universalSocketErrorHandle(err, socket, 'chat-message', err.message))
   })
 
   socket.on('new-request', payload => {
@@ -226,6 +226,8 @@ io.on(`connection`, socket => {
     if (socket.request.user._id) {
       console.log('user is auth (definately, not making that up, I promis)')
       // console.log('### DEV: swapping out real functionality for dummy to deliberately crash')
+      // console.log('### DEV OVERRIDE delliberately going to crash user id')
+      // User.findById('jbviuweviuw872')
       User.findById(socket.request.user._id)
       .then(author => {
         console.log(author)
@@ -295,7 +297,7 @@ io.on(`connection`, socket => {
           message: 'Request created successfully!'
         })
       })
-      .catch(err => universalSocketErrorCatch(err, socket, 'new-request', err.message))
+      .catch(err => universalSocketErrorHandle(err, socket, 'new-request', err.message))
 
     } else {
       console.log('User not authenticated:')
@@ -308,7 +310,7 @@ io.on(`connection`, socket => {
   socket.on('edit-request', payload => {
     Request.findByIdAndUpdate(payload.id, payload.data)
     .then(request => socket.emit('edit-request', payload))
-    .catch(err => universalSocketErrorCatch(err, socket, 'edit-request', err.message))
+    .catch(err => universalSocketErrorHandle(err, socket, 'edit-request', err.message))
   })
 
   socket.on('delete-request', payload => {
@@ -467,7 +469,7 @@ io.on(`connection`, socket => {
         // Strictly uneccessary, for degub purposes
         console.log('FINISHING')
       })
-      .catch(err => universalSocketErrorCatch(err, socket, 'accept-request', err.message))
+      .catch(err => universalSocketErrorHandle(err, socket, 'accept-request', err.message))
     }
   })
 
@@ -524,7 +526,7 @@ io.on(`connection`, socket => {
     .then(notification => {
       console.log('FINISHING', { notification })
     })
-    .catch(err => universalSocketErrorCatch(err, socket, 'decline-request', err.message))
+    .catch(err => universalSocketErrorHandle(err, socket, 'decline-request', err.message))
   })
 
 
