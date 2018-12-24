@@ -83,7 +83,7 @@ app.use(session({
 }))
 
 
-function testSocketError (err, socket, event, message, room) {
+function universalSocketErrorCatch (err, socket, event, message, room) {
   console.log('Test socket err')
   console.log(err)
   socket.emit(event, {
@@ -94,7 +94,7 @@ function testSocketError (err, socket, event, message, room) {
     err,
     message: message ? message : null
   })
-  console.log('end test error handler, how\'d it do?')
+  console.log('Main error handler, still under scrutiny: how\'d it do?')
 }
 
 
@@ -150,17 +150,10 @@ io.on(`connection`, socket => {
     .then(foundGame => {
       console.log(`foundGame: `, !!foundGame)
 
-      const fromRow = payload.from.row
-      const fromCol = payload.from.col
-      const toRow = payload.to.row
-      const toCol = payload.to.col
-      const fromPiece = payload.piece
-      const toPiece = fromPiece
+      const { from: { row: fromRow, col: fromCol }, to: { row: toRow, col: toCol }, piece: fromPiece, piece: toPiece } = payload
 
       const clientTeam = payload.team === 0 ? 'black' : 'white'
-
       const thisPGN = toPGN(fromPiece, fromRow, fromCol, toPiece, toRow, toCol, payload.takePiece)
-
 
       if (payload.takePiece) {
         const targetCellType = foundGame.board[toRow][toCol].type
@@ -168,18 +161,17 @@ io.on(`connection`, socket => {
         foundGame[clientTeam].takenPieces.push(targetCellType)
       }
 
-      if (payload.team === 0) {
-        foundGame.moves[foundGame.moves.length-1].b = thisPGN
-      } else {
-        console.log({ w : thisPGN })
-        foundGame.moves.push({ w : thisPGN })
-        console.log(foundGame.moves)
-      }
+      if (payload.team === 0) foundGame.moves[foundGame.moves.length-1].b = thisPGN
+      else foundGame.moves.push({ w : thisPGN })
+      // else {
+      //   console.log({ w : thisPGN })
+      //   foundGame.moves.push({ w : thisPGN })
+      //   console.log(foundGame.moves)
+      // }
 
       foundGame.board[fromRow][fromCol] = { type: "empty", team: null }
       foundGame.board[toRow][toCol] = { type: toPiece, team: Number(payload.team) }
       foundGame.markModified('board')
-      // foundGame.markModified('moves')
       foundGame.lastMove = payload.team === 0 ? 1 : 0
 
       console.log({ foundGame })
@@ -190,10 +182,10 @@ io.on(`connection`, socket => {
         socket.emit(`move-piece`, payload)
         socket.broadcast.to(socket.room).emit(`move-piece`, payload)
       })
-      .catch(err => testSocketError(err, socket, 'move-piece', err.message, socket.room))
+      .catch(err => universalSocketErrorCatch(err, socket, 'move-piece', err.message, socket.room))
 
     })
-    .catch(err => testSocketError(err, socket, 'move-piece', err.message))
+    .catch(err => universalSocketErrorCatch(err, socket, 'move-piece', err.message))
   })
 
   socket.on('change-meta', payload => {
@@ -201,7 +193,7 @@ io.on(`connection`, socket => {
     console.log(payload)
     Game.findOneAndUpdate({ _id: socket.room }, payload)
     .then(game => socket.broadcast.to(socket.room).emit('change-meta', payload))
-    .catch(err => testSocketError(err, socket, 'change-meta', err.message, socket.room))
+    .catch(err => universalSocketErrorCatch(err, socket, 'change-meta', err.message, socket.room))
   })
 
   socket.on('chat-message', payload => {
@@ -209,7 +201,7 @@ io.on(`connection`, socket => {
     console.log(payload)
     Game.findById(socket.room)
     .then(foundGame => {
-      console.log('Game lookup ok')
+      // console.log('Game lookup ok')
       console.log({ foundGame })
       foundGame.chat = [...foundGame.chat, payload]
       foundGame.save()
@@ -218,15 +210,15 @@ io.on(`connection`, socket => {
         socket.broadcast.to(socket.room).emit('chat-message', payload)
         socket.emit('chat-message', payload)
       })
-      .catch(err => testSocketError(err, socket, 'chat-message', err.message, socket.room))
+      .catch(err => universalSocketErrorCatch(err, socket, 'chat-message', err.message, socket.room))
     })
-    .catch(err => testSocketError(err, socket, 'chat-message', err.message))
+    .catch(err => universalSocketErrorCatch(err, socket, 'chat-message', err.message))
   })
 
   socket.on('new-request', payload => {
     console.log('Request to create a new game offer:')
     console.log(socket.request.user.username)
-    console.log(payload)
+    console.log({ payload })
     console.log('this is the hurdle to pass:')
     if (payload.targetUser) socket.broadcast.to(payload.targetUser._id).emit('dev', payload)
     console.log('success(ish)')
@@ -273,7 +265,7 @@ io.on(`connection`, socket => {
           request: request._id
         })
         .then(notification => {
-          socket.broadcast.to(request.target._id).emit('notification', notification)
+          socket.broadcast.to(request.target.id).emit('notification', notification)
           return User.findByIdAndUpdate(request.target.id, { $push: { notifications: notification._id } })
           // User.findByIdAndUpdate(request.author.id, { $push: { notifications: notification._id } })
           .then(target => request)
@@ -303,7 +295,7 @@ io.on(`connection`, socket => {
           message: 'Request created successfully!'
         })
       })
-      .catch(err => testSocketError(err, socket, 'new-request', err.message))
+      .catch(err => universalSocketErrorCatch(err, socket, 'new-request', err.message))
 
     } else {
       console.log('User not authenticated:')
@@ -316,7 +308,7 @@ io.on(`connection`, socket => {
   socket.on('edit-request', payload => {
     Request.findByIdAndUpdate(payload.id, payload.data)
     .then(request => socket.emit('edit-request', payload))
-    .catch(err => testSocketError(err, socket, 'edit-request', err.message))
+    .catch(err => universalSocketErrorCatch(err, socket, 'edit-request', err.message))
   })
 
   socket.on('delete-request', payload => {
@@ -475,7 +467,7 @@ io.on(`connection`, socket => {
         // Strictly uneccessary, for degub purposes
         console.log('FINISHING')
       })
-      .catch(err => testSocketError(err, socket, 'accept-request', err.message))
+      .catch(err => universalSocketErrorCatch(err, socket, 'accept-request', err.message))
     }
   })
 
@@ -532,7 +524,7 @@ io.on(`connection`, socket => {
     .then(notification => {
       console.log('FINISHING', { notification })
     })
-    .catch(err => testSocketError(err, socket, 'decline-request', err.message))
+    .catch(err => universalSocketErrorCatch(err, socket, 'decline-request', err.message))
   })
 
 
