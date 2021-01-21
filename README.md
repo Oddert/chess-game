@@ -1,6 +1,28 @@
 # Oddert Chess game
 
-## To Do's:
+A platform for playing chess locally or with a live oponent over the internet. Features a custom chess engine built from scratch.
+
+Front end built with React / Redux, backend built with express, MongoDB / Mongoose for storage, Socket.io for websocket implamentation.
+
+## Installation
+```
+$ git clone https://github.com/Oddert/chess-game.git
+$ cd chess-game/client
+$ npm i
+$ cd ..
+$ npm i
+```
+### For development
+```
+$ npm run dev
+```
+### For a production build
+```
+$ npm run build
+$ npm start
+```
+
+## Development To Do's:
 - Review all socket functionality, test for holes, create inventory of things before moving on
 
 - Add check detection to move validation system
