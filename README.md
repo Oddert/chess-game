@@ -4,7 +4,11 @@ A platform for playing chess locally or with a live oponent over the internet. F
 
 Front end built with React / Redux, backend built with express, MongoDB / Mongoose for storage, Socket.io for websocket implamentation.
 
+## Live Demo
+[https://oddert-chess-game-1.glitch.me/](https://oddert-chess-game-1.glitch.me/)
+
 ## Installation
+You will need to setup a mongodb server and connect it via an .env file
 ```
 $ git clone https://github.com/Oddert/chess-game.git
 $ cd chess-game/client
@@ -22,8 +26,14 @@ $ npm run build
 $ npm start
 ```
 
-## Live Demo
-[https://oddert-chess-game-1.glitch.me/](https://oddert-chess-game-1.glitch.me/)
+## Scripts
+| script | command                                        | action
+|--------|------------------------------------------------|------------------------------------------------|
+| start  | node app.js                                    | runs the server                                |
+| server | nodemon app.js                                 | runs the server with auto restart              |
+| client | cd client && npm start                         | starts the development server for the client   |
+| dev    | concurrently "npm run server" "npm run client" | run both the client and server for development |
+
 
 ## Development To Do's:
 - Review all socket functionality, test for holes, create inventory of things before moving on
