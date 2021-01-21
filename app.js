@@ -28,7 +28,7 @@ require('dotenv').config()
 
 app.use(require('cors')())
 
-mongoose.connect(process.env.DATABASE)
+mongoose.connect(process.env.DATABASE, { useNewUrlParser: true, useUnifiedTopology: true })
 
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
@@ -36,9 +36,7 @@ app.use(cookieParser())
 
 app.use(express.static(path.join(__dirname, '/client/build')))
 
-
 const sessionStore = new MongoStore({ url: mongoose.connection.client.s.url })
-
 
 const io = socketio(http)
 
