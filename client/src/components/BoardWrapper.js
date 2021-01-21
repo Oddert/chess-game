@@ -3,7 +3,7 @@ import React from 'react'
 import Title from './Title'
 import GameUI from './GameUI'
 import Board from './Board'
-import PlayerUI from './PlayerUI'
+import PlayerUI from './PlayerUI/'
 
 class BoardWrapper extends React.Component {
   render () {

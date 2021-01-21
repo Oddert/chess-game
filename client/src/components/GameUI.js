@@ -8,12 +8,14 @@ import './styles/GameUI.css'
 
 class GameUI extends React.Component {
   render () {
+    const { localGame } = this.props.app
+    const blacksTurn = this.props.game.turn === 0
     return (
       <div className='GameUI'>
-        <div>It is {this.props.game.turn === 0 ? 'black' : 'white'}'s Turn</div>
-        <div className='messageFlex'>
+        <div>It is {blacksTurn ? 'black' : 'white'}'s turn</div>
+        <div className={`messageFlex ${localGame && 'local'}`}>
           <MoveLogs />
-          {!this.props.app.localGame ? <Chat /> : ''}
+          {!localGame && <Chat />}
         </div>
       </div>
     )

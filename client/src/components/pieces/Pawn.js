@@ -9,6 +9,7 @@ import validatePawn from '../move_functions/validatePawn'
 import generatePawnClass from '../move_functions/generatePawnClass'
 
 import '../styles/Piece.css'
+import updateAttackingPawn from '../move_functions/updateAttackingPawn'
 
 class Bishop extends React.Component {
   constructor(props) {
@@ -70,7 +71,10 @@ class Bishop extends React.Component {
     const row = Number(e.target.getAttribute('row'))
     const col = Number(e.target.getAttribute('col'))
     const valid = validatePawn(this.props.row, this.props.col, row, col, this.props.game.board, this.props.team)
+    const attacking = updateAttackingPawn(row, col, this.props.team, this.props.board)
 
+    console.log(row, col, attacking)
+    
     const moveObject = {
       from: {
         row: this.props.row,

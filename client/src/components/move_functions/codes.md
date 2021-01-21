@@ -1,0 +1,6 @@
+0 | Target Square is empty | 'virtual-row-square s'
+1 | Target square is same as start square | ''
+2 | Target is off of valid move path. Invalid Move | 'virtual-row-square s empty'
+3 | Target contains friendly piece | 'virtual-row-square s friend'
+4 | Target is oponent piece to be taken | 'virtual-row-square s enemy'
+5 | target is obstrcuted by a closer piece on path | 'virtual-row-square s obstruct'

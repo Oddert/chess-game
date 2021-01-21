@@ -53,6 +53,15 @@ const initialState = {
     thisClientPlayer: null,
     moves: [],
     chat: [],
+    attacking: {
+      white: {
+        '3_7': [
+          { piece: 'rook', x: 5, y: 3 },
+          { piece: 'bishop', x: 8, y: 4 },
+        ]
+      },
+      black: {},
+    },
     players: {
       black: {
         score: 0,

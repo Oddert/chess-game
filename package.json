@@ -15,7 +15,7 @@
     "url": "git+https://github.com/Oddert/chess-game.git"
   },
   "author": "Robyn Veitch",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/Oddert/chess-game/issues"
   },

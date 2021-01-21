@@ -74,7 +74,7 @@ class Chat extends React.Component {
               <input type='text' ref={e => this.input = e} />
               <button>Send</button>
             </form>
-          : <div />
+          : ''
         }
       </div>
     )

@@ -3,6 +3,12 @@
 ## To Do's:
 - Review all socket functionality, test for holes, create inventory of things before moving on
 
+- Add check detection to move validation system
+- Add check mate detection ontop
+- Add pawn swap capability for board traversal
+- Add castle move
+- Add [that move where a pawn jumps over a piece]
+
 - Notifications - Add 'read' mechanism
 - Notifications - Add 'action' mechanism
   * Open a new game state
