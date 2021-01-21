@@ -22,6 +22,9 @@ $ npm run build
 $ npm start
 ```
 
+## Live Demo
+[https://oddert-chess-game-1.glitch.me/](https://oddert-chess-game-1.glitch.me/)
+
 ## Development To Do's:
 - Review all socket functionality, test for holes, create inventory of things before moving on
 
